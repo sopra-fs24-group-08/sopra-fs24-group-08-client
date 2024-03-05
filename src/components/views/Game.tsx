@@ -94,7 +94,7 @@ const Game = ({ user }: { user: User }) => {
 
   let content = <Spinner />;
 
-  if (users) {
+  if (1) {
     content = (
       <div className="game">
         <ul className="game user-list">
