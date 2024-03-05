@@ -1,9 +1,12 @@
 import React from "react";
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, Redirect} from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
 import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
 import Login from "../../views/Login";
+import Register from "../../views/Register";
+import UserProfile from "../../views/UserProfile";
+import EditProfile from "../../views/EditProfile";
 
 /**
  * Main router of your application.
@@ -18,13 +21,27 @@ const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<LoginGuard />}>
+          <Route path="/login" element={<Login/>} />
+        </Route>
 
         <Route path="/game/*" element={<GameGuard />}>
           <Route path="/game/*" element={<GameRouter base="/game"/>} />
         </Route>
+        <Route path="/" element={<Navigate to="/login" />} />
 
-        <Route path="/login" element={<LoginGuard />}>
-          <Route path="/login" element={<Login/>} />
+
+
+        <Route>
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        <Route>
+          <Route path="/users/:id" element={<UserProfile/>} />
+        </Route>
+
+        <Route>
+          <Route exact path="/edit/:current_username/:status/:creation_date/:current_birthday/:id" element={<EditProfile/>} />
         </Route>
 
         <Route path="/" element={

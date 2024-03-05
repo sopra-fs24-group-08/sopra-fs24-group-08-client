@@ -8,33 +8,55 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 
-const Player = ({ user }: { user: User }) => (
-  <div className="player container">
-    <div className="player username">{user.username}</div>
-    <div className="player name">{user.name}</div>
-    <div className="player id">id: {user.id}</div>
-  </div>
-);
 
-Player.propTypes = {
-  user: PropTypes.object,
-};
 
-const Game = () => {
+
+const Game = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate 
   const navigate = useNavigate();
-
-  // define a state variable (using the state hook).
-  // if this variable changes, the component will re-render, but the variable will
-  // keep its value throughout render cycles.
-  // a component can have as many state variables as you like.
-  // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState 
   const [users, setUsers] = useState<User[]>(null);
-
   const logout = (): void => {
     localStorage.removeItem("token");
     navigate("/login");
   };
+
+  function userProfile (id){
+    let push_to = "/users/" + String(id);
+    navigate(push_to);
+  };
+  function myProfile (){
+    const myId = localStorage.getItem('id');
+    let push_to = "/users/" + myId;
+    navigate(push_to);
+  };
+
+  const Player = ({ user }: { user: User }) => {
+    const myId = localStorage.getItem('id');
+
+    if (user.id.toString() === myId) return null;
+
+    return (
+      <div className="player container">
+        <Button
+          width="500px"
+          onClick={() => userProfile(user.id)}
+          className="game username-button-container"
+        >
+          {user.username}
+        </Button>
+      </div>
+    );
+  };
+
+
+
+  Player.propTypes = {
+    user: PropTypes.object,
+  };
+
+
+
+
 
   // the effect hook can be used to react to change in your component.
   // in this case, the effect hook is only run once, the first time the component is mounted
@@ -91,18 +113,31 @@ const Game = () => {
             </li>
           ))}
         </ul>
-        <Button width="100%" onClick={() => logout()}>
+        <Button
+          style={{ width: '100%', marginBottom: '10px' }}
+          onClick={() => logout()}
+        >
           Logout
         </Button>
+        <Button
+          style={{ width: '100%', marginBottom: '10px' }}
+          onClick={() => myProfile()}
+        >
+          My Profile
+        </Button>
+
+
+
+
       </div>
     );
   }
 
   return (
     <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
+      <h2>Users Overview</h2>
       <p className="game paragraph">
-        Get all users from secure endpoint:
+        Select a user to view!
       </p>
       {content}
     </BaseContainer>

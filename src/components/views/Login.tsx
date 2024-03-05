@@ -15,15 +15,15 @@ specific components that belong to the main one in the same file.
  */
 const FormField = (props) => {
   return (
-    <div className="login field">
-      <label className="login label">{props.label}</label>
-      <input
-        className="login input"
-        placeholder="enter here.."
-        value={props.value}
-        onChange={(e) => props.onChange(e.target.value)}
-      />
-    </div>
+      <div className="login field">
+        <label className="login label">{props.label}</label>
+        <input
+            className="login input"
+            placeholder="enter here.."
+            value={props.value}
+            onChange={(e) => props.onChange(e.target.value)}
+        />
+      </div>
   );
 };
 
@@ -35,55 +35,67 @@ FormField.propTypes = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>(null);
+  const navigateToRegister = () => {
+    navigate('/register');
+  };
+  const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
 
   const doLogin = async () => {
     try {
-      const requestBody = JSON.stringify({ username, name });
-      const response = await api.post("/users", requestBody);
+      const requestBody = JSON.stringify({ username, password });
+      const response = await api.post("/login", requestBody);
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
 
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
+      localStorage.setItem('id', user.id);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/game");
     } catch (error) {
       alert(
-        `Something went wrong during the login: \n${handleError(error)}`
+          `Something went wrong during the login: \n${handleError(error)}`
       );
     }
   };
 
   return (
-    <BaseContainer>
-      <div className="login container">
-        <div className="login form">
-          <FormField
-            label="Username"
-            value={username}
-            onChange={(un: string) => setUsername(un)}
-          />
-          <FormField
-            label="Name"
-            value={name}
-            onChange={(n) => setName(n)}
-          />
-          <div className="login button-container">
-            <Button
-              disabled={!username || !name}
-              width="100%"
-              onClick={() => doLogin()}
-            >
-              Login
-            </Button>
+      <BaseContainer>
+        <div className="login container">
+          <div className="login form">
+            <FormField
+                label="Username"
+                value={username}
+                onChange={(un: string) => setUsername(un)}
+            />
+            <FormField
+                label="Password"
+                value={password}
+                onChange={(n) => setPassword(n)}
+            />
+            <div className="login button-container">
+              <Button
+                  disabled={!username || !password}
+                  width="100%"
+                  onClick={() => doLogin()}
+              >
+                Login
+              </Button>
+            </div>
+            <div className="register button-container">
+              <Button
+                  width="100%"
+                  onClick={navigateToRegister}
+              >
+                  Register
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </BaseContainer>
+      </BaseContainer>
   );
 };
 

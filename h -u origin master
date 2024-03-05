@@ -1,0 +1,134 @@
+[33mcommit 047a9a6c78f51f750c194ddfa62c944fb0059da0[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m
+Author: Dennis-Pang <161195267+Dennis-Pang@users.noreply.github.com>
+Date:   Sun Feb 25 16:00:18 2024 +0100
+
+    Update getDomain.js
+
+[33mcommit af763215247bc3533bf44524a6d90b92374e377b[m
+Author: Pang Dennis <zixian.pang@uzh.ch>
+Date:   Sun Feb 25 11:32:26 2024 +0100
+
+    check2
+
+[33mcommit 6f425338a129858d4516394c9ef375b5a783d1e7[m
+Author: Pang Dennis <zixian.pang@uzh.ch>
+Date:   Sun Feb 25 11:10:05 2024 +0100
+
+    check.txt
+
+[33mcommit 136d6f8bc18a7da6ae39561aefb74f7a9b836132[m
+Author: Isabelle Cuber <isabelle.cuber@uzh.ch>
+Date:   Sat Feb 17 18:31:47 2024 +0100
+
+    try and fix deploy action
+
+[33mcommit 3ab31f3374705992ba9df9231a6d86af16c51776[m
+Author: Isabelle Cuber <isabelle.cuber@uzh.ch>
+Date:   Sat Feb 17 18:22:49 2024 +0100
+
+    fix indentation warnings
+
+[33mcommit 5d553869eb6137a71ced65c505b3ba405f78152f[m
+Merge: 640f6e7 6619b40
+Author: Isabelle Cuber <isabelle.cuber@uzh.ch>
+Date:   Sat Feb 17 17:55:16 2024 +0100
+
+    Merge pull request #5 from HASEL-UZH/fs24-prep
+    
+    Fs24 prep - Merge tsx and dependecy changes
+
+[33mcommit 6619b40776a43af4ab1aeb46b8dd71cc64e76bde[m
+Author: mjo <mjo@mjo.home>
+Date:   Thu Feb 1 14:15:41 2024 +0100
+
+    cherry-pick second set of marco's changes, see f86332e045d1aba1108284c3933ad8016b022b45
+    revert tab width back to two and fix a few merge issues
+
+[33mcommit 4fdb3a5a79371a459efa060b817d2141a76e6780[m
+Author: marcoleder <marco.leder@uzh.ch>
+Date:   Thu Feb 1 11:39:09 2024 +0100
+
+    cherry pick first set of marco's changes
+
+[33mcommit 640f6e74816eb2f9327d709cb1f595d62205f2e8[m
+Merge: de1f457 188d929
+Author: Isabelle Cuber <isabelle.cuber@uzh.ch>
+Date:   Sat Feb 17 17:02:07 2024 +0100
+
+    Merge pull request #4 from HASEL-UZH/ts-conversion
+    
+    Ts conversion
+
+[33mcommit 188d9290578bfdcba3ca777ca623672108adcef4[m
+Author: Sven Ringger <sven.ringger@hotmail.com>
+Date:   Tue Feb 13 20:25:18 2024 +0100
+
+    Add linter
+
+[33mcommit 609361dff3d56d2af2d5b26645c592c8c42560dc[m
+Author: Sven Ringger <sven.ringger@hotmail.com>
+Date:   Fri Feb 9 14:00:53 2024 +0100
+
+    Convert js files to ts
+
+[33mcommit de1f45717fb55f9db6e2564e0fae2b3a6a8d8fa5[m
+Merge: 8a6dae1 eb2a3de
+Author: Roy <roy.rutishauser@gmail.com>
+Date:   Fri Mar 10 16:05:48 2023 +0100
+
+    Merge pull request #2 from HASEL-UZH/sonarcloud
+    
+    basic setup for sonarcloud
+
+[33mcommit eb2a3de7d517cae7abd8adedf61a35128ee8f452[m
+Author: Roy Rutishauser <roy.rutishauser@gmail.com>
+Date:   Tue Feb 28 11:13:59 2023 +0100
+
+    basic setup for sonarcloud
+
+[33mcommit 8a6dae115aeb0b91a0295f077ae445b3ec3afed2[m
+Merge: f388c13 f9effbd
+Author: Roy <roy.rutishauser@gmail.com>
+Date:   Wed Feb 22 16:59:45 2023 +0100
+
+    Merge pull request #1 from HASEL-UZH/version-npm-sass
+    
+    Modify version npm-sass
+
+[33mcommit f9effbd8e85f8988e18b97987ceefbb48a5a3e98[m
+Author: Luis Torrejón <91192988+luis-tm@users.noreply.github.com>
+Date:   Wed Feb 22 03:12:27 2023 +0100
+
+    Update package.json
+
+[33mcommit 1e3d313acdbfed52a0af16a5fbc1d1ba877d1a06[m
+Author: Luis Torrejón <91192988+luis-tm@users.noreply.github.com>
+Date:   Wed Feb 22 03:11:44 2023 +0100
+
+    Modify version npm-sass
+    
+    Current version of npm-sass is not compatible with the last version of Node.js. Changing the version to 8.0.0 fixes the problem.
+
+[33mcommit f388c134f94f0588a78ce8f3fa9008c16deb63c0[m
+Author: Roy <roy.rutishauser@gmail.com>
+Date:   Mon Feb 13 17:27:10 2023 +0100
+
+    Update getDomain.js
+
+[33mcommit a06276812b49b7d7e5e242e391c29f6318cf4ea5[m
+Author: Roy <roy.rutishauser@gmail.com>
+Date:   Mon Feb 13 17:25:35 2023 +0100
+
+    Delete app.json
+
+[33mcommit 0616ab3e297a3c13d0f8fbf18499e9bd8fd64667[m
+Author: Roy <roy.rutishauser@gmail.com>
+Date:   Mon Feb 13 17:25:10 2023 +0100
+
+    Delete Procfile
+
+[33mcommit 8ebbbff19000ad6704a02c9ac13e54329acc391f[m
+Author: Roy Rutishauser <roy.rutishauser@gmail.com>
+Date:   Fri Jan 27 11:26:04 2023 +0100
+
+    initial commit
