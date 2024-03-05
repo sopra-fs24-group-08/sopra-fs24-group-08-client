@@ -1,9 +1,9 @@
-import {api, handleError} from 'helpers/api';
+import {api, handleError} from "helpers/api";
 import { React, useNavigate, useParams } from "react-router-dom";
-import {Button} from 'components/ui/Button';
+import {Button} from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/EditProfile.scss";
-import { useState } from 'react';
+import { useState } from "react";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -20,10 +20,10 @@ const EditProfile = () => {
 
   const doEdit = async () => {
     try {
-      const request_to = '/users/' + String(id);
+      const request_to = "/users/"+ String(id);
       const requestBody = JSON.stringify({username, birthday,password});
       await api.put(request_to, requestBody);
-      const push_to = '/users/' + String(id);
+      const push_to = "/users/" + String(id);
       navigate(push_to);
 
     } catch (error) {
@@ -32,7 +32,7 @@ const EditProfile = () => {
   }
 
   function userProfile (id) {
-    let push_to = '/users/' + String(id);
+    let push_to = "/users/" + String(id);
     navigate(push_to);
   }
 

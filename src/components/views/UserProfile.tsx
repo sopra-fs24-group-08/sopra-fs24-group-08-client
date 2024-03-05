@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { React, useEffect, useState } from "react";
-import {api, handleError} from 'helpers/api';
-import {Button} from 'components/ui/Button';
+import {api, handleError} from "helpers/api";
+import {Button} from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
 
@@ -16,11 +16,11 @@ const UserProfile = () => {
   }
 
   function editProfile(user) {
-    const push_to = '/edit/' + String(user.username) +
-      '/' + String(user.status) +
-      '/' + String(user.creation_date) +
-      '/' + String(user.birthday) +
-      '/' + String(user.id)
+    const push_to = "/edit/" + String(user.username) +
+      "/" + String(user.status) +
+      "/" + String(user.creation_date) +
+      "/" + String(user.birthday) +
+      "/" + String(user.id)
 
     navigate(push_to);
   }
@@ -28,7 +28,7 @@ const UserProfile = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const request_to = '/users/' + String(id)
+        const request_to = "/users/" + String(id)
         const response = await api.get(request_to);
 
         setUsers(response.data);

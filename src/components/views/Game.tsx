@@ -8,9 +8,6 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 
-
-
-
 const Game = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate 
   const navigate = useNavigate();
@@ -25,13 +22,13 @@ const Game = ({ user }: { user: User }) => {
     navigate(push_to);
   };
   function myProfile (){
-    const myId = localStorage.getItem('id');
+    const myId = localStorage.getItem("id");
     let push_to = "/users/" + myId;
     navigate(push_to);
   };
 
   const Player = ({ user }: { user: User }) => {
-    const myId = localStorage.getItem('id');
+    const myId = localStorage.getItem("id");
 
     if (user.id.toString() === myId) return null;
 
@@ -48,15 +45,9 @@ const Game = ({ user }: { user: User }) => {
     );
   };
 
-
-
   Player.propTypes = {
     user: PropTypes.object,
   };
-
-
-
-
 
   // the effect hook can be used to react to change in your component.
   // in this case, the effect hook is only run once, the first time the component is mounted
@@ -114,20 +105,17 @@ const Game = ({ user }: { user: User }) => {
           ))}
         </ul>
         <Button
-          style={{ width: '100%', marginBottom: '10px' }}
+          style={{ width: "100%", marginBottom: "10px" }}
           onClick={() => logout()}
         >
           Logout
         </Button>
         <Button
-          style={{ width: '100%', marginBottom: '10px' }}
+          style={{ width: "100%", marginBottom: "10px" }}
           onClick={() => myProfile()}
         >
           My Profile
         </Button>
-
-
-
 
       </div>
     );
