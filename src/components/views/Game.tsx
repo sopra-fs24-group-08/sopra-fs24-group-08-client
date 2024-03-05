@@ -11,7 +11,7 @@ import { User } from "types";
 const Game = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate 
   const navigate = useNavigate();
-  const [users, setUsers] = useState<User[]>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const logout = (): void => {
     localStorage.removeItem("token");
     navigate("/login");
