@@ -10,13 +10,13 @@ import PropTypes from "prop-types";
 const FormField = (props) => {
   return (
     <div className="login field">
-        <label className="login label">{props.label}</label>
-        <input
-          className="login input"
-          placeholder="enter here.."
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-        />
+      <label className="login label">{props.label}</label>
+      <input
+        className="login input"
+        placeholder="enter here.."
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+      />
     </div>
   );
 };
@@ -34,10 +34,11 @@ const Register = () => {
   const [username, setUsername] = useState<string>(null);
 
   const doRegister = async () => {
-    if (!username || username.trim() === '' ||
-        !name || name.trim() === '' ||
-        !password || password.trim() === '') {
+    if (!username || username.trim() === "" ||
+        !name || name.trim() === "" ||
+        !password || password.trim() === "") {
       alert("Username, name, and password cannot be empty.");
+      
       return;
     }
     try {
@@ -49,7 +50,7 @@ const Register = () => {
 
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
-      localStorage.setItem('id', user.id);
+      localStorage.setItem("id", user.id);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/game");

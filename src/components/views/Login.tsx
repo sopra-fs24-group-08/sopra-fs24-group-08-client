@@ -18,10 +18,10 @@ const FormField = (props) => {
     <div className="login field">
       <label className="login label">{props.label}</label>
       <input
-          className="login input"
-          placeholder="enter here.."
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
+        className="login input"
+        placeholder="enter here.."
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
       />
     </div>
   );
