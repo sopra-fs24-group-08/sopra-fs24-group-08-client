@@ -12,10 +12,27 @@ const Game = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate 
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
-  const logout = (): void => {
+  /*const logout = (): void => {
+    localStorage.removeItem("token");
+
+    navigate("/login");
+  };*/
+  async function logout(id) {
+    const myId = localStorage.getItem("id");
+    const request_to = "/logout/" + myId
+    try {
+      const res = await api.put(request_to)
+    } catch (error) {
+      console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
+      console.error("Details:", error);
+      alert("Something went wrong while fetching the users! See the console for details.");
+    }
+
     localStorage.removeItem("token");
     navigate("/login");
-  };
+  }
+
+
 
   function userProfile (id){
     let push_to = "/users/" + String(id);
