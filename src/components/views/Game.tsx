@@ -101,11 +101,12 @@ const Game = ({ user }: { user: User }) => {
     content = (
       <div className="game">
         <ul className="game user-list">
-          {users.map((user: User) => (
+          {Array.isArray(users) && users.map((user: User) => (
             <li key={user.id}>
               <Player user={user} />
             </li>
-          ))}
+          ))
+          }
         </ul>
         <Button
           style={{ width: "100%", marginBottom: "10px" }}
