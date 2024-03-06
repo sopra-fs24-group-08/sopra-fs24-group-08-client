@@ -97,11 +97,11 @@ const Game = ({ user }: { user: User }) => {
 
   let content = <Spinner />;
 
-  if (1) {
+  if (users) {
     content = (
       <div className="game">
         <ul className="game user-list">
-          {Array.isArray(users) && users.map((user: User) => (
+          {users.map((user: User) => (
             <li key={user.id}>
               <Player user={user} />
             </li>
