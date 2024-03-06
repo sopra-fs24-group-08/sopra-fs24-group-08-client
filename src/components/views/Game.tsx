@@ -31,9 +31,6 @@ const Game = ({ user }: { user: User }) => {
     localStorage.removeItem("token");
     navigate("/login");
   }
-
-
-
   function userProfile (id){
     let push_to = "/users/" + String(id);
     navigate(push_to);
