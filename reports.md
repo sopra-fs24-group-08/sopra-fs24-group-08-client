@@ -7,7 +7,7 @@
 - The first thing you did.
 - The second thing you did.
 - The third thing you did. [Link to task](https://www.example.com)
-- ...
+- ... 
 
 **Group Member 2**
 
