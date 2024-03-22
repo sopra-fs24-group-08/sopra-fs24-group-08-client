@@ -10,7 +10,7 @@
 - ... 
 
 **Group Member 2** 
-
+ 
 - The first thing you did. 
 - The second thing you did.
 - The third thing you did. [Link to task](https://www.example.com)
