@@ -8,7 +8,7 @@ import "../../styles/views/Header.scss";
  * Conceptually, components are like JavaScript functions. They accept arbitrary inputs (called “props”) and return React elements describing what should appear on the screen.
  * They are reusable pieces, and think about each piece in isolation.
  * Functional com ponents have to return always something. However, they don't need a "render()" method.
- * https://react.dev/learn/your-first-component and https://react.dev/learn/passing-props-to-a-component 
+ * https://react.dev/ learn/your-first-component and https://react.dev/learn/passing-props-to-a-component
  * @FunctionalComponent
  */
 const Header = props => (
