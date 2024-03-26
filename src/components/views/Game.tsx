@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
@@ -12,35 +12,27 @@ const Game = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate 
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
-  /*const logout = (): void => {
-    localStorage.removeItem("token");
+  const {status} = useParams();
 
-    navigate("/login");
-  };*/
-  async function logout(id) {
-    const myId = localStorage.getItem("id");
-    const request_to = "/logout/" + myId
-    try {
-      const res = await api.put(request_to)
-    } catch (error) {
-      console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
-      console.error("Details:", error);
-      alert("Something went wrong while fetching the users! See the console for details.");
-    }
-
-    localStorage.removeItem("token");
-    navigate("/login");
-  }
   function userProfile (id){
     let push_to = "/users/" + String(id);
     navigate(push_to);
   };
-  function myProfile (){
+  /*function myProfile (){
     const myId = localStorage.getItem("id");
     let push_to = "/users/" + myId;
     navigate(push_to);
-  };
+  };*/
+  function doInvite (id){
 
+  };
+  function doSpectate (id){
+
+  };
+  function goBack (id){
+    navigate("/navigation")
+
+  };
   const Player = ({ user }: { user: User }) => {
     const myId = localStorage.getItem("id");
 
@@ -54,6 +46,21 @@ const Game = ({ user }: { user: User }) => {
           className="game username-button-container"
         >
           {user.username}
+        </Button>
+        <Button
+          width="500px"
+          onClick={() => doInvite(user.id)}
+          className="game username-button-container"
+        >
+          invite
+        </Button>
+
+        <Button
+          width="500px"
+          onClick={() => doSpectate(user.id)}
+          className="game username-button-container"
+        >
+          spectate
         </Button>
       </div>
     );
@@ -122,18 +129,6 @@ const Game = ({ user }: { user: User }) => {
           ))
           }
         </ul>
-        <Button
-          style={{ width: "100%", marginBottom: "10px" }}
-          onClick={() => logout()}
-        >
-          Logout
-        </Button>
-        <Button
-          style={{ width: "100%", marginBottom: "10px" }}
-          onClick={() => myProfile()}
-        >
-          My Profile
-        </Button>
 
       </div>
     );
@@ -143,9 +138,16 @@ const Game = ({ user }: { user: User }) => {
     <BaseContainer className="game container">
       <h2>Users Overview</h2>
       <p className="game paragraph">
-        Select a user to view!
+        Select a friend to view!
       </p>
       {content}
+      <Button
+        width="500px"
+        onClick={() => goBack()}
+        className="game username-button-container"
+      >
+        Back
+      </Button>
     </BaseContainer>
   );
 };

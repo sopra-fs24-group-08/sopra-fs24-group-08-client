@@ -11,6 +11,7 @@ const UserProfile = () => {
   const [user, setUsers] = useState(null);
   const {id} = useParams();
 
+
   function goBack () {
     navigate("/game");
   }

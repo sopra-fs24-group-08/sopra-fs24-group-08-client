@@ -7,6 +7,8 @@ import Login from "../../views/Login";
 import Register from "../../views/Register";
 import UserProfile from "../../views/UserProfile";
 import EditProfile from "../../views/EditProfile";
+import Navigation from "../../views/Navigation";
+import KittyCards from "../../views/KittyCards";
 
 /**
  * Main router of your application.
@@ -31,6 +33,14 @@ const AppRouter = () => {
 
         <Route>
           <Route path="/register" element={<Register />} />
+        </Route>
+
+        <Route>
+          <Route path="/navigation" element={<Navigation />} />
+        </Route>
+
+        <Route>
+          <Route path="/kittycards" element={<KittyCards />} />
         </Route>
 
         <Route>
