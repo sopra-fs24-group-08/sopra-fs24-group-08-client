@@ -1,0 +1,25 @@
+@import 'styles/theme';
+
+
+.userprofile {
+  &.container {
+    margin-top: 00.75em;
+    background: $background;
+    padding: 1.5em;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: $dropShadow;
+    font-size: 30px;
+    font-weight: 400;
+  }
+  &.text {
+    font-size: 18px;
+    font-weight: 300;
+  }
+  &.button-container {
+    margin-top: 2em;
+    font-size: medium;
+  }
+}

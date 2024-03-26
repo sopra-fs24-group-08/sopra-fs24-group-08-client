@@ -1,6 +1,6 @@
 @import "../theme";
 
-.login {
+.register {
   &.container {
     margin-top: 2em;
     min-height: 300px;
@@ -41,13 +41,13 @@
   }
   &.label {
     color: $textColor;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     text-transform: lowercase;
     font-weight: 300;
   }
   &.button-container {
     display: flex;
     justify-content: center;
-    margin-top: 0.5em;
+    margin-top: 2em;
   }
 }
