@@ -1,9 +1,14 @@
 import React from "react";
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, Redirect} from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
 import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
 import Login from "../../views/Login";
+import Register from "../../views/Register";
+import UserProfile from "../../views/UserProfile";
+import EditProfile from "../../views/EditProfile";
+import Navigation from "../../views/Navigation";
+import KittyCards from "../../views/KittyCards";
 
 /**
  * Main router of your application.
@@ -12,7 +17,7 @@ import Login from "../../views/Login";
  * The main difference between these two routes is the following:
  * /login renders another component without any sub-route
  * /game renders a Router that contains other sub-routes that render in turn other react components
- * Documentation about routing in React: https://reactrouter.com/en/main/start/tutorial 
+ * Documentation about routing in React: https://reactrouter.com/en/main/start/tutorial
  */
 const AppRouter = () => {
   return (
@@ -22,9 +27,28 @@ const AppRouter = () => {
         <Route path="/game/*" element={<GameGuard />}>
           <Route path="/game/*" element={<GameRouter base="/game"/>} />
         </Route>
-
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login/>} />
+        </Route>
+
+        <Route>
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        <Route>
+          <Route path="/navigation" element={<Navigation />} />
+        </Route>
+
+        <Route>
+          <Route path="/kittycards" element={<KittyCards />} />
+        </Route>
+
+        <Route>
+          <Route path="/users/:id" element={<UserProfile/>} />
+        </Route>
+
+        <Route>
+          <Route exact path="/edit/:current_username/:status/:creation_date/:current_birthday/:id" element={<EditProfile/>} />
         </Route>
 
         <Route path="/" element={
