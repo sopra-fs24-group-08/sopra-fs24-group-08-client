@@ -13,7 +13,7 @@ const UserProfile = () => {
 
 
   function goBack () {
-    navigate("/game");
+    navigate("/navigation");
   }
 
   function editProfile(user) {
