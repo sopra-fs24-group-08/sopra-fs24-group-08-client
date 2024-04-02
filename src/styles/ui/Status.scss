@@ -1,0 +1,8 @@
+.player-status {
+  &.online {
+    color: #28a745; // Green for online
+  }
+  &.offline {
+    color: #ff4757; // Red for offline
+  }
+}

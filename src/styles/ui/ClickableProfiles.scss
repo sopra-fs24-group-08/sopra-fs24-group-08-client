@@ -1,0 +1,10 @@
+.clickable-container {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+}

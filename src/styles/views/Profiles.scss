@@ -1,0 +1,77 @@
+@import "../theme";
+
+.profiles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .user-list {
+    list-style-type: none; // Removes bullet points from list
+    padding: 0; // Removes padding from list
+
+    &.container {
+    background: $background;
+    padding: 1.5em;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: $dropShadow;
+  }
+  &.user-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  &.user-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  & p,h2 {
+    margin: 0.5em 0;
+  }  }
+
+.player {
+  &.container {
+    margin: 0.5em 0;
+    width: 20em;
+    padding: 10px;
+    border-radius: $borderRadius;
+    display: flex;
+    align-items: center;
+    background: lighten($background, 5);
+
+    &:hover {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+
+  &.info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    &.username {
+      font-weight: 500;
+      color: $accent;
+    }
+
+    &.status {
+      margin-left: auto;
+      margin-right: 10px;
+      font-family: $fontMono;
+      font-weight: bold;
+
+      &.online {
+        color: #28a745; // Green for online
+      }
+
+      &.offline {
+        color: #c41827; // Red for offline
+      }
+    }}}}
+
+
