@@ -10,6 +10,7 @@ import Profile from "../../views/Profile";
 import { RegistrationGuard } from "../routeProtectors/RegistrationGuard";
 import UserEdit from "../../views/UserEdit";
 import ProfilesGuard from "../routeProtectors/ProfilesGuard";
+import FriendsList from "../../views/FriendsList";
 
 /**
  * Main router of your application.
@@ -45,6 +46,8 @@ const AppRouter = () => {
 
 
         <Route path="/profile/edit" element={<UserEdit/>}/>
+
+        <Route path="/friendslist/" element={<FriendsList/>}/>
 
         
         <Route path="/" element={

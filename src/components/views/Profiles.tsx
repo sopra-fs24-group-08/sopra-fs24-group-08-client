@@ -8,6 +8,8 @@ import PropTypes from "prop-types";
 import "styles/views/Profiles.scss";
 import { User } from "types";
 import LogoutButton from "../ui/LogoutButton";
+import { Achievement, AchievementsCollection } from "models/achievements.js";
+
 
 const Player = ({ user }) => {
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ const Player = ({ user }) => {
       <div className="player info">
         <div className="player info username">{user.username}</div>
         <div className={`player info status ${user.status.toLowerCase()}`}>
+          <div className="player achievements">{user.achievements}</div>
           {user.status}
         </div>
       </div>
@@ -45,7 +48,6 @@ function Profiles() {
   const user = JSON.parse(currUserString);
 
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
         const response = await api.get("/users");

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import ProfileEdit from "../ui/ProfileEdit";
-import LogoutButton from "../ui/LogoutButton";
 import { User } from "types";
 import "styles/views/Profile.scss";
 

@@ -1,0 +1,91 @@
+@import "../theme";
+
+.friends-list {
+  background-color: $accent;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .friend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+
+    & .friend-name {
+      font-weight: bold;
+    }
+
+    .friend-status {
+      &.online {
+        color: #28a745; // Green for online
+      }
+
+      &.offline {
+        color: #c41827; // Red for offline
+      }
+      &.playing {
+        color: orange;
+      }
+    }
+
+    & .action-btn {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &.disabled {
+        background-color: #ccc;
+        cursor: default;
+      }
+    }
+
+    & .delete-btn {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+    }
+  }
+
+  .add-friend {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    & input {
+      flex: 1;
+      margin-right: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    & button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+
+  .back-btn {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
