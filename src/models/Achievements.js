@@ -33,5 +33,5 @@ class AchievementsCollection {
   }
 }
 
-// Export the classes if you are using modules
+
 export { Achievement, AchievementsCollection };

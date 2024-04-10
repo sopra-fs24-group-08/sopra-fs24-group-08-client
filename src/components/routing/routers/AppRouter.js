@@ -47,7 +47,7 @@ const AppRouter = () => {
 
         <Route path="/profile/edit" element={<UserEdit/>}/>
 
-        <Route path="/friendslist/" element={<FriendsList/>}/>
+        <Route path="/friendslist/:id" element={<FriendsList/>}/>
 
         
         <Route path="/" element={

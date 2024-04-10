@@ -10,7 +10,7 @@ import LogoutButton from "../ui/LogoutButton";
 import "styles/views/FriendsList.scss";
 
 
-const friends = [
+const friends_mock = [
   //for testing purposes,remove later once we merge the stuff
   { username: 'Friend1', status: 'ONLINE' },
   { username: 'Friend2', status: 'PLAYING' },

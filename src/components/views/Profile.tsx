@@ -13,6 +13,7 @@ const Player = ({ user }: { user: User }) => (
     <div className="player id">id: {user.id}</div>
     <div className="player username">{user.username}</div>
     <div className="player status">status: {user.status}</div>
+    <div className="player icon">icon: {user.currIcon}</div>
 
   </div>
 );
@@ -44,27 +45,30 @@ const Profile: React.FC = () => {
   }
 
   return (
-
     <BaseContainer className="profile container">
-      <Button
-        onClick={() => navigate("/profiles")}
-      >
-          Back
+      <Button onClick={() => navigate("/profiles")}>
+        Back
       </Button>
       <div>
         <h1>User Profile</h1>
         <p>ID: {user.id}</p>
+        <p>Icon: {user.icon}</p>
         <p>Username: {user.username}</p>
         <p>Creation Date: {user.creation_date}</p>
         <p>Status: {user.status}</p>
-        {user.birthday && <p>Birthday: {user.birthday}</p>} {/* This line checks if birthday is not null */}
+        {user.birthday && <p>Birthday: {user.birthday}</p>}
       </div>
 
       <div className="button-group">
-        <p></p>
         <ProfileEdit id={id} />
       </div>
+      <div className="bottom-button">
+        <Button  onClick={()=> navigate(`/friendslist/${user.id}`)}>
+          Friendslist
+        </Button>
+      </div>
     </BaseContainer>
+
   );
 };
 
