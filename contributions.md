@@ -79,7 +79,7 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 - In server: add/ delete, invite a friend to the game function and long-polling to check if there’re new adding friend/ game invitation requests and response without tests.
 
 **Luis Schmid**
-- Login and Authentication: Allign with implementations from individual assignment. (Decision for a more global authentication approach)
+- Login and Authentication (user Story #1) : Allign with implementations from individual assignment. (Decision for a more global authentication approach)
 - Design Background - Wallpaper within the Theme
 - Update Task state of user stories and issues on GitHub and assign Tasks for the comming week.
 
