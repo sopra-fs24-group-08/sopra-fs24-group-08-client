@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import ProfileEdit from "../ui/ProfileEdit";
 import { User } from "types";
 import "styles/views/Profile.scss";
+import { Achievement, AchievementsCollection } from "../../models/Achievements";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -14,7 +15,15 @@ const Player = ({ user }: { user: User }) => (
     <div className="player username">{user.username}</div>
     <div className="player status">status: {user.status}</div>
     <div className="player icon">icon: {user.currIcon}</div>
-
+    <div className="player achievements">
+      <h3>Achievements</h3>
+      {user.achievements.map((achievement) => (
+        <div key={achievement.id}>
+          <p>Title: {achievement.title}</p>
+          <p>Description: {achievement.description}</p>
+        </div>
+      ))}
+    </div>
   </div>
 );
 Player.propTypes = {
@@ -23,8 +32,9 @@ Player.propTypes = {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User[]>(null);
+  const [user, setUser] = useState<User | null>(null);
   const id = window.location.pathname.split("/").pop();
+  const loggedInUserId = localStorage.getItem("currUser") ? JSON.parse(localStorage.getItem("currUser")).id : null;
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -38,7 +48,7 @@ const Profile: React.FC = () => {
     };
 
     fetchUser(); // Call the function to fetch user data
-  }, []); // Depend on id to refetch data when id changes
+  }, []);
 
   if (!user) {
     return <div></div>;
@@ -52,8 +62,16 @@ const Profile: React.FC = () => {
       <div>
         <h1>User Profile</h1>
         <p>ID: {user.id}</p>
-        <p>Icon: {user.icon}</p>
+        <p>Icon: <img style={{ width: 44, height: 44 }} src={user.currIcon.imageUrl} alt="User Icon" />
+        </p>
         <p>Username: {user.username}</p>
+        <p>Achievements:
+          <Button onClick={() => navigate(`/profiles/${id}/achievements`, { state: {
+              achievements: user.achievements,
+              username: user.username
+            } })}>
+            See Achievements
+          </Button></p>
         <p>Creation Date: {user.creation_date}</p>
         <p>Status: {user.status}</p>
         {user.birthday && <p>Birthday: {user.birthday}</p>}
@@ -63,9 +81,11 @@ const Profile: React.FC = () => {
         <ProfileEdit id={id} />
       </div>
       <div className="bottom-button">
-        <Button  onClick={()=> navigate(`/friendslist/${user.id}`)}>
-          Friendslist
-        </Button>
+        {user && loggedInUserId.toString() === id.toString() && (
+          <Button onClick={() => navigate(`/friendslist/${user.id}`)}>
+            Friendslist
+          </Button>
+        )}
       </div>
     </BaseContainer>
 

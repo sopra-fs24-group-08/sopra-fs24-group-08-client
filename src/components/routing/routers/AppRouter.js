@@ -11,6 +11,8 @@ import { RegistrationGuard } from "../routeProtectors/RegistrationGuard";
 import UserEdit from "../../views/UserEdit";
 import ProfilesGuard from "../routeProtectors/ProfilesGuard";
 import FriendsList from "../../views/FriendsList";
+import UserAchievements from "../../ui/UserAchievements";
+import FriendsListGuard from "../routeProtectors/FriendsListGuard";
 
 /**
  * Main router of your application.
@@ -41,13 +43,16 @@ const AppRouter = () => {
 
         <Route path="/profiles" element={<ProfilesGuard/>}>
           <Route path="/profiles" element={<Profiles/>} />
-          <Route path="/profiles/*" element={<Profile/>} />
+          <Route path="/profiles/:userid" element={<Profile/>} />
+          <Route path="/profiles/:userid/achievements" element={<UserAchievements />} />
         </Route>
 
 
         <Route path="/profile/edit" element={<UserEdit/>}/>
 
+        <Route path="/friendslist/" element={<FriendsListGuard />}>
         <Route path="/friendslist/:id" element={<FriendsList/>}/>
+        </Route>
 
         
         <Route path="/" element={

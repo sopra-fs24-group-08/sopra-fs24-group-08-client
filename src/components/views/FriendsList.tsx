@@ -34,11 +34,15 @@ const FriendsList = () => {
     navigate(-1);  // Go back to the previous page
   };
 
+  //{friends.map(friend=> (
+  //        <div key={friend.id} className="friend-item">
+  //change to this once Friends stuff is working backend
+
   return (
     <div className="friends-list">
       <h1>FRIEND LIST</h1>
-      {friends.map(friend=> (
-        <div key={friend.id} className="friend-item">
+      {friends_mock.map(friend=> (
+        <div key={friend.username} className="friend-item">
           <span className="friend-name">{friend.username}</span>
           <span className={`friend-status ${friend.status.toLowerCase()}`}>{friend.status}</span>
           {

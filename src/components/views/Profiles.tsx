@@ -25,7 +25,7 @@ const Player = ({ user }) => {
       <div className="player info">
         <div className="player info username">{user.username}</div>
         <div className={`player info status ${user.status.toLowerCase()}`}>
-          <div className="player achievements">{user.achievements}</div>
+
           {user.status}
         </div>
       </div>
@@ -33,7 +33,7 @@ const Player = ({ user }) => {
 
   );
 };
-
+// <div className="player achievements">{user.achievements}</div>
 // Define the PropTypes for the Player component
 Player.propTypes = {
   user: PropTypes.object,

@@ -8,6 +8,10 @@ class User {
     this.status = null;
     this.birthday = null;
     this.creation_date = null
+    this.banners = [];
+    this.achievements = [];
+    this.friends = [];
+    this.icons = [];
     Object.assign(this, data);
 
   }
