@@ -1,5 +1,5 @@
-import React from "react";
-import {ReactLogo} from "../ui/ReactLogo";
+import React from "react";import {ReactLogo} from "../ui/ReactLogo";
+
 import PropTypes from "prop-types";
 import "../../styles/views/Header.scss";
 
