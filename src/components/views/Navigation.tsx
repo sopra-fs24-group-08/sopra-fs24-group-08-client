@@ -6,6 +6,8 @@ import { Button } from "components/ui/Button";
 import "styles/views/Navigation.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+import {usePolling} from "components/context/PollingContext";
+import { toast } from 'react-toastify';
 
 /*
 It is possible to add multiple components inside a single file,
@@ -16,6 +18,7 @@ specific components that belong to the main one in the same file.
 
 const Navigation = () => {
   const navigate = useNavigate();
+  const { serverRequests, currentUserId, setCurrentUserId  } = usePolling();
 
 
   function myProfile (){
@@ -23,8 +26,11 @@ const Navigation = () => {
     let push_to = "/users/" + myId;
     navigate(push_to);
   };
-  function navigateToGame(){
-    navigate("/game");
+  function navigateToFriendList(){
+    navigate("/friendList");
+  }
+  function navigateToUserList(){
+    navigate("/userList");
   };
   async function logout() {
     const myId = localStorage.getItem("id");
@@ -38,6 +44,9 @@ const Navigation = () => {
     }
 
     localStorage.removeItem("token");
+    localStorage.removeItem("id");
+    setCurrentUserId(null);
+    toast.dismiss();
     navigate("/login");
   }
   const doMatch = async () => {
@@ -74,9 +83,15 @@ const Navigation = () => {
             </Button>
             <Button
               style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => navigateToGame()}
+              onClick={() => navigateToFriendList()}
             >
               Friends
+            </Button>
+            <Button
+              style={{ width: "100%", marginBottom: "10px" }}
+              onClick={() => navigateToUserList()}
+            >
+              UserList
             </Button>
             <Button
               style={{ width: "100%", marginBottom: "10px" }}

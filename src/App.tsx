@@ -1,6 +1,8 @@
 import React from "react";
 import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
+import {PollingProvider} from "./components/context/PollingContext";
+import {ToastProvider} from "./components/context/ToastContext";
 
 /**
  * Happy coding!
@@ -10,10 +12,14 @@ import AppRouter from "./components/routing/routers/AppRouter";
  */
 const App = () => {
   return (
-    <div>
-      <Header height="100" />
-      <AppRouter />
-    </div>
+    <ToastProvider>
+      <PollingProvider>
+        <div>
+          <Header height="100" />
+          <AppRouter />
+        </div>
+      </PollingProvider>      
+    </ToastProvider>
   );
 };
 

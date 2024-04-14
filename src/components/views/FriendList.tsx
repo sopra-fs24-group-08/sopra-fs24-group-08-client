@@ -7,16 +7,13 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
-import {usePolling} from "components/context/PollingContext";
 
-const Game = ({ user }: { user: User }) => {
+const FriendList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
   const {status} = useParams();
-  const { serverRequests } = usePolling();
-  console.log(localStorage.getItem("token"));
 
   function userProfile (id){
     let push_to = "/users/" + String(id);
@@ -106,7 +103,7 @@ const Game = ({ user }: { user: User }) => {
         console.log("requested data:", response.data);*/
 
         // See here to get more data.
-        console.log(response);
+        console.log(response.data);
       } catch (error) {
         console.error(
           `Something went wrong while fetching the friends: \n${handleError(
@@ -125,11 +122,11 @@ const Game = ({ user }: { user: User }) => {
 
   let content = <Spinner />;
 
-  if (users) {
+  if (friends) {
     content = (
       <div className="game">
         <ul className="game user-list">
-          {users.map((user: User) => (
+          {friends.map((user: User) => (
             <li key={user.id}>
               <Player user={user} />
             </li>
@@ -159,4 +156,4 @@ const Game = ({ user }: { user: User }) => {
   );
 };
 
-export default Game;
+export default FriendList;

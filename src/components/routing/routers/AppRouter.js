@@ -9,6 +9,8 @@ import UserProfile from "../../views/UserProfile";
 import EditProfile from "../../views/EditProfile";
 import Navigation from "../../views/Navigation";
 import KittyCards from "../../views/KittyCards";
+import FriendList from "../../views/FriendList";
+import UserList from "../../views/UserList";
 
 /**
  * Main router of your application.
@@ -24,9 +26,9 @@ const AppRouter = () => {
     <BrowserRouter>
       <Routes>
 
-        <Route path="/game/*" element={<GameGuard />}>
+        {/* <Route path="/game/*" element={<GameGuard />}>
           <Route path="/game/*" element={<GameRouter base="/game"/>} />
-        </Route>
+        </Route> */}
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login/>} />
         </Route>
@@ -44,6 +46,14 @@ const AppRouter = () => {
         </Route>
 
         <Route>
+          <Route path="/friendList" element={<FriendList />} />
+        </Route>
+      
+        <Route>
+          <Route path="/userList" element={<UserList />} />
+        </Route>
+
+        <Route>
           <Route path="/users/:id" element={<UserProfile/>} />
         </Route>
 
@@ -52,7 +62,7 @@ const AppRouter = () => {
         </Route>
 
         <Route path="/" element={
-          <Navigate to="/game" replace />
+          <Navigate to="/login" replace />
         }/>
 
       </Routes>
