@@ -25,8 +25,19 @@ const FriendList = ({ user }: { user: User }) => {
     navigate(push_to);
   };*/
 
-  function doInvite(id){
-
+  const doInvite = async(receiverId) => {
+    const myId = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    const requestType = "GAMEINVITATION";
+    console.log(myId);
+    console.log(token);
+    try{
+      const requestBody = JSON.stringify({ receiverId, requestType});
+      const response = await api.post(`/game/invite/${myId}`,requestBody, {headers: {Authorization: `Bearer ${token}`}});
+      console.log("You have a new message!");
+    }catch(error){
+      alert(`Something went wrong with friend request: \n${handleError(error)}`);
+    }
   };
   
   function doSpectate (id){

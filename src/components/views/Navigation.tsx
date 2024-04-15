@@ -7,7 +7,7 @@ import "styles/views/Navigation.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import {usePolling} from "components/context/PollingContext";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 /*
 It is possible to add multiple components inside a single file,

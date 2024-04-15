@@ -14,13 +14,6 @@ const UserList = ({ user }: { user: User }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const {status} = useParams();
-  const { serverRequests } = usePolling();
-
-  useEffect(() => {
-    if (serverRequests) {
-      console.log('response:', serverRequests);
-    }
-  }, [serverRequests]);
 
   function userProfile (id){
     let push_to = "/users/" + String(id);
@@ -30,10 +23,11 @@ const UserList = ({ user }: { user: User }) => {
   const doAddFriend = async(receiverId) => {
     const myId = localStorage.getItem("id");
     const token = localStorage.getItem("token");
+    const requestType = "FRIENDADDING";
     console.log(myId);
     console.log(token);
     try{
-      const requestBody = JSON.stringify({ receiverId });
+      const requestBody = JSON.stringify({ receiverId, requestType});
       const response = await api.post(`/users/${myId}/friends/add`,requestBody, {headers: {Authorization: `Bearer ${token}`}});
       console.log(`You have a new message!`);
     }catch(error){

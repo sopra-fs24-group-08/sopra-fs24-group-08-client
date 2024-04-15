@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from "r
 import { api, handleError } from "helpers/api";
 import PropTypes from "prop-types";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const PollingContext = createContext();
 
@@ -30,8 +30,8 @@ export const PollingProvider = ({ children }) => {
 
       } catch (error) {
         console.log(error.name);
-        if (error.name === 'CanceledError'){
-          console.log('Request canceled', error.message);
+        if (error.name === "CanceledError"){
+          console.log("Request canceled", error.message);
         }
         else if (error.response.status === 408){
           console.error(`Long-polling Message: \n${handleError(error)}`, error);
@@ -56,7 +56,8 @@ export const PollingProvider = ({ children }) => {
     };
   }, [currentUserId]);
 
-  const FriendRequestActions = (para) => {
+  // deal with friend adding request
+  const FriendAddingRequestActions = (para) => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
     const acceptFriendRequest = async() => {
@@ -85,8 +86,6 @@ export const PollingProvider = ({ children }) => {
         );
       }
     };
-
-  
     return (
         <div>
             <p>{para.request.senderName} wants to be your friend!</p>
@@ -96,21 +95,80 @@ export const PollingProvider = ({ children }) => {
     );
   };
 
+  const GameInvitationRequestActions = (para) => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("id");
+    const acceptFriendRequest = async() => {
+        const requestBody = para.request;
+        requestBody.status = "ACCEPTED";
+        try{
+          const response = await api.post(`/game/${userId}/invitationresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
+          toast.dismiss();
+          toast(`you accepted ${para.request.senderName}'s game invitation!`);
+        }catch(error){
+          alert(
+            `Something went wrong during accept friend request: \n${handleError(error)}`
+          );
+        }
+    };
+  
+    const declineFriendRequest = async() => {
+      const requestBody = para.request;
+      requestBody.status = "DECLINED";
+      try{
+        const response = await api.post(`/game/${userId}/invitationresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
+        toast(`you declined ${para.request.senderName}'s game invitation!`);
+      }catch(error){
+        alert(
+          `Something went wrong during decline a friend request: \n${handleError(error)}`
+        );
+      }
+    };
+    return (
+        <div>
+            <p>There is a game invitation from {para.request.senderName}!</p>
+            <button onClick={acceptFriendRequest}>Accept</button>
+            <button onClick={declineFriendRequest}>Decline</button>
+        </div>
+    );
+  };
+
   useEffect(() => {
-    if (data === null || data.friendRequestDTOs === null) return;
-    data.friendRequestDTOs.forEach(requestDTO => {
-      if (requestDTO.status === "PENDING"){
-        toast(<FriendRequestActions request = {requestDTO} />, {
-          position: "top-right",
-          autoClose: false,  
-          closeOnClick: true, 
-          draggable: true
-        });  
-      } else {
-        if (requestDTO.status === "ACCEPTED"){
-          toast(`you add ${requestDTO.receiverName} as a friend!`);
-        }else if (requestDTO.status === "DECLINED"){
-          toast(`${requestDTO.receiverName} declined your friend request!`);
+    if (data === null) return;
+    data.forEach(requestDTO => {
+      if (requestDTO.requestType === "FRIENDADDING"){
+        if (requestDTO.status === "PENDING"){
+          toast(<FriendAddingRequestActions request = {requestDTO} />, {
+            position: "top-right",
+            autoClose: false,  
+            closeOnClick: true, 
+            draggable: true
+          });  
+        } else {
+          if (requestDTO.status === "ACCEPTED"){
+            toast(`you have added ${requestDTO.receiverName} as a friend!`);
+            setData(null);
+          }else if (requestDTO.status === "DECLINED"){
+            toast(`${requestDTO.receiverName} declined your friend request!`);
+            setData(null);
+          }
+        }
+      }else if (requestDTO.requestType === "GAMEINVITATION"){
+        if (requestDTO.status === "PENDING"){
+          toast(<GameInvitationRequestActions request = {requestDTO} />, {
+            position: "top-right",
+            autoClose: false,  
+            closeOnClick: true, 
+            draggable: true
+          });  
+        } else {
+          if (requestDTO.status === "ACCEPTED"){
+            toast(`${requestDTO.receiverName} accepted your game invitation!`);
+            setData(null);
+          }else if (requestDTO.status === "DECLINED"){
+            toast(`${requestDTO.receiverName} declined your game invitation!`);
+            setData(null);
+          }
         }
       }
     });

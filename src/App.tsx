@@ -18,8 +18,8 @@ const App = () => {
           <Header height="100" />
           <AppRouter />
         </div>
-      </PollingProvider>      
-    </ToastProvider>
+      </PollingProvider>         
+    </ToastProvider>    
   );
 };
 
