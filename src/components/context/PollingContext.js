@@ -65,7 +65,7 @@ export const PollingProvider = ({ children }) => {
         try{
           const response = await api.post(`/users/${userId}/friendresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
           toast.dismiss();
-          toast(`you add ${para.request.senderId} as a friend!`);
+          toast(`you add ${para.request.senderName} as a friend!`);
         }catch(error){
           alert(
             `Something went wrong during accept friend request: \n${handleError(error)}`
@@ -78,7 +78,7 @@ export const PollingProvider = ({ children }) => {
       requestBody.status = "DECLINED";
       try{
         const response = await api.post(`/users/${userId}/friendresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
-        toast(`you declined ${para.request.senderId}'s friend request!`);
+        toast(`you declined ${para.request.senderName}'s friend request!`);
       }catch(error){
         alert(
           `Something went wrong during decline a friend request: \n${handleError(error)}`
@@ -89,7 +89,7 @@ export const PollingProvider = ({ children }) => {
   
     return (
         <div>
-            <p>{para.request.senderId} wants to be your friend!</p>
+            <p>{para.request.senderName} wants to be your friend!</p>
             <button onClick={acceptFriendRequest}>Accept</button>
             <button onClick={declineFriendRequest}>Decline</button>
         </div>
@@ -108,9 +108,9 @@ export const PollingProvider = ({ children }) => {
         });  
       } else {
         if (requestDTO.status === "ACCEPTED"){
-          toast(`you add ${requestDTO.receiverId} as a friend!`);
+          toast(`you add ${requestDTO.receiverName} as a friend!`);
         }else if (requestDTO.status === "DECLINED"){
-          toast(`${requestDTO.receiverId} declined your friend request!`);
+          toast(`${requestDTO.receiverName} declined your friend request!`);
         }
       }
     });
