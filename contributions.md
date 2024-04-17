@@ -85,7 +85,7 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 
 ## 12.04-19.04
 
-**Zixian Pang**
+**Zixian Pang** 
 -  ⁠Creation of classes of entities of game elements
 -⁠  ⁠Creation of the game logic in GameService
 
