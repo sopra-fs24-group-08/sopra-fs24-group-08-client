@@ -1,7 +1,6 @@
 import React from "react";
 import {BrowserRouter, Navigate, Route, Routes, Redirect} from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
-import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
 import Login from "../../views/Login";
 import Register from "../../views/Register";
@@ -26,9 +25,6 @@ const AppRouter = () => {
     <BrowserRouter>
       <Routes>
 
-        {/* <Route path="/game/*" element={<GameGuard />}>
-          <Route path="/game/*" element={<GameRouter base="/game"/>} />
-        </Route> */}
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login/>} />
         </Route>
@@ -37,23 +33,23 @@ const AppRouter = () => {
           <Route path="/register" element={<Register />} />
         </Route>
 
-        <Route>
+        <Route path="/navigation" element={<GameGuard />}>
           <Route path="/navigation" element={<Navigation />} />
         </Route>
 
-        <Route>
+        <Route path="/kittycards" element={<GameGuard />}>
           <Route path="/kittycards" element={<KittyCards />} />
         </Route>
 
-        <Route>
-          <Route path="/friendList" element={<FriendList />} />
+        <Route path="/friendlist" element={<GameGuard />}>
+          <Route path="/friendlist" element={<FriendList />} />
         </Route>
       
-        <Route>
-          <Route path="/userList" element={<UserList />} />
+        <Route path="/userlist" element={<GameGuard />}>
+          <Route path="/userlist" element={<UserList />} />
         </Route>
 
-        <Route>
+        <Route path="/users/:id" element={<GameGuard />}>
           <Route path="/users/:id" element={<UserProfile/>} />
         </Route>
 
@@ -64,6 +60,8 @@ const AppRouter = () => {
         <Route path="/" element={
           <Navigate to="/login" replace />
         }/>
+
+        <Route path="*" element={<Navigate to="/login" />} />
 
       </Routes>
     </BrowserRouter>
