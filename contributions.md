@@ -87,7 +87,7 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 
 **Zixian Pang** 
 -  ⁠Creation of classes of entities of game elements
--⁠  ⁠Creation of the game logic in GameService
+-  ⁠⁠Creation of the game logic in GameService
 
 
 **David Tanner**
