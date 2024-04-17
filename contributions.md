@@ -86,7 +86,7 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 ## 12.04-19.04
 
 **Zixian Pang**
-- Creation of future relevatn classes
+- Creation of future relevant classes
 - 
 
 **David Tanner**
@@ -97,7 +97,10 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 **Yiyang Chen**
 
 - Implementaion of deciding if first turn or second and distribution of 3/2 cards accordingly. #02
+- Criteroin 3: If a user does not choose an option after 15 seconds,then the app will randomly decide who goes first. #24
 - Design/Mockup for the Game board.
+- Criterion 3: Once the user put the card, the action can’t reverse, the scores should be updated. #20
+  -> Rollback disabling mechanism
 
 **Jingxuan Tian**
 - Invitation of Friends which are online and matching.
