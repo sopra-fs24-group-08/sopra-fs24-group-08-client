@@ -83,4 +83,27 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 - Design Background - Wallpaper within the Theme
 - Update Task state of user stories and issues on GitHub and assign Tasks for the comming week.
 
+## 12.04-19.04
+
+**Zixian Pang**
+- Creation of future relevatn classes
+- 
+
+**David Tanner**
+- Customization with Banners and icons #07
+- Achievements and Challenges #06
+- Merging of different branches.
+
+**Yiyang Chen**
+
+- Implementaion of deciding if first turn or second and distribution of 3/2 cards accordingly. #02
+- Design/Mockup for the Game board.
+
+**Jingxuan Tian**
+- Invitation of Friends which are online and matching.
+- Send Friend Request (long poling)
+
+**Luis Schmid**
+- Updated Task state, addition of issues.
+- ((Add Tests to reach coverage))
 
