@@ -109,5 +109,5 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 
 **Luis Schmid**
 - Updated Task state, addition of issues.
-- ((Add Tests to reach coverage))
+- Add Tests to reach coverage
 
