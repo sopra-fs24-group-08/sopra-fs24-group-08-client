@@ -9,40 +9,37 @@ import "styles/views/Game.scss";
 import { User } from "types";
 import {usePolling} from "components/context/PollingContext";
 
-const Game = ({ user }: { user: User }) => {
+const UserList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
-  const [friends, setFriends] = useState<User[]>([]);
   const {status} = useParams();
-  const { serverRequests } = usePolling();
-  console.log(localStorage.getItem("token"));
 
   function userProfile (id){
     let push_to = "/users/" + String(id);
     navigate(push_to);
   };
-  /*function myProfile (){
+
+  const doAddFriend = async(receiverId) => {
     const myId = localStorage.getItem("id");
-    let push_to = "/users/" + myId;
-    navigate(push_to);
-  };*/
-
-  function doInvite(id){
-
+    const token = localStorage.getItem("token");
+    const requestType = "FRIENDADDING";
+    console.log(myId);
+    console.log(token);
+    try{
+      const requestBody = JSON.stringify({ receiverId, requestType});
+      const response = await api.post(`/users/${myId}/friends/add`,requestBody, {headers: {Authorization: `Bearer ${token}`}});
+      console.log(`You have a new message!`);
+    }catch(error){
+      alert(`Something went wrong with friend request: \n${handleError(error)}`);
+    }
   };
-  
-  function doSpectate (id){
 
-  };
   function goBack (){
     navigate("/navigation")
 
   };
   const Player = ({ user }: { user: User }) => {
-    const myId = localStorage.getItem("id");
-
-    if (user.id.toString() === myId) return null;
 
     return (
       <div className="player container">
@@ -55,18 +52,10 @@ const Game = ({ user }: { user: User }) => {
         </Button>
         <Button
           width="500px"
-          onClick={() => doInvite(user.id)}
+          onClick={() => doAddFriend(user.id)}
           className="game username-button-container"
         >
-          invite
-        </Button>
-
-        <Button
-          width="500px"
-          onClick={() => doSpectate(user.id)}
-          className="game username-button-container"
-        >
-          spectate
+          add
         </Button>
       </div>
     );
@@ -77,36 +66,21 @@ const Game = ({ user }: { user: User }) => {
     user: PropTypes.object,
   };
 
-  // the effect hook can be used to react to change in your component.
-  // in this case, the effect hook is only run once, the first time the component is mounted
-  // this can be achieved by leaving the second argument an empty array.
-  // for more information on the effect hook, please see https://react.dev/reference/react/useEffect
+
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const myId = localStorage.getItem("id");
-        const response = await api.get(`/users/${myId}/friends`,{headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}});
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
+        const response = await api.get("/users",{headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}});
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
         if (response.data !== null) {
-          setFriends(response.data);
+          setUsers(response.data);
         }
 
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-
-        /*console.log("request to:", response.request.responseURL);
-        console.log("status code:", response.status);
-        console.log("status text:", response.statusText);
-        console.log("requested data:", response.data);*/
-
         // See here to get more data.
-        console.log(response);
+        console.log(response.status);
+        console.log(response.data);
       } catch (error) {
         console.error(
           `Something went wrong while fetching the friends: \n${handleError(
@@ -159,4 +133,4 @@ const Game = ({ user }: { user: User }) => {
   );
 };
 
-export default Game;
+export default UserList;
