@@ -6,6 +6,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/Register.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+import {usePolling} from "components/context/PollingContext";
 
 const FormField = (props) => {
   return (
@@ -32,6 +33,7 @@ const Register = () => {
   const [password, setPassword] = useState<string>(null);
   const [name, setName] = useState(null);
   const [username, setUsername] = useState<string>(null);
+  const { serverRequests, currentUserId, setCurrentUserId  } = usePolling();
 
   const doRegister = async () => {
     if (!username || username.trim() === "" ||
@@ -51,6 +53,7 @@ const Register = () => {
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
+      setCurrentUserId(user.id);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/navigation");

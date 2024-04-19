@@ -6,6 +6,7 @@ import "styles/views/EditProfile.scss";
 import { React,useState } from "react";
 const EditProfile = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token")
 
   const {current_username} = useParams();
   const {current_birthday} = useParams();

@@ -6,7 +6,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-
+import {usePolling} from "components/context/PollingContext";
 /*
 It is possible to add multiple components inside a single file,
 however be sure not to clutter your files with an endless amount!
@@ -35,6 +35,7 @@ FormField.propTypes = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const { serverRequests, currentUserId, setCurrentUserId  } = usePolling();
   const navigateToRegister = () => {
     navigate("/register");
   };
@@ -52,6 +53,7 @@ const Login = () => {
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
+      setCurrentUserId(user.id);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/navigation");

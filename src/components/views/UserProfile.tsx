@@ -8,8 +8,11 @@ import "styles/views/UserProfile.scss";
 
 const UserProfile = () => {
   const navigate = useNavigate();
-  const [user, setUsers] = useState(null);
+  const [user, setUser] = useState(null);
   const {id} = useParams();
+  const userId = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
+  const [content, setContent] = useState(null);
 
 
   function goBack () {
@@ -27,40 +30,69 @@ const UserProfile = () => {
   }
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchFullUserData() {
       try {
-        const request_to = "/users/" + String(id)
-        const response = await api.get(request_to);
-
-        setUsers(response.data);
-
-      } catch (error) {
-        console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
-        console.error("Details:", error);
-        alert("Something went wrong while fetching the user details! See the console for details.");
+        const response = await api.get(`/users/self/${id}`, {headers: {Authorization: `Bearer ${token}`}});
+        setUser(response.data);      
+      }catch (error) {
+        alert(`Something went wrong during getting user profile: \n${handleError(error)}`);
       }
     }
 
-    fetchData();
+    async function fetchOtherUserData() {
+      try {
+        const response = await api.get(`/users/other/${id}`, {headers: {Authorization: `Bearer ${token}`}});
+        setUser(response.data);         
+      }catch (error) {
+        alert(`Something went wrong during getting user profile: \n${handleError(error)}`);
+      }
+    }
+    if (id === userId){fetchFullUserData();}
+    else {fetchOtherUserData();}
   }, [id]);
 
-  let content;
+  // Separate useEffect to update content when `user` changes
+  useEffect(() => {
+    if (user) {
+      if (id === userId) {
+        setContent(getFullUser(user));
+      } else {
+        setContent(getOtherUser(user));
+      }
+    }
+  }, [user, id, userId]);  
 
-  if (user && localStorage.getItem("id") === String(user.id)) {
-    content = (
+  const getFullUser = (user) => {
+    return (            
+    <div className="userprofile text">
+      <div className="userprofile text"> username: {user.username} </div>
+      <div className="userprofile text"> online status: {user.status}</div>
+      <div className="userprofile text"> creation date: {user.creation_date} </div>
+      <div className="userprofile text"> birthday: {user.birthday} </div>
+      <Button
+        width="100%"
+        onClick={() => editProfile(user)}
+        className = "userprofile button-container"
+      >
+        Edit
+      </Button>
+      <Button
+        width="100%"
+        onClick={() => goBack()}
+        className = "userprofile button-container"
+      >
+        Back
+      </Button>
+    </div>)
+  }
+
+  const getOtherUser = (user) => {
+    return (
       <div className="userprofile text">
         <div className="userprofile text"> username: {user.username} </div>
         <div className="userprofile text"> online status: {user.status}</div>
         <div className="userprofile text"> creation date: {user.creation_date} </div>
         <div className="userprofile text"> birthday: {user.birthday} </div>
-
-        <Button
-          width="100%"
-          onClick={() => editProfile(user)}
-          className = "userprofile button-container"
-        >
-          Edit
-        </Button>
         <Button
           width="100%"
           onClick={() => goBack()}
@@ -71,23 +103,7 @@ const UserProfile = () => {
       </div>
     );
   }
-  else if (user) {
-    content = (
-      <div className="userprofile text">
-        <div className="userprofile text"> username: {user.username} </div>
-        <div className="userprofile text"> online status: {user.status}</div>
-        <div className="userprofile text"> creation date: {user.creation_date} </div>
-        <div className="userprofile text"> birthday: {user.birthday} </div>
-        <Button
-          width="100%"
-          onClick={() => goBack()}
-          className = "userprofile button-container"
-        >
-          Back
-        </Button>
-      </div>
-    );
-  }
+
 
   return (
     <BaseContainer className="userprofile container">

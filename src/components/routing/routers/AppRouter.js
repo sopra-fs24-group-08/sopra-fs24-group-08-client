@@ -1,7 +1,6 @@
 import React from "react";
 import {BrowserRouter, Navigate, Route, Routes, Redirect} from "react-router-dom";
 import {GameGuard} from "../routeProtectors/GameGuard";
-import GameRouter from "./GameRouter";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
 import Login from "../../views/Login";
 import Register from "../../views/Register";
@@ -9,6 +8,8 @@ import UserProfile from "../../views/UserProfile";
 import EditProfile from "../../views/EditProfile";
 import Navigation from "../../views/Navigation";
 import KittyCards from "../../views/KittyCards";
+import FriendList from "../../views/FriendList";
+import UserList from "../../views/UserList";
 
 /**
  * Main router of your application.
@@ -24,9 +25,6 @@ const AppRouter = () => {
     <BrowserRouter>
       <Routes>
 
-        <Route path="/game/*" element={<GameGuard />}>
-          <Route path="/game/*" element={<GameRouter base="/game"/>} />
-        </Route>
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login/>} />
         </Route>
@@ -35,15 +33,23 @@ const AppRouter = () => {
           <Route path="/register" element={<Register />} />
         </Route>
 
-        <Route>
+        <Route path="/navigation" element={<GameGuard />}>
           <Route path="/navigation" element={<Navigation />} />
         </Route>
 
-        <Route>
+        <Route path="/kittycards" element={<GameGuard />}>
           <Route path="/kittycards" element={<KittyCards />} />
         </Route>
 
-        <Route>
+        <Route path="/friendlist" element={<GameGuard />}>
+          <Route path="/friendlist" element={<FriendList />} />
+        </Route>
+      
+        <Route path="/userlist" element={<GameGuard />}>
+          <Route path="/userlist" element={<UserList />} />
+        </Route>
+
+        <Route path="/users/:id" element={<GameGuard />}>
           <Route path="/users/:id" element={<UserProfile/>} />
         </Route>
 
@@ -52,8 +58,10 @@ const AppRouter = () => {
         </Route>
 
         <Route path="/" element={
-          <Navigate to="/game" replace />
+          <Navigate to="/login" replace />
         }/>
+
+        <Route path="*" element={<Navigate to="/login" />} />
 
       </Routes>
     </BrowserRouter>
