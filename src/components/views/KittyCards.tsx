@@ -218,7 +218,7 @@ const KittyCards = () => {
           </div>
         </div>
       </div>
-      {/* Render the hand of cards */}
+      {/* Render the hand of card s */}
       <div className="hand-of-cards">
         {renderHand()}
       </div>
