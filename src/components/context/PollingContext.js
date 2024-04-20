@@ -61,17 +61,17 @@ export const PollingProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
     const acceptFriendRequest = async() => {
-        const requestBody = para.request;
-        requestBody.status = "ACCEPTED";
-        try{
-          const response = await api.post(`/users/${userId}/friendresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
-          toast.dismiss();
-          toast(`you add ${para.request.senderName} as a friend!`);
-        }catch(error){
-          alert(
-            `Something went wrong during accept friend request: \n${handleError(error)}`
-          );
-        }
+      const requestBody = para.request;
+      requestBody.status = "ACCEPTED";
+      try{
+        const response = await api.post(`/users/${userId}/friendresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
+        toast.dismiss();
+        toast(`you add ${para.request.senderName} as a friend!`);
+      }catch(error){
+        alert(
+          `Something went wrong during accept friend request: \n${handleError(error)}`
+        );
+      }
     };
   
     const declineFriendRequest = async() => {
@@ -86,12 +86,13 @@ export const PollingProvider = ({ children }) => {
         );
       }
     };
+
     return (
-        <div>
-            <p>{para.request.senderName} wants to be your friend!</p>
-            <button onClick={acceptFriendRequest}>Accept</button>
-            <button onClick={declineFriendRequest}>Decline</button>
-        </div>
+      <div>
+        <p>{para.request.senderName} wants to be your friend!</p>
+        <button onClick={acceptFriendRequest}>Accept</button>
+        <button onClick={declineFriendRequest}>Decline</button>
+      </div>
     );
   };
 
@@ -99,17 +100,17 @@ export const PollingProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("id");
     const acceptFriendRequest = async() => {
-        const requestBody = para.request;
-        requestBody.status = "ACCEPTED";
-        try{
-          const response = await api.post(`/game/${userId}/invitationresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
-          toast.dismiss();
-          toast(`you accepted ${para.request.senderName}'s game invitation!`);
-        }catch(error){
-          alert(
-            `Something went wrong during accept friend request: \n${handleError(error)}`
-          );
-        }
+      const requestBody = para.request;
+      requestBody.status = "ACCEPTED";
+      try{
+        const response = await api.post(`/game/${userId}/invitationresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
+        toast.dismiss();
+        toast(`you accepted ${para.request.senderName}'s game invitation!`);
+      }catch(error){
+        alert(
+          `Something went wrong during accept friend request: \n${handleError(error)}`
+        );
+      }
     };
   
     const declineFriendRequest = async() => {
@@ -124,12 +125,13 @@ export const PollingProvider = ({ children }) => {
         );
       }
     };
+    
     return (
-        <div>
-            <p>There is a game invitation from {para.request.senderName}!</p>
-            <button onClick={acceptFriendRequest}>Accept</button>
-            <button onClick={declineFriendRequest}>Decline</button>
-        </div>
+      <div>
+        <p>There is a game invitation from {para.request.senderName}!</p>
+        <button onClick={acceptFriendRequest}>Accept</button>
+        <button onClick={declineFriendRequest}>Decline</button>
+      </div>
     );
   };
 

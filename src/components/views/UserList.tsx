@@ -29,7 +29,7 @@ const UserList = ({ user }: { user: User }) => {
     try{
       const requestBody = JSON.stringify({ receiverId, requestType});
       const response = await api.post(`/users/${myId}/friends/add`,requestBody, {headers: {Authorization: `Bearer ${token}`}});
-      console.log(`You have a new message!`);
+      console.log("You have a new message!");
     }catch(error){
       alert(`Something went wrong with friend request: \n${handleError(error)}`);
     }

@@ -64,26 +64,26 @@ const UserProfile = () => {
 
   const getFullUser = (user) => {
     return (            
-    <div className="userprofile text">
-      <div className="userprofile text"> username: {user.username} </div>
-      <div className="userprofile text"> online status: {user.status}</div>
-      <div className="userprofile text"> creation date: {user.creation_date} </div>
-      <div className="userprofile text"> birthday: {user.birthday} </div>
-      <Button
-        width="100%"
-        onClick={() => editProfile(user)}
-        className = "userprofile button-container"
-      >
-        Edit
-      </Button>
-      <Button
-        width="100%"
-        onClick={() => goBack()}
-        className = "userprofile button-container"
-      >
-        Back
-      </Button>
-    </div>)
+      <div className="userprofile text">
+        <div className="userprofile text"> username: {user.username} </div>
+        <div className="userprofile text"> online status: {user.status}</div>
+        <div className="userprofile text"> creation date: {user.creation_date} </div>
+        <div className="userprofile text"> birthday: {user.birthday} </div>
+        <Button
+          width="100%"
+          onClick={() => editProfile(user)}
+          className = "userprofile button-container"
+        >
+          Edit
+        </Button>
+        <Button
+          width="100%"
+          onClick={() => goBack()}
+          className = "userprofile button-container"
+        >
+          Back
+        </Button>
+      </div>)
   }
 
   const getOtherUser = (user) => {
