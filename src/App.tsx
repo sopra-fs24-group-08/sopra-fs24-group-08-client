@@ -15,7 +15,6 @@ const App = () => {
     <ToastProvider>
       <PollingProvider>
         <div>
-          <Header height="100" />
           <AppRouter />
         </div>
       </PollingProvider>         

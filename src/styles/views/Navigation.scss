@@ -1,6 +1,6 @@
 @import "../theme";
 
-.login {
+.navigation {
   &.container {
     margin-top: 2em;
     min-height: 300px;
@@ -29,16 +29,6 @@
     flex-direction: column;
     justify-content: center;
   }
-  &.input {
-    height: 35px;
-    padding-left: 15px;
-    margin-left: -4px;
-    border: none;
-    border-radius: 0.75em;
-    margin-bottom: 20px;
-    background: transparentize(white, 0.85);
-    color: $textColor;
-  }
   &.label {
     color: $textColor;
     margin-bottom: 5px;
@@ -49,5 +39,7 @@
     display: flex;
     justify-content: center;
     margin-top: 0.5em;
+    flex-direction: column; // 确保设置为 column 使得按钮垂直排列
+    align-items: center;
   }
 }

@@ -13,10 +13,22 @@ import "../../styles/views/Header.scss";
  */
 const Header = props => (
   <div className="header container" style={{height: props.height}}>
-    <h1 className="header title">SoPra FS24 Group 08 Kitty Cards</h1>
-    <ReactLogo width="60px" height="60px"/>
+    <img
+      src={`${process.env.PUBLIC_URL}/Kittycards.png`}
+      style={{
+        display: "block",
+        width: "30%",
+        height: "auto",
+        margin: "0 auto"
+      }}
+      alt=""
+    />
+    <h1 className="header title">Kitty Cards</h1>
+
   </div>
 );
+
+
 
 Header.propTypes = {
   height: PropTypes.string,

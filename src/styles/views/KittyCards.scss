@@ -1,0 +1,245 @@
+/* CSS重置，以确保在不同的浏览器中行为一致 */
+html, body, #root, .game-layout {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.game-layout {
+  display: grid;
+  grid-template-rows: 15fr 1fr; /* 页面分成上15/16和下1/16 */
+  grid-template-columns: 2fr 6fr 2fr; /* 页面分成左1/3，中2/3，右1/3 */
+  height: 100vh;
+  gap: 1rem; // Adjust the gap to your liking
+}
+
+/* 上部分，左侧聊天框 */
+.chat-container {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+/* 上部分，中间棋盘 */
+.game-board-container {
+  align-self: start; /* 向上对齐，与聊天框在同一水平线上 */
+  grid-row: 1 / 2; /* 第一行，从上数第一格 */
+  grid-column: 2 / 3; /* 第二列，从左数第二格 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 上部分，右侧对手信息 */
+.opponent-info {
+  grid-row: 1 / span 1;
+  grid-column: 3;
+}
+
+/* 下部分，左侧玩家信息 */
+.player-info {
+  align-self: end; /* 与手牌对齐 */
+  grid-row: 2;
+  grid-column: 1 / span 1;
+}
+
+
+/* 上部分，右侧按钮 */
+.controls {
+  grid-row: 2 / span 1;
+  grid-column: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 按钮从上往下排列 */
+  align-items: center; /* 按钮居中对齐 */
+
+  margin-top: 40px;
+}
+.controls button:first-child {
+  margin-bottom: 290px;
+}
+
+.chat-container {
+  background-color: #f0f0f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 4rem;
+  height: 70%;
+  overflow-y: auto;
+
+  .message {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0px 0px 2px #ccc;
+
+    &.self {
+      background-color: #c0e0ff;
+      align-self: flex-end;
+      border-radius: 12px;
+    }
+
+    .message-author {
+      font-weight: bold;
+    }
+  }
+
+  .chat-controls {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem; /* 调整间距 */
+
+    .chat-input {
+      width: 100%; /* 输入框占据全部宽度 */
+      margin-bottom: 0.5rem; /* 输入框和按钮之间的间隔 */
+    }
+
+    .chat-send-btn {
+      width: 100%; /* 按钮占据全部宽度 */
+    }
+  }
+
+
+  .message {
+    background: #e9e9e9;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 10px;
+  }
+
+  input[type="text"] {
+    width: calc(100% - 20px); // Subtract padding from the total width
+    padding: 5px;
+    margin-top: 5px;
+  }
+}
+
+.player-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 确保所有子元素都居中对齐 */
+  text-align: center;
+  margin-bottom: 1rem;
+
+  .player-avatar {
+    border-radius: 70%;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 5px;
+  }
+
+  .blue {
+    background-color: lightgreen;
+  }
+
+  .red {
+    background-color: pink;
+  }
+
+  .player-name {
+    order: -1; /* 将名字放在头像上方 */
+    margin-bottom: 0.5rem; /* 名字与头像之间的间隔 */
+  }
+
+  .player-score {
+    font-weight: bold;
+  }
+}
+
+button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  // Add additional button styles
+}
+
+
+.game-board {
+  width: 90%;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  border-radius: 12px;
+}
+
+.game-board-slot {
+  background-color: #fff;
+  border: 1px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  border-radius: 12px;
+
+  &.blocked-slot {
+    background-color: #d3d3d3; // Blocked slot color
+    cursor: not-allowed;
+  }
+
+  &.active-slot {
+    cursor: pointer;
+  }
+}
+.card-deck {
+  position: absolute;
+  bottom: 10px; // Position at the bottom of the game board
+  right: 10px;
+  width: 80px;
+  height: 120px;
+  background-color: #000; // Background for card deck
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px; // Rounded corners for the card deck
+
+  .card-back {
+    font-size: 2em; // Large text for the card back symbol
+  }
+}
+.hand-of-cards {
+  display: flex;
+  justify-content: flex-start; /* 从左边开始排列 */
+  align-items: center;
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%); /* 水平居中 */
+  width: calc(12.5 * (50px + 2 * 5px)); /* 卡牌宽度加上左右边距的总和 */
+  margin: auto; /* 水平居中 */
+  height: 130px; /* 高度 */
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-x: auto; /* 当卡牌数量多时可以滚动 */
+  border-radius: 10px;
+  white-space: nowrap; /* 防止换行 */
+}
+
+.card {
+  border: 1px solid blue;
+  padding: 15px;
+  cursor: pointer;
+  width: 75px; /* 卡牌宽度 */
+  height: 100px; /* 卡牌高度 */
+  margin: 0 5px; /* 两张卡牌之间的间隔 */
+}
+
+button {
+  background-color: #f7f7f7;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 2px #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e7e7e7;
+  }
+}

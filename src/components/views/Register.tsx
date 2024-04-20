@@ -7,6 +7,7 @@ import "styles/views/Register.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import {usePolling} from "components/context/PollingContext";
+import Header from "./Header";
 
 const FormField = (props) => {
   return (
@@ -14,7 +15,7 @@ const FormField = (props) => {
       <label className="login label">{props.label}</label>
       <input
         className="login input"
-        placeholder="enter here.."
+        placeholder={props.placeholder}
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
       />
@@ -26,6 +27,7 @@ FormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,
+  placeholder: PropTypes.string,
 };
 
 const Register = () => {
@@ -66,20 +68,21 @@ const Register = () => {
 
   return (
     <BaseContainer>
+      <Header height="100" />
       <div className="register container">
         <div className="register form">
           <FormField
-            label="Username"
+            placeholder = "username"
             value={username}
             onChange={(un: string) => setUsername(un)}
           />
           <FormField
-            label="Name"
+            placeholder = "name"
             value={name}
             onChange={(un: string) => setName(un)}
           />
           <FormField
-            label="Password"
+            placeholder = "password"
             value={password}
             onChange={(n) => setPassword(n)}
           />

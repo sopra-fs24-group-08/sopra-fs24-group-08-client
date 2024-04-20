@@ -7,6 +7,7 @@ import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import {usePolling} from "components/context/PollingContext";
+import Header from "./Header";
 /*
 It is possible to add multiple components inside a single file,
 however be sure not to clutter your files with an endless amount!
@@ -19,7 +20,7 @@ const FormField = (props) => {
       <label className="login label">{props.label}</label>
       <input
         className="login input"
-        placeholder="enter here.."
+        placeholder={props.placeholder}
         value={props.value}
         onChange={(e) => props.onChange(e.target.value)}
       />
@@ -31,6 +32,7 @@ FormField.propTypes = {
   label: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,
+  placeholder: PropTypes.string,
 };
 
 const Login = () => {
@@ -66,15 +68,16 @@ const Login = () => {
 
   return (
     <BaseContainer>
+      <Header height="100" />
       <div className="login container">
         <div className="login form">
           <FormField
-            label="Username"
+            placeholder = "username"
             value={username}
             onChange={(un: string) => setUsername(un)}
           />
           <FormField
-            label="Password"
+            placeholder = "password"
             value={password}
             onChange={(n) => setPassword(n)}
           />

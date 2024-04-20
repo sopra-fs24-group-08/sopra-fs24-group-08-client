@@ -7,6 +7,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
+import Header from "./Header";
 
 const FriendList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
@@ -150,6 +151,7 @@ const FriendList = ({ user }: { user: User }) => {
   }
 
   return (
+
     <BaseContainer className="game container">
       <h2>Users Overview</h2>
       <p className="game paragraph">

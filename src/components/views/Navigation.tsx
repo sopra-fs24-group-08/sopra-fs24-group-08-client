@@ -8,6 +8,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import {usePolling} from "components/context/PollingContext";
 import { toast } from "react-toastify";
+import Header from "./Header";
 
 /*
 It is possible to add multiple components inside a single file,
@@ -72,6 +73,7 @@ const Navigation = () => {
 
   return (
     <BaseContainer>
+      <Header height="100" />
       <div className="navigation container">
         <div className="navigation form">
           <div className="navigation button-container">

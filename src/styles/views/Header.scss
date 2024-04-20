@@ -3,11 +3,24 @@
 .header {
   &.container {
     @include center;
+    flex-direction: column; // This will stack the children vertically
+    text-align: center;
   }
 
   &.title {
     font-weight: bold;
     color: $background;
     text-align: center;
+    font-size: 55px;
+    margin-top: -30px;
+    margin-bottom: -10px;
+  }
+  img {
+    max-width: 80%; // Ensures image is not wider than the screen.
+    height: auto; // Maintains the image aspect ratio.
+    margin-top: 20px; // Adds some space between the title and the image.
+    // If you want to ensure the image is centered as well:
+    align-self: center;
+    margin-bottom: -20px;
   }
 }
