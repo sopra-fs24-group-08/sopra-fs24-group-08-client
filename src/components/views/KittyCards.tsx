@@ -5,7 +5,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 
 const emptySlot = null;
-const blockedSlot = 'blocked'; // A special marker for the blocked slot
+const blockedSlot = "blocked"; // A special marker for the blocked slot
 
 // Initialize a 3x3 grid where the center is a blocked slot
 const initialGrid = () => [
@@ -21,21 +21,19 @@ interface Card {
 
 // Initial set of cards in the player's hand
 const initialHand: Card[] = [
-  { id: 1, name: 'Card 1' },
-  { id: 2, name: 'Card 2' },
-  { id: 3, name: 'Card 3' },
-  { id: 4, name: 'Card 4' },
-  { id: 5, name: 'Card 5' },
-  { id: 6, name: 'Card 6' },
+  { id: 1, name: "Card 1" },
+  { id: 2, name: "Card 2" },
+  { id: 3, name: "Card 3" },
+  { id: 4, name: "Card 4" },
+  { id: 5, name: "Card 5" },
+  { id: 6, name: "Card 6" },
 ];
-
 const KittyCards = () => {
   const [hand, setHand] = useState<Card[]>(initialHand);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [showMessage, setShowMessage] = useState(false);
   const [grid, setGrid] = useState(initialGrid());
   const navigate = useNavigate();
-
   // Add state for managing chat messages
   const [chatMessages, setChatMessages] = useState([
     { id: 1, text: "Good game!", author: "Jane" },
@@ -69,10 +67,11 @@ const KittyCards = () => {
         {grid.map((row, rowIndex) => (
           <div key={rowIndex} className="game-board-row">
             {row.map((slot, columnIndex) => {
-              let slotClasses = 'game-board-slot';
+              let slotClasses = "game-board-slot";
               if (rowIndex === 1 && columnIndex === 1) {
-                slotClasses += ' game-board-center'; // Add a class for styling or identification
+                slotClasses += " game-board-center"; // Add a class for styling or identification
               }
+              
               return (
                 <div
                   key={`${rowIndex}-${columnIndex}`}
@@ -108,7 +107,7 @@ const KittyCards = () => {
   };
 
   const renderHand = () => (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       {hand.map((card: Card) => (
         <div
           key={card.id}
@@ -133,17 +132,20 @@ const KittyCards = () => {
     // Check if the center slot is clicked, if so draw a card
     if (rowIndex === 1 && columnIndex === 1) {
       drawCard();
+      
       return; // Early return to prevent further actions since it's a special slot
     }
     // Check if a card is selected
     if (!selectedCard) {
-      alert('Please select a card first.');
+      alert("Please select a card first.");
+      
       return;
     }
 
     // Check if the slot is blocked or already occupied
     if (grid[rowIndex][columnIndex] === blockedSlot || grid[rowIndex][columnIndex]) {
-      alert('This slot is not available.');
+      alert("This slot is not available.");
+      
       return;
     }
 
@@ -205,8 +207,6 @@ const KittyCards = () => {
         <div className="center-column">
           {renderGameBoard()}
         </div>
-
-
         {/* Opponent info and controls */}
         <div className="right-column">
           {renderPlayerProfile("red", "Jane W", 28)}
@@ -224,4 +224,5 @@ const KittyCards = () => {
     </BaseContainer>
   );
 };
+
 export default KittyCards;
