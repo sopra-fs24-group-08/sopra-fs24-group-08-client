@@ -1,8 +1,10 @@
-import { React,useState } from "react";
+import { React, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
+import SendMessage from "components/SendMessage"; // Importiere die SendMessage-Komponente
+import Messages from "components/Messages";
 
 const emptySlot = null;
 const blockedSlot = "blocked"; // A special marker for the blocked slot
@@ -57,7 +59,24 @@ const KittyCards = () => {
   // Function to render the chat box
   const renderChatBox = () => (
     <div className="chat-box">
-
+      <SendMessage /> {/* Rendere die SendMessage-Komponente */}
+      <Messages /> {/* Rendere die Messages-Komponente */}
+      {chatMessages.map((message) => (
+        <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
+          <span className="message-author">{message.author}: </span>
+          {message.text}
+        </div>
+      ))}
+      <div className="chat-controls">
+        <input
+          type="text"
+          value={chatInput}
+          onChange={(e) => setChatInput(e.target.value)}
+          placeholder="Type a message..."
+          className="chat-input"
+        />
+        <button onClick={sendChatMessage} className="chat-send-btn">Send</button>
+      </div>
     </div>
   );
 
@@ -71,7 +90,7 @@ const KittyCards = () => {
               if (rowIndex === 1 && columnIndex === 1) {
                 slotClasses += " game-board-center"; // Add a class for styling or identification
               }
-              
+
               return (
                 <div
                   key={`${rowIndex}-${columnIndex}`}
@@ -132,20 +151,20 @@ const KittyCards = () => {
     // Check if the center slot is clicked, if so draw a card
     if (rowIndex === 1 && columnIndex === 1) {
       drawCard();
-      
+
       return; // Early return to prevent further actions since it's a special slot
     }
     // Check if a card is selected
     if (!selectedCard) {
       alert("Please select a card first.");
-      
+
       return;
     }
 
     // Check if the slot is blocked or already occupied
     if (grid[rowIndex][columnIndex] === blockedSlot || grid[rowIndex][columnIndex]) {
       alert("This slot is not available.");
-      
+
       return;
     }
 
@@ -182,24 +201,6 @@ const KittyCards = () => {
         <div className="left-column">
           {renderChatBox()}
           {/* Player's avatar and score here if needed */}
-          <div className="chat-container">
-            {chatMessages.map(message => (
-              <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
-                <span className="message-author">{message.author}: </span>
-                {message.text}
-              </div>
-            ))}
-            <div className="chat-controls">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Type a message..."
-                className="chat-input"
-              />
-              <button onClick={sendChatMessage} className="chat-send-btn">Send</button>
-            </div>
-          </div>
           {renderPlayerProfile("blue", "John S", 18)}
         </div>
 
