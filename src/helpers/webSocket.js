@@ -3,61 +3,61 @@ import SockJS from "sockjs-client";
 import { getDomain } from "./getDomain";
 
 let stompClient = null;
-let connected;
-connected = false;
+let connected = false
+//using @stomp/stompjs instead of stompjs less maintained
 
-export let connect = (callback) => {
-  let url = getDomain() + `/ws`;
-  stompClient = Stomp.over(function () {
-    return new SockJS(url);
-  });
+export const connect = (onConnectCallback) => {
+  const url = `${getDomain()}/ws`;
+  stompClient = Stomp.over(() => new SockJS(url));
   stompClient.reconnect_delay = 4000;
 
-  stompClient.connect({}, function (frame) {
+  stompClient.connect({}, (frame) => {
     console.log("Connected: " + frame);
     connected = true;
-    callback();
-    const subscription = stompClient.subscribe(
-      `/topic/greetings`,
-      function (frame) {
-        console.log("Subscribed: " + frame);
-      },
+    onConnectCallback();
 
-      function (frame) {
-        console.log("Error: " + frame);
-      }
-    );
-    console.log(subscription);
-  });
-};
-
-export let subscribe = (goal, callback) => {
-  stompClient.subscribe(goal, function (data) {
-    callback(JSON.parse(data.body));
-  });
-};
-
-//Depending on the type of WS connection pass sth else, will have to handle Backend: e.g. userId + other data
-//(leave Game)
-export let unsubscribe = (credentials) => {
-  stompClient.unsubscribe(credentials);
-};
-
-//Logout e.g.
-export let disconnect = () => {
-  if (stompClient !== null) {
-    stompClient.disconnect(function () {
-      console.log("User disconnected from the WebSocket");
+    subscribe('/topic/gameState', (gameState) => {
+      updateGameUI(gameState);
     });
-    stompClient = null;
-    connected = false;
+  }, (error) => {
+    console.error("Connection error: ", error);
+  });
+};
+
+export const subscribe = (goal, callback) => {
+  if (!connected || !stompClient) {
+    console.error("Not connected to WebSocket");
+    return;
   }
+  return stompClient.subscribe(goal, message => {
+    callback(JSON.parse(message.body));
+  });
 };
 
-export let isConnected = () => connected;
-
-//doesn't work yet, just leaving here for sb else or I do later.
-export let Translation = (chatId) => {
-  stompClient.send("/app/chat/" + chatId);
+export const sendMove = (gameId, move) => {
+  if (!connected) {
+    console.error("Not connected to WebSocket");
+    return;
+  }
+  stompClient.send(`/app/game/${gameId}/move`, {}, JSON.stringify(move));
 };
+
+export const disconnect = () => {
+  if (stompClient) {
+    stompClient.disconnect(() => {
+      console.log("Disconnected");
+    });
+    connected = false;
+    stompClient = null;
+  }
+
+};
+
+export const subscribeToQueue = (userId, callback) => {
+  const queuePath = `/queue/user/${userId}`;
+  return stompClient.subscribe(queuePath, message => {
+    callback(JSON.parse(message.body));
+  });
+}
+
 
