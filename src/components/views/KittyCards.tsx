@@ -6,6 +6,7 @@ import "../../styles/views/KittyCards.scss";
 import SendMessage from "components/SendMessage"; // Importiere die SendMessage-Komponente
 import Messages from "components/Messages";
 
+
 const emptySlot = null;
 const blockedSlot = "blocked"; // A special marker for the blocked slot
 
@@ -59,8 +60,12 @@ const KittyCards = () => {
   // Function to render the chat box
   const renderChatBox = () => (
     <div className="chat-box">
-      <SendMessage /> {/* Rendere die SendMessage-Komponente */}
-      <Messages /> {/* Rendere die Messages-Komponente */}
+
+      <div>
+        <SendMessage />
+         <Messages />
+      </div>
+
       {chatMessages.map((message) => (
         <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
           <span className="message-author">{message.author}: </span>
