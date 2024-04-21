@@ -2,7 +2,9 @@ import { React,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
-
+import {WebSocketProvider} from "../../context/WebSocketContext";
+import Messages from "components/Messages";
+import SendMessage from "components/SendMessage";
 
 const KittyCards = () => {
   const [showMessage, setShowMessage] = useState(false);
@@ -26,6 +28,13 @@ const KittyCards = () => {
           onClick={() => doExit()}>
           Quit
         </Button>
+        <WebSocketProvider>
+        <div className="chat-box">
+            <SendMessage />
+            <Messages />
+          </div>
+        </WebSocketProvider>
+
       </div>
     </BaseContainer>
   );

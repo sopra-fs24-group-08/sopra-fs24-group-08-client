@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useWebSocket } from "src/context/WebSocketContext";
+import { useWebSocket } from "../context/WebSocketContext";
 
 function SendMessage() {
   const [message, setMessage] = useState("");

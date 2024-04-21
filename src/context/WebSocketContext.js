@@ -35,7 +35,7 @@ export const WebSocketProvider = ({ children }) => {
     return () => newSocket.close();
   }, [setSocket]);
 
-  const sendMsg = (message) => {
+  const sendMessage = (message) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(message);
     } else {
@@ -44,7 +44,7 @@ export const WebSocketProvider = ({ children }) => {
   };
 
   return (
-    <WebSocketContext.Provider value={{ sendMsg, messages }}>
+    <WebSocketContext.Provider value={{ sendMessage, messages }}>
       {children}
     </WebSocketContext.Provider>
   );
