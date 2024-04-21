@@ -29,6 +29,8 @@ const KittyCards = ({ gameId, userId }: KittyCardsProps) => {
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
+  //stompClient.subscribe('/topic/gamestate', function (message) {
+    //console.log(JSON.parse(message.body).content);
   useEffect(() => {
     connect(() => {
       setIsConnected(true);

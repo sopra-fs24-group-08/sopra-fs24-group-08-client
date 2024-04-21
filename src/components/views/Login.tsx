@@ -7,11 +7,13 @@ import BaseContainer from "components/ui/BaseContainer";
 import FormField from "../ui/FormField";
 import "styles/views/Login.scss";
 import { connect } from "../../helpers/webSocket";
+import { useAuth } from '../context/AuthContext'
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { auth, setAuth } = useAuth();
 
   const doLogin = async () => {
     try {
@@ -24,12 +26,13 @@ const Login = () => {
       // Store the token and user ID in local storage
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
+      setAuth({ token: user.token, isConnected: false });
 
       // Establish WebSocket connection
-      connect(() => {
+
         // Navigate to the main area of the application after a successful connection
-        navigate("/navigation");
-      });
+      navigate("/navigation");
+
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }

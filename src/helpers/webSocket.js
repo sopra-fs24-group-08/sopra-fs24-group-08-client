@@ -5,9 +5,18 @@ import { getDomain } from "./getDomain";
 let stompClient = null;
 
 export const connect = (callback) => {
-  const url = `${getDomain()}/ws`;
+  // Retrieve the user token from localStorage
+  const userToken = localStorage.getItem('token');
+  if (!userToken) {
+    console.error("No user token available");
+    callback(false);
+    return; // Exit if no token is available
+  }
+
+  const url = `${getDomain()}/ws?token=${userToken}`;
   stompClient = Stomp.over(() => new SockJS(url));
   stompClient.reconnect_delay = 6666;
+
   stompClient.connect({}, frame => {
     console.log("Connected: " + frame);
     if (callback) {
