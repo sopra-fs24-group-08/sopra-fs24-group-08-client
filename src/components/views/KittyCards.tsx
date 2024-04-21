@@ -1,34 +1,88 @@
-import { React,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { connect, subscribe, send, disconnect } from '../../helpers/webSocket';
+import ChatComponent from '../ui/ChatComponent';
+import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
-import BaseContainer from "components/ui/BaseContainer";
 
+interface Card {
+  id: number;
+  color: string;
+  points: number;
+}
 
-const KittyCards = () => {
-  const [showMessage, setShowMessage] = useState(false);
+interface GameState {
+  board: {
+    gridSquares: Array<{ id: number, cardId: number | null, color: string }>
+  },
+  players: Array<{ id: number, cards: Card[] }>
+}
+
+interface KittyCardsProps {
+  gameId: number;
+  userId: number;
+}
+
+const KittyCards = ({ gameId, userId }: KittyCardsProps) => {
   const navigate = useNavigate();
+  const [gameState, setGameState] = useState<GameState | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const doExit = () => {
+  useEffect(() => {
+    connect(() => {
+      setIsConnected(true);
+      subscribe(`/topic/game/${gameId}`, (newGameState) => {
+        setGameState(JSON.parse(newGameState.body));
+      });
+    });
 
-    setShowMessage(true);
+    return () => {
+      disconnect();
+      setIsConnected(false);
+    };
+  }, [gameId]);
 
-    setTimeout(() => {
-      navigate("/navigation");
-    }, 2000); //
+  const handleCardAction = (actionType: string, cardId?: number, position?: number) => {
+    if (isConnected) {
+      send(`/app/game/${gameId}/move`, { action: actionType, cardId, position });
+    }
+  };
+
+  const placeCard = (position: number) => {
+    if (!selectedCardId) {
+      alert("Please select a card first.");
+      return;
+    }
+    handleCardAction("PLACE", selectedCardId, position);
+    setSelectedCardId(null);
+  };
+
+  const selectCard = (cardId: number) => {
+    setSelectedCardId(cardId);
   };
 
   return (
-    <BaseContainer>
-      <div>
-        {showMessage && <p>You lose the game!</p>}
-        <Button
-          width="500px"
-          onClick={() => doExit()}>
-          Quit
-        </Button>
-      </div>
-    </BaseContainer>
+      <BaseContainer>
+        <div className="game-layout">
+          <div className="left-column">
+            <ChatComponent userId={userId} gameId={gameId} />
+          </div>
+          <div className="center-column">
+            {gameState && gameState.board.gridSquares.map((square, index) => (
+                <div key={index} className={`grid-square color-${square.color}`}
+                     onClick={() => placeCard(index)}>
+                  {square.cardId ? `Card ID: ${square.cardId}` : 'Empty Slot'}
+                </div>
+            ))}
+          </div>
+          <div className="right-column">
+            <Button onClick={() => handleCardAction("DRAW")}>Draw Card</Button>
+            <Button onClick={() => navigate("/navigation")}>Exit</Button>
+          </div>
+        </div>
+      </BaseContainer>
   );
-}
+};
 
 export default KittyCards;

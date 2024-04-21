@@ -8,6 +8,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import {usePolling} from "components/context/PollingContext";
 import { toast } from "react-toastify";
+import { disconnect } from "../../helpers/webSocket";
 
 /*
 It is possible to add multiple components inside a single file,
@@ -42,7 +43,7 @@ const Navigation = () => {
       console.error("Details:", error);
       alert("Something went wrong while fetching the users! See the console for details.");
     }
-
+    disconnect();
     localStorage.removeItem("token");
     localStorage.removeItem("id");
     setCurrentUserId(null);

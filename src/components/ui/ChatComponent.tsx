@@ -1,58 +1,59 @@
-import React, { useState, useEffect } from "react";
-import { connect, subscribe, sendGameMessage, sendPrivateMessage, disconnect, translateMessage } from "../../helpers/webSocket";
+import React, { useEffect, useState } from "react";
+import { api, handleError } from "helpers/api";
+import { connect, subscribe, send, disconnect } from "../../helpers/webSocket";
 
-const ChatComponent = ({ userId, gameId = null }) => {
+interface ChatProps {
+    userId: number;
+    gameId?: number;
+}
+
+const ChatComponent = ({ userId, gameId }: ChatProps) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-    const [recipientId, setRecipientId] = useState(null);
-    const [language, setLanguage] = useState("en");  // Default language
+    const [isConnected, setConnected] = useState(false);
+    const chatTopic = gameId ? `/topic/game/${gameId}` : `/user/${userId}/private`;
 
     useEffect(() => {
-        connect(() => {
-            const chatTopic = gameId ? `/topic/game/${gameId}` : `/queue/private/${userId}`;
-            subscribe(chatTopic, (msg) => {
-                handleMessage(msg);
-            });
-
-            return () => {
-                disconnect();
-            };
+        connect((status) => {
+            if (status) {
+                setConnected(true);
+                // Subscribe inside the callback of connect to ensure connection is established
+                subscribe(chatTopic, (msg) => {
+                    setMessages(prev => [...prev, JSON.parse(msg.body)]);
+                });
+            }
         });
 
-    }, [userId, gameId, recipientId]);
-
-    const handleMessage = (msg) => {
-        const parsedMessage = JSON.parse(msg.body);
-        setMessages(prevMessages => [...prevMessages, parsedMessage]);
-    };
+        return () => {
+            if (isConnected) {
+                disconnect();
+                setConnected(false);
+            }
+        };
+    }, [userId, gameId, chatTopic]);
 
     const sendMessage = () => {
-        const chatMessage = {
-            content: message,
-            userId: userId,
-            gameId: gameId
-        };
-
-        if (gameId) {
-            sendGameMessage(gameId, chatMessage);
-        } else if (recipientId) {
-            sendPrivateMessage(recipientId, chatMessage);
+        if (isConnected) {
+            send(chatTopic, { from: userId, text: message, gameId });
+            setMessage("");
         }
-        setMessage("");
     };
 
-    const requestTranslation = (msg, index) => {
-        translateMessage(msg.userId, {...msg, targetLang: language}).then(translatedMessage => {
-            const updatedMessages = messages.map((item, idx) => {
-                if (idx === index) {
-                    return {...item, content: translatedMessage};
-                }
-                return item;
-            });
-            setMessages(updatedMessages);
-        }).catch(error => {
-            console.error("Translation error:", error);
-        });
+    const translateMessage = async (msgId) => {
+        const msg = messages.find(m => m.id === msgId);
+        if (msg && isConnected) {
+            try {
+                const response = await api.post('/translate', {
+                    text: msg.text,
+                    targetLang: 'de'
+                });
+                const translatedText = response.data;
+                const updatedMessages = messages.map(m => m.id === msgId ? { ...m, text: translatedText } : m);
+                setMessages(updatedMessages);
+            } catch (error) {
+                console.error('Translation error:', error);
+            }
+        }
     };
 
     return (
@@ -60,24 +61,17 @@ const ChatComponent = ({ userId, gameId = null }) => {
             <ul>
                 {messages.map((msg, index) => (
                     <li key={index}>
-                        {msg.content}
-                        {msg.userId !== userId && (
-                            <button onClick={() => requestTranslation(msg, index)}>Translate</button>
-                        )}
+                        {msg.text}
+                        <button onClick={() => translateMessage(msg.id)}>Translate</button>
                     </li>
                 ))}
             </ul>
             <input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Send a message here..."
+                placeholder="Type a message here..."
             />
             <button onClick={sendMessage}>Send</button>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="de">German</option>
-            </select>
         </div>
     );
 };
