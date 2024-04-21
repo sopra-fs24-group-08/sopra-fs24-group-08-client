@@ -3,30 +3,34 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
+import Card from "components/ui/Card";
 
 const emptySlot = null;
-const blockedSlot = "blocked"; // A special marker for the blocked slot
+const blockedSlot = "blocked";
+const cardsrepo = "repo"; // A special marker for the blocked slot
 
 // Initialize a 3x3 grid where the center is a blocked slot
 const initialGrid = () => [
   [emptySlot, emptySlot, emptySlot],
-  [emptySlot, blockedSlot, emptySlot],
+  [emptySlot, cardsrepo, emptySlot],
   [emptySlot, emptySlot, emptySlot]
 ];
 
 interface Card {
   id: number;
   name: string;
+  points: number;
+  color: string;
 }
 
 // Initial set of cards in the player's hand
 const initialHand: Card[] = [
-  { id: 1, name: "Card 1" },
-  { id: 2, name: "Card 2" },
-  { id: 3, name: "Card 3" },
-  { id: 4, name: "Card 4" },
-  { id: 5, name: "Card 5" },
-  { id: 6, name: "Card 6" },
+  { id: 1, name: "Card 1", points: 5, color: "red" },
+  { id: 2, name: "Card 2", points: 5, color: "red"  },
+  { id: 3, name: "Card 3", points: 5, color: "red"  },
+  { id: 4, name: "Card 4", points: 5 , color: "red" },
+  { id: 5, name: "Card 5", points: 5 , color: "red" },
+  { id: 6, name: "Card 6", points: 5 , color: "red" },
 ];
 const KittyCards = () => {
   const [hand, setHand] = useState<Card[]>(initialHand);
@@ -68,17 +72,47 @@ const KittyCards = () => {
           <div key={rowIndex} className="game-board-row">
             {row.map((slot, columnIndex) => {
               let slotClasses = "game-board-slot";
-              if (rowIndex === 1 && columnIndex === 1) {
-                slotClasses += " game-board-center"; // Add a class for styling or identification
+              let slotContent;
+              if (slot === blockedSlot) {
+                slotClasses += " game-board-center";
+                slotContent = <img
+                  src={`${process.env.PUBLIC_URL}/Kittycards.png`}
+                  style={{
+                    display: "block",
+                    width: "80%",
+                    height: "auto",
+                  }}
+                  alt=""
+                />;
+              } else if (slot === emptySlot) {
+                slotContent = <img
+                  src={`${process.env.PUBLIC_URL}/cup.png`}
+                  style={{
+                    display: "block",
+                    width: "80%",
+                    height: "auto",
+                  }}
+                  alt=""
+                />;
+              } else{
+                slotContent = <img
+                  src={`${process.env.PUBLIC_URL}/repo.png`}
+                  style={{
+                    display: "block",
+                    width: "80%",
+                    height: "auto",
+                  }}
+                  alt=""
+                />;
               }
-              
+
               return (
                 <div
                   key={`${rowIndex}-${columnIndex}`}
                   className={slotClasses}
                   onClick={() => placeCard(rowIndex, columnIndex)}
                 >
-                  {/* content for each slot, e.g., a card or empty slot */}
+                  {slotContent}
                 </div>
               );
             })}
@@ -87,8 +121,6 @@ const KittyCards = () => {
       </div>
     );
   };
-
-
   const renderPlayerControls = () => {
     // Implementation of player profiles with avatars, scores and action buttons
   };
@@ -96,7 +128,15 @@ const KittyCards = () => {
   // Function to render the player's profile
   const renderPlayerProfile = (color, playerName, score) => (
     <div className="player-profile">
-      <div className={`player-avatar ${color}`}></div>
+      <img
+        src={`${process.env.PUBLIC_URL}/avatar.png`}
+        style={{
+          display: "block",
+          width: "40%",
+          height: "auto",
+        }}
+        alt=""
+      />
       <div className="player-name">{playerName}</div>
       <div className="player-score">score: {score}</div>
     </div>
@@ -107,15 +147,16 @@ const KittyCards = () => {
   };
 
   const renderHand = () => (
-    <div style={{ display: "flex" }}>
+    <div className="hand-of-cards">
       {hand.map((card: Card) => (
-        <div
+        <Card
           key={card.id}
-          className="card"
+          id={card.id}
+          name={card.name}
+          points={card.points}
+          color={card.color}
           onClick={() => selectCardFromHand(card)}
-        >
-          {card.name}
-        </div>
+        />
       ))}
     </div>
   );

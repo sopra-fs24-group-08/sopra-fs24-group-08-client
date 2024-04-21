@@ -1,0 +1,36 @@
+// Card.scss
+
+.card {
+  width: 80px; // 卡片宽度
+  height: 110px; // 卡片高度
+  background-color: var(--card-color, #7f92ec); // 使用CSS变量作为背景色
+  color: #000; // 文本颜色
+  border-radius: 10px; // 边角圆滑
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // 盒子阴影
+  display: flex; // 使用flex布局
+  flex-direction: column; // 垂直排列内容
+  justify-content: center; // 在主轴方向居中
+  align-items: center; // 在交叉轴方向居中
+  margin: 0.1rem; // 外边距
+  margin-bottom: -1.2rem;
+  position: relative; // 相对定位
+  cursor: pointer; // 鼠标指针变为手型
+  transition: transform 0.1s ease, box-shadow 0.1s ease; // 过渡效果
+
+  &:hover {
+    transform: translateY(-2px); // 鼠标悬停时上移
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); // 鼠标悬停时增加阴影
+  }
+
+  .points {
+    position: absolute; // 绝对定位
+    top: 8px; // 顶部距离
+    left: 8px; // 左侧距离
+    background: rgba(0, 0, 0, 0.7); // 背景颜色
+    color: #fff; // 文本颜色
+    padding: 2px 6px; // 内填充
+    border-radius: 10px; // 边角圆滑
+    font-size: 0.75rem; // 字体大小
+    z-index: 1; // 层叠顺序
+  }
+}
