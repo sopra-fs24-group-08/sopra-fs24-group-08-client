@@ -7,7 +7,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import FormField from "../ui/FormField";
 import "styles/views/Login.scss";
 import { connect } from "../../helpers/webSocket";
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Login = () => {
       // Store the token and user ID in local storage
       localStorage.setItem("token", user.token);
       localStorage.setItem("id", user.id);
-      setAuth({ token: user.token, isConnected: false });
+      setAuth({ token: user.token, isConnected: true });
 
       // Establish WebSocket connection
 

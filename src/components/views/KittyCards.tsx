@@ -45,13 +45,13 @@ const KittyCards = ({ gameId, userId }: KittyCardsProps) => {
     };
   }, [gameId]);
 
-  const handleCardAction = (actionType: string, cardId?: number, position?: number) => {
+  const handleCardAction = (moveType: string, cardId?: number, position?: number) => {
     if (isConnected) {
-      send(`/app/game/${gameId}/move`, { action: actionType, cardId, position });
+      send(`/game/${gameId}/move`, { move: moveType, cardId, position ,});
     }
   };
 
-  const placeCard = (position: number) => {
+  const placeCard = (position) => {
     if (!selectedCardId) {
       alert("Please select a card first.");
       return;

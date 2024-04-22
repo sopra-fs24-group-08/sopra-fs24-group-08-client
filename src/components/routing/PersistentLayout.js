@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { connect } from "../../helpers/webSocket";
+import PropTypes from 'prop-types';
 
 const PersistentLayout = ({ children }) => {
     const { auth, setAuth } = useAuth();
@@ -16,6 +17,10 @@ const PersistentLayout = ({ children }) => {
     }, [auth.token, setAuth]);
 
     return <div>{children}</div>;
+};
+
+PersistentLayout.propTypes = {
+    children: PropTypes.node.isRequired
 };
 
 export default PersistentLayout;

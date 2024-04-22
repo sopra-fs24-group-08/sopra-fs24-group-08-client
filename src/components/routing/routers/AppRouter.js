@@ -39,9 +39,6 @@ const AppRouter = () => {
             <Route path="/edit/:current_username/:status/:creation_date/:current_birthday/:id" element={<EditProfile />} />
           </Route>
 
-          <Route path="/" element={<Navigate replace to="/login" />} />
-
-          <Route path="*" element={<Navigate replace to="/login" />} />
         </Routes>
       </BrowserRouter>
   );

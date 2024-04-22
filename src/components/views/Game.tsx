@@ -4,10 +4,10 @@ import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import {usePolling} from "components/context/PollingContext";
+import PropTypes from "prop-types";
 
 const Game = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
