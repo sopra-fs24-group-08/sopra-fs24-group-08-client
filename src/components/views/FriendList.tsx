@@ -40,9 +40,17 @@ const FriendList = ({ user }: { user: User }) => {
       alert(`Something went wrong with friend request: \n${handleError(error)}`);
     }
   };
-  
-  function doSpectate (id){
 
+  const doDelete = async(friendId) => {
+    const myId = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    try{
+      const response = await api.put(`/users/${myId}/friends/delete`,{}, {headers: {Authorization: `Bearer ${token}`}, params: {FriendId: friendId}});
+      console.log(response.data)
+      window.location.reload(); 
+    }catch(error){
+      alert(`Something went wrong with friend deletion: \n${handleError(error)}`);
+    }
   };
   function goBack (){
     navigate("/navigation")
@@ -72,10 +80,10 @@ const FriendList = ({ user }: { user: User }) => {
 
         <Button
           width="500px"
-          onClick={() => doSpectate(user.id)}
+          onClick={() => doDelete(user.id)}
           className="game username-button-container"
         >
-          spectate
+          delete
         </Button>
       </div>
     );
