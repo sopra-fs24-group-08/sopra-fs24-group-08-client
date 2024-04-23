@@ -1,7 +1,7 @@
+/*
 import React, { createContext, useContext, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import PropTypes from "prop-types";
-import {useNavigate} from "react-router-dom";
 
 const MatchmakingContext = createContext();
 
@@ -9,7 +9,6 @@ export const useMatchmaking = () => useContext(MatchmakingContext);
 
 export const MatchmakingProvider = ({ children }) => {
     const { stompClient } = useAuth();
-    const navigate = useNavigate();
 
     MatchmakingProvider.propTypes = {
         children: PropTypes.node.isRequired
@@ -39,7 +38,7 @@ export const MatchmakingProvider = ({ children }) => {
     const joinMatchmaking = () => {
         stompClient.send('/app/matchmaking/join', {}, JSON.stringify({ userId: stompClient.userId }));
     };
-
+/!**!/
     return (
         <MatchmakingContext.Provider value={{ joinMatchmaking }}>
             {children}
@@ -47,4 +46,4 @@ export const MatchmakingProvider = ({ children }) => {
     );
 };
 
-export default MatchmakingContext;
+export default MatchmakingContext;*/

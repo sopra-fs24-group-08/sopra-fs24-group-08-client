@@ -4,6 +4,8 @@ import ChatComponent from '../ui/ChatComponent';
 import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useGame } from '../context/GameContext';
+import { useAuth } from '../context/AuthContext';
+
 
 interface Card {
   id: number;
@@ -24,7 +26,8 @@ interface KittyCardsProps {
 }
 
 const KittyCards = () => {
-  const { sendMove, sendMessage, gameId } = useGame();
+  const { userId } = useAuth();
+  const { sendMove, sendMessage ,gameId} = useGame();
   const navigate = useNavigate();
   //const [gameState, setGameState] = useState<GameState | null>(null);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
@@ -57,7 +60,29 @@ const KittyCards = () => {
 
   if (!gameId) return <div>Waiting for the game to start!</div>;
 
-  return ( <div> OKAY</div>
+  return (
+      <BaseContainer>
+        <div className="game-layout">
+          <div className="left-column">
+            <ChatComponent userId={userId} gameId={gameId} />
+          </div>
+          <div className="center-column">
+            {/*{gameState && gameState.board.gridSquares.map((square, index) => (
+                <div key={index} className={`grid-square color-${square.color}`}
+                     onClick={() => placeCard(index)}>
+                  {square.cardId ? `Card ID: ${square.cardId}` : 'Empty Slot'}
+                </div>
+            ))}*/}
+          </div>
+          <div className="right-column">
+            <h1>Game ID: {gameId}</h1>
+            <button onClick={() => handleMove({move: 'exampleMove'})}>Make Move</button>
+            <button onClick={() => handleChat('Hello World!')}>Send Message</button>
+            <Button onClick={() => handleCardAction("DRAW")}>Draw Card</Button>
+            <Button onClick={() => navigate("/navigation")}>Exit</Button>
+          </div>
+        </div>
+      </BaseContainer>
   );
 };
 

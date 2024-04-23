@@ -1,55 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { useWebSocket } from "../../helpers/webSocket"
+import { useAuth } from "../context/AuthContext"; // This should be AuthContext
 
 interface ChatProps {
     userId: number;
     gameId?: number;
+    recipientId?: number; // Added for private chat
 }
 
-const ChatComponent = ({ userId, gameId }: ChatProps) => {
-    const { connect, disconnect, subscribe, send } = useWebSocket();
+const ChatComponent = ({ userId, gameId, recipientId }: ChatProps) => {
+    const { websocket } = useAuth(); // useAuth should provide the websocket
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-    const [isConnected, setConnected] = useState(false);
-    const chatTopic = gameId ? `/topic/game/${gameId}` : `/user/${userId}/private`;
 
+    // Determine the chat topic based on gameId or opponentUserId
+    let chatTopic;
+    if (gameId) {
+        chatTopic = `/topic/game/${gameId}`;
+    } else if (recipientId) {
+        chatTopic = `/user/chat/${recipientId}`;
+    }
     useEffect(() => {
-        connect((status) => {
-            if (status) {
-                setConnected(true);
-                subscribe(chatTopic, (msg) => {
-                    setMessages(prev => [...prev, JSON.parse(msg.body)]);
-                });
-            }
-        });
+        if (websocket.isConnected()) {
+            const subscription = websocket.subscribe(chatTopic, (msg) => {
+                setMessages(prev => [...prev, JSON.parse(msg.body)]);
+            });
 
-        return () => {
-            if (isConnected) {
-                disconnect();
-                setConnected(false);
-            }
-        };
-    }, [userId, gameId, chatTopic]);
+            return () => subscription.unsubscribe();
+        }
+    }, [websocket, chatTopic, gameId, recipientId]);
 
     const sendMessage = () => {
-        if (isConnected) {
-            send(chatTopic, { from: userId, text: message, gameId });
-            setMessage("");
-        }
+        const payload = gameId
+            ? { from: userId, text: message, gameId }
+            : { from: userId, text: message };
+
+        websocket.send(`/app${chatTopic}`, {}, JSON.stringify(payload));
+        setMessage("");
     };
 
     const translateMessage = async (msgId) => {
         const msg = messages.find(m => m.id === msgId);
-        if (msg && isConnected) {
+        if (msg) {
             try {
                 const response = await api.post('/translate', {
                     text: msg.text,
                     targetLang: 'de'
                 });
                 const translatedText = response.data;
-                const updatedMessages = messages.map(m => m.id === msgId ? { ...m, text: translatedText } : m);
-                setMessages(updatedMessages);
+                setMessages(messages.map(m => m.id === msgId ? { ...m, text: translatedText } : m));
             } catch (error) {
                 console.error('Translation error:', error);
             }
@@ -58,10 +57,11 @@ const ChatComponent = ({ userId, gameId }: ChatProps) => {
 
     return (
         <div>
+            {/* Using same logic as for Userlist .map */}
             <ul>
                 {messages.map((msg, index) => (
                     <li key={index}>
-                        {msg.text}
+                        {msg.from}: {msg.text}
                         <button onClick={() => translateMessage(msg.id)}>Translate</button>
                     </li>
                 ))}
@@ -69,7 +69,7 @@ const ChatComponent = ({ userId, gameId }: ChatProps) => {
             <input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type a message here..."
+                placeholder="Type a message..."
             />
             <button onClick={sendMessage}>Send</button>
         </div>

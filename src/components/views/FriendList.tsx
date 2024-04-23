@@ -7,42 +7,33 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
+import { useAuth } from "components/context/AuthContext";
 
 const FriendList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
-  const {status} = useParams();
+  const { websocket } = useAuth();
 
   function userProfile (id){
-    let push_to = "/users/" + String(id);
-    navigate(push_to);
+    navigate("/users/" + id);
   };
   /*function myProfile (){
     const myId = localStorage.getItem("id");
     let push_to = "/users/" + myId;
     navigate(push_to);
   };*/
-
-  const doInvite = async(receiverId) => {
-    const myId = localStorage.getItem("id");
-    const token = localStorage.getItem("token");
-    const requestType = "GAMEINVITATION";
-    console.log(myId);
-    console.log(token);
-    try{
-      const requestBody = JSON.stringify({ receiverId, requestType});
-      const response = await api.post(`/game/invite/${myId}`,requestBody, {headers: {Authorization: `Bearer ${token}`}});
-      console.log("You have a new message!");
-    }catch(error){
-      alert(`Something went wrong with friend request: \n${handleError(error)}`);
-    }
+  const doInvite = (receiverId) => {
+    websocket.send(`/app/game/invite`, {}, JSON.stringify({ receiverId }));
+    console.log("Game invitation sent to user ID:", receiverId);
   };
-  
+
+
   function doSpectate (id){
-
+      // Spectate feature (not implemented yet)
   };
+
   function goBack (){
     navigate("/navigation")
 

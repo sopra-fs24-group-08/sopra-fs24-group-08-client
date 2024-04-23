@@ -6,7 +6,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Game.scss";
 import { User } from "types";
-import {usePolling} from "components/context/PollingContext";
 import PropTypes from "prop-types";
 
 const Game = ({ user }: { user: User }) => {

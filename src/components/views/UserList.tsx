@@ -7,19 +7,26 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
-import {usePolling} from "components/context/PollingContext";
+import { useAuth } from "components/context/AuthContext";
 
 const UserList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const {status} = useParams();
+  const { websocket } = useAuth();
 
   function userProfile (id){
     let push_to = "/users/" + String(id);
     navigate(push_to);
   };
 
+  const sendFriendRequest = (receiverId) => {
+    websocket.sendFriendRequest(receiverId);
+    console.log(`Friend request to user with id${receiverId} sent!`);
+  };
+
+  /*onsole.log("Game invitation sent!");
   const doAddFriend = async(receiverId) => {
     const myId = localStorage.getItem("id");
     const token = localStorage.getItem("token");
@@ -33,7 +40,7 @@ const UserList = ({ user }: { user: User }) => {
     }catch(error){
       alert(`Something went wrong with friend request: \n${handleError(error)}`);
     }
-  };
+  };*/
 
   function goBack (){
     navigate("/navigation")
@@ -52,7 +59,7 @@ const UserList = ({ user }: { user: User }) => {
         </Button>
         <Button
           width="500px"
-          onClick={() => doAddFriend(user.id)}
+          onClick={() => sendFriendRequest(user.id)}
           className="game username-button-container"
         >
           add

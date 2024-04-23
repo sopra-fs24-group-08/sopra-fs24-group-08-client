@@ -1,3 +1,4 @@
+/*
 import React, { createContext, useContext, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { toast } from "react-toastify"; // assuming you're using react-toastify for notifications
@@ -67,3 +68,4 @@ export const FriendRequestProvider = ({ children }) => {
     );
 };
 
+*/

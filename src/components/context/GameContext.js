@@ -8,6 +8,7 @@ const GameContext = createContext();
 export const GameProvider = ({ children }) => {
     const { websocket } = useAuth();
     const [gameId, setGameId] = useState(null);
+    const [inGame, setInGame] = useState(false);
 
     useEffect(() => {
         let updatesSub = null;
@@ -21,6 +22,8 @@ export const GameProvider = ({ children }) => {
             chatSub = websocket.subscribe(`/topic/game/${gameId}/chat`, (message) => {
                 console.log("Chat Message:", message.body);  // Process chat messages here
             });
+            // Set inGame status to true when subscribed to a game to avoid getting invited to a game
+            setInGame(true)
         }
 
         return () => {
@@ -30,6 +33,7 @@ export const GameProvider = ({ children }) => {
             if (chatSub) {
                 websocket.unsubscribe(chatSub);
             }
+            setInGame(false); //Allow invites again
         };
     }, [websocket, gameId]);
 
@@ -47,10 +51,12 @@ export const GameProvider = ({ children }) => {
 
     const updateGameId = (id) => {
         setGameId(id);
+        setInGame(id !== null)
+        //another check for ingame-status
     };
 
     return (
-        <GameContext.Provider value={{ sendMove, sendMessage, updateGameId, gameId }}>
+        <GameContext.Provider value={{ sendMove, sendMessage, updateGameId, gameId, inGame}}>
             {children}
         </GameContext.Provider>
     );

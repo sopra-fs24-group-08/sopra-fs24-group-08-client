@@ -1,3 +1,4 @@
+/*
 import React, { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { connect } from "../../helpers/webSocket";
@@ -24,3 +25,4 @@ PersistentLayout.propTypes = {
 };
 
 export default PersistentLayout;
+*/

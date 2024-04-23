@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import {useNavigate} from "react-router-dom";
@@ -6,7 +6,6 @@ import { Button } from "components/ui/Button";
 import "styles/views/Navigation.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import {usePolling} from "components/context/PollingContext";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 
@@ -36,7 +35,7 @@ const Navigation = () => {
     navigate("/userList");
   };
 
-  const joinMatchmaking = () => {
+  /*const joinMatchmaking = () => {
     const id = localStorage.getItem("id");
     sendMessage('matchmaking/join', {});
     toast.info("Looking for a match...");
@@ -52,9 +51,8 @@ const Navigation = () => {
       const decisionRequest = JSON.parse(message.body);
       console.log(decisionRequest.message);  // "Do you want to go first?"
       // Trigger UI element to let the user decide
-    });
+    });*/
 
-  }
     async function doLogout() {
       const myId = localStorage.getItem("id");
       const request_to = "/logout/" + myId
@@ -74,17 +72,8 @@ const Navigation = () => {
         console.error(`Something went wrong during logout: \n${handleError(error)}`);
         alert("Something went wrong during logout! See the console for details.");
       }
-    }
 
-    const doMatch = async () => {
-      try {
-        joinMatchmaking(); // Join matchmaking when user clicks start
 
-      } catch (error) {
-        alert(
-            `Something went wrong during the login: \n${handleError(error)}`
-        );
-      }
     };
 
     return (
@@ -93,10 +82,10 @@ const Navigation = () => {
             <div className="navigation form">
               <div className="navigation button-container">
                 <Button
-                    style={{width: "100%", marginBottom: "10px"}}
-                    onClick={() => doMatch()}
+                    style={{ width: "100%", marginBottom: "10px" }}
+                    onClick={() => navigate('/matchmaking')}  // Navigates to the Matchmaking
                 >
-                  Start
+                  Start Matchmaking
                 </Button>
                 <Button
                     style={{width: "100%", marginBottom: "10px"}}

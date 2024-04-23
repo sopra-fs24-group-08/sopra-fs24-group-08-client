@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import {getDomain} from "./getDomain";
+import { getDomain } from "./getDomain";
 
 export const useWebSocket = () => {
   const [stompClient, setStompClient] = useState(null);
@@ -18,21 +18,17 @@ export const useWebSocket = () => {
     const url = `${getDomain()}/ws?userId=${id}&token=${token}`;
 
     // Use a factory function to allow Stomp client to reconnect using a new SockJS instance
-    const socketFactory = () => {
-      return new SockJS(url);
-    };
+    const socketFactory = () => new SockJS(url);
 
     const client = Stomp.over(socketFactory); // Pass the factory function here
-
-    // Configure automatic reconnect with a delay of 5 seconds
     client.reconnect_delay = 5000;
 
     client.connect({}, frame => {
       console.log("Connected: " + frame);
       setStompClient(client);
     }, error => {
-      console.error("Connection error: " + error);
-      // Reconnection will be attempted because of the reconnect_delay
+      console.error("Connection error: ", error);
+      // Handle the connection error appropriately (e.g., notify the user)
     });
   };
 
@@ -45,5 +41,38 @@ export const useWebSocket = () => {
     }
   };
 
-  return { connect, disconnect, isConnected };
+  const send = (destination, headers, body) => {
+    if (isConnected()) {
+      stompClient.send(destination, headers, body);
+    }
+  };
+
+  const subscribe = (destination, callback) => {
+    return isConnected() ? stompClient.subscribe(destination, callback) : null;
+  };
+
+  const unsubscribe = (subscription) => {
+    if (subscription) {
+      subscription.unsubscribe();
+    }
+  };
+
+  const sendFriendRequest = (receiverId) => {
+    if (isConnected()) {
+      stompClient.send("/app/friend/request", {}, JSON.stringify({ receiverId }));
+    }
+  };
+
+  const subscribeToFriendRequests = (callback) => {
+    if (isConnected()) {
+      return stompClient.subscribe("/user/queue/friend-requests", (message) => {
+        callback(JSON.parse(message.body));
+      });
+    }
+    return null;
+  };
+
+
+
+  return { connect, disconnect, isConnected, send, subscribe, unsubscribe,sendFriendRequest, subscribeToFriendRequests };
 };
