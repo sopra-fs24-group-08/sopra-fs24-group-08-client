@@ -14,7 +14,7 @@ export let connect = (callback) => {
   stompClient.reconnect_delay = 4000;
 
   stompClient.connect({}, function (frame) {
-    console.log("Connected: " + frame);
+    console.log("Connected: ", frame); // Protokollieren des frame-Parameters
     connected = true;
     callback();
     const subscription = stompClient.subscribe(
