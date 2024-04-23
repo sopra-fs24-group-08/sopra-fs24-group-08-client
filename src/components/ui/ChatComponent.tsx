@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { connect, subscribe, send, disconnect } from "../../helpers/webSocket";
+import { useWebSocket } from "../../helpers/webSocket"
 
 interface ChatProps {
     userId: number;
@@ -8,6 +8,7 @@ interface ChatProps {
 }
 
 const ChatComponent = ({ userId, gameId }: ChatProps) => {
+    const { connect, disconnect, subscribe, send } = useWebSocket();
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const [isConnected, setConnected] = useState(false);
@@ -17,7 +18,6 @@ const ChatComponent = ({ userId, gameId }: ChatProps) => {
         connect((status) => {
             if (status) {
                 setConnected(true);
-                // Subscribe inside the callback of connect to ensure connection is established
                 subscribe(chatTopic, (msg) => {
                     setMessages(prev => [...prev, JSON.parse(msg.body)]);
                 });

@@ -1,78 +1,49 @@
+import { useState } from 'react';
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { getDomain } from "./getDomain";
+import {getDomain} from "./getDomain";
 
-let stompClient = null;
-//sockjs does not support custom headers in the initial HTTP handshake
-export const connect = (callback) => {
-  console.log("Trying to connect, d")
-  const userToken = localStorage.getItem('token');
-  if (!userToken) {
-    console.error("No user token available");
-    callback(false);
-    return; // Exit if no token is available
-  }
-  console.log("we is connecting")
-  const userId = localStorage.getItem('id');
-  const url = `${getDomain()}/ws?userId=${userId}&token=${userToken}`;
-  const socket = new SockJS(url);
-  //const url = `${getDomain()}/ws`; use this if the query handshakes keep not working
-  stompClient = Stomp.over(() => new SockJS(url));
-  stompClient.reconnect_delay = 4000;
+export const useWebSocket = () => {
+  const [stompClient, setStompClient] = useState(null);
 
-  stompClient.connect({}, frame => {
-    console.log("Connected: " + frame);
-    if (callback) {
-      callback(true);  // Pass true to indicate a successful connection
+  const isConnected = () => {
+    return !!stompClient && stompClient.connected;
+  };
+
+  const connect = (id, token) => {
+    if (isConnected()) {
+      console.log("Already connected.");
+      return;
     }
-  }, error => {
-    console.error("Could not connect to WebSocket: " + error);
-    if (callback) {
-      callback(false);  // Pass false to indicate a failed connection
-    }
-  });
-};
+    const url = `${getDomain()}/ws?userId=${id}&token=${token}`;
 
-export const subscribe = (destination, callback) => {
-  if (stompClient) {
-    return stompClient.subscribe(destination, message => {
-      callback(JSON.parse(message.body));
+    // Use a factory function to allow Stomp client to reconnect using a new SockJS instance
+    const socketFactory = () => {
+      return new SockJS(url);
+    };
+
+    const client = Stomp.over(socketFactory); // Pass the factory function here
+
+    // Configure automatic reconnect with a delay of 5 seconds
+    client.reconnect_delay = 5000;
+
+    client.connect({}, frame => {
+      console.log("Connected: " + frame);
+      setStompClient(client);
+    }, error => {
+      console.error("Connection error: " + error);
+      // Reconnection will be attempted because of the reconnect_delay
     });
-  }
-};
+  };
 
-export const send = (destination, payload) => {
-  if (stompClient && stompClient.connected) {
-    // Add userId to the destination URL if required
-    const userId = localStorage.getItem('id');  // Assuming the user ID is stored in localStorage
-    stompClient.send(`/app/${destination}`, {}, JSON.stringify(payload));
-  }
-};
-
-function subscribeToGameUpdates(gameId) {
-  stompClient.subscribe('/topic/game/' + gameId, function(update) {
-    const gameState = JSON.parse(update.body);
-    updateGameUI(gameState);  // Updates the UI with new game state
-  });
-};
-
-function subscribeToMatchmakingUpdates() {
-  const userId = localStorage.getItem('id');
-  subscribe(`/user/${userId}/queue/matchmaking`, response => {
-    if (response.status === 'matched') {
-      console.log('Match found:', response.gameId);
-      // Navigate to game page or load game view
-    } else {
-      console.log('Still waiting for a match');
+  const disconnect = () => {
+    if (isConnected()) {
+      stompClient.disconnect(() => {
+        console.log("Disconnected");
+        setStompClient(null);
+      });
     }
-  });
-}
+  };
 
-
-export const disconnect = () => {
-  if (stompClient) {
-    stompClient.disconnect();
-    console.log("Disconnected");
-    stompClient = null;
-  }
+  return { connect, disconnect, isConnected };
 };

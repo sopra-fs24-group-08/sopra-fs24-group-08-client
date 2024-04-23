@@ -8,7 +8,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import {usePolling} from "components/context/PollingContext";
 import { toast } from "react-toastify";
-import { send, disconnect ,subscribe} from "../../helpers/webSocket";
+import { useAuth } from "../context/AuthContext";
 
 /*
 It is possible to add multiple components inside a single file,
@@ -19,7 +19,7 @@ specific components that belong to the main one in the same file.
 
 const Navigation = () => {
   const navigate = useNavigate();
-  const {serverRequests, currentUserId, setCurrentUserId} = usePolling();
+  const { logout , websocket ,sendMessage,subscribe, id} = useAuth();
 
 
   function myProfile() {
@@ -37,10 +37,10 @@ const Navigation = () => {
   };
 
   const joinMatchmaking = () => {
-    const userId = localStorage.getItem('id');
-    send('matchmaking/join', {});
+    const id = localStorage.getItem("id");
+    sendMessage('matchmaking/join', {});
     toast.info("Looking for a match...");
-    subscribe(`/user/${userId}/queue/matchmaking`, response => {
+    subscribe(`/user/${id}/queue/matchmaking`, response => {
       const data = JSON.parse(response.body);
       if (data.status === "matched") {
         console.log('Match found:', response.gameId);
@@ -48,29 +48,32 @@ const Navigation = () => {
       }
     });
 
-      subscribe(`/user/${userId}/queue/turn-decision`, (message) => {
+      subscribe(`/user/${useAuth.id}/queue/turn-decision`, (message) => {
       const decisionRequest = JSON.parse(message.body);
       console.log(decisionRequest.message);  // "Do you want to go first?"
       // Trigger UI element to let the user decide
     });
 
   }
-    async function logout() {
+    async function doLogout() {
       const myId = localStorage.getItem("id");
       const request_to = "/logout/" + myId
       try {
-        const res = await api.put(request_to)
+        // Attempt to log out on the backend
+        await api.put(request_to);
+
+        // If successful, disconnect WebSocket and perform client-side logout
+        if (websocket.isConnected()) {
+          websocket.disconnect();
+        }
+        logout();  // This comes from AuthContext and clears the client-side auth state
+
+        toast.dismiss();
+        navigate("/login");
       } catch (error) {
-        console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
-        console.error("Details:", error);
-        alert("Something went wrong while fetching the users! See the console for details.");
+        console.error(`Something went wrong during logout: \n${handleError(error)}`);
+        alert("Something went wrong during logout! See the console for details.");
       }
-      disconnect();
-      localStorage.removeItem("token");
-      localStorage.removeItem("id");
-      setCurrentUserId(null);
-      toast.dismiss();
-      navigate("/login");
     }
 
     const doMatch = async () => {
@@ -115,7 +118,7 @@ const Navigation = () => {
                 </Button>
                 <Button
                     style={{width: "100%", marginBottom: "10px"}}
-                    onClick={() => logout()}
+                    onClick={() => doLogout()}
                 >
                   Logout
                 </Button>

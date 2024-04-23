@@ -1,32 +1,49 @@
-import React, { createContext, useContext, useState } from "react";
-import PropTypes from 'prop-types';  // Import PropTypes
+import PropTypes from 'prop-types';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useWebSocket } from '../../helpers/webSocket';
 
-const AuthContext = createContext(null);
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [auth, setAuth] = useState({ token: null, user: null });
+    const [auth, setAuth] = useState({ currUser: null, token: null, id: null});
+    const websocket = useWebSocket();
 
-    const login = (user, token) => {
-        localStorage.setItem("token", token);
+    useEffect(() => {
+        if (auth.token && auth.id && !websocket.isConnected()) {
+            console.log("Attempting to connect WebSocket with ID:", auth.id);
+            websocket.connect(auth.id, auth.token);
+        }
+        return () => {
+            if (!auth.token && websocket.isConnected()) {
+                console.log("Disconnecting WebSocket");
+                websocket.disconnect();
+            }
+        };
+    }, [auth.token, auth.id, websocket]);  // Ensure websocket is part of the dependency array
+
+    const login = (user) => {
+        localStorage.setItem('token', user.token);
+        localStorage.setItem("currUser", JSON.stringify(user));
         localStorage.setItem("id", user.id);
-        setAuth({ token, user });
+        setAuth({ currUser: JSON.stringify(user), token: user.token, id: user.id });
     };
 
     const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        setAuth({ token: null, user: null });
+        localStorage.removeItem('token');
+        localStorage.removeItem('currUser');
+        localStorage.removeItem('id');
+        setAuth({ currUser: null, token: null, id: null });
     };
 
     return (
-        <AuthContext.Provider value={{ auth,setAuth, login, logout }}>
+        <AuthContext.Provider value={{ ...auth, login, logout, websocket }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
 AuthProvider.propTypes = {
-    children: PropTypes.node.isRequired
+    children: PropTypes.node
 };
 
 export const useAuth = () => useContext(AuthContext);

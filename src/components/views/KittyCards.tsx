@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { connect, subscribe, send, disconnect } from '../../helpers/webSocket';
 import ChatComponent from '../ui/ChatComponent';
 import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
+import { useGame } from '../context/GameContext';
 
 interface Card {
   id: number;
@@ -23,32 +23,23 @@ interface KittyCardsProps {
   userId: number;
 }
 
-const KittyCards = ({ gameId, userId }: KittyCardsProps) => {
+const KittyCards = () => {
+  const { sendMove, sendMessage, gameId } = useGame();
   const navigate = useNavigate();
-  const [gameState, setGameState] = useState<GameState | null>(null);
+  //const [gameState, setGameState] = useState<GameState | null>(null);
   const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
 
-  //stompClient.subscribe('/topic/gamestate', function (message) {
-    //console.log(JSON.parse(message.body).content);
-  useEffect(() => {
-    connect(() => {
-      setIsConnected(true);
-      subscribe(`/topic/game/${gameId}`, (newGameState) => {
-        setGameState(JSON.parse(newGameState.body));
-      });
-    });
-
-    return () => {
-      disconnect();
-      setIsConnected(false);
-    };
-  }, [gameId]);
 
   const handleCardAction = (moveType: string, cardId?: number, position?: number) => {
-    if (isConnected) {
-      send(`/game/${gameId}/move`, { move: moveType, cardId, position ,});
+      sendMove(`/game/${gameId}/move`, { move: moveType, cardId, position ,});
     }
+  //Base structure, add logic
+  const handleMove = (move) => {
+    sendMove(move);
+  };
+
+  const handleChat = (message) => {
+    sendMessage({ text: message });
   };
 
   const placeCard = (position) => {
@@ -64,26 +55,9 @@ const KittyCards = ({ gameId, userId }: KittyCardsProps) => {
     setSelectedCardId(cardId);
   };
 
-  return (
-      <BaseContainer>
-        <div className="game-layout">
-          <div className="left-column">
-            <ChatComponent userId={userId} gameId={gameId} />
-          </div>
-          <div className="center-column">
-            {gameState && gameState.board.gridSquares.map((square, index) => (
-                <div key={index} className={`grid-square color-${square.color}`}
-                     onClick={() => placeCard(index)}>
-                  {square.cardId ? `Card ID: ${square.cardId}` : 'Empty Slot'}
-                </div>
-            ))}
-          </div>
-          <div className="right-column">
-            <Button onClick={() => handleCardAction("DRAW")}>Draw Card</Button>
-            <Button onClick={() => navigate("/navigation")}>Exit</Button>
-          </div>
-        </div>
-      </BaseContainer>
+  if (!gameId) return <div>Waiting for the game to start!</div>;
+
+  return ( <div> OKAY</div>
   );
 };
 

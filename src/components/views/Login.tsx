@@ -4,63 +4,81 @@ import User from "models/User";
 import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
-import FormField from "../ui/FormField";
 import "styles/views/Login.scss";
-import { connect } from "../../helpers/webSocket";
+import PropTypes from "prop-types";
 import { useAuth } from "../context/AuthContext";
+import Header from "./Header";
+
+const FormField = (props) => {
+  return (
+      <div className="login field">
+        <label className="login label">{props.label}</label>
+        <input
+            className="login input"
+            placeholder={props.placeholder}
+            value={props.value}
+            onChange={(e) => props.onChange(e.target.value)}
+        />
+      </div>
+  );
+};
+
+FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+};
+
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { auth, setAuth } = useAuth();
+  const { login } = useAuth();
 
   const doLogin = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
       const response = await api.post("/login", requestBody);
-
-      // Assuming the response will have a token and a user id
       const user = new User(response.data);
-
-      // Store the token and user ID in local storage
-      localStorage.setItem("token", user.token);
-      localStorage.setItem("id", user.id);
-      setAuth({ token: user.token, isConnected: true });
-
-      // Establish WebSocket connection
-
-        // Navigate to the main area of the application after a successful connection
+      login(user);
       navigate("/navigation");
-
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
   };
-
+  const navigateToRegister = () => {
+    navigate("/register");
+  };
   return (
       <BaseContainer>
+        <Header height="100" />
         <div className="login container">
           <div className="login form">
             <FormField
-                label="Username"
+                placeholder = "username"
                 value={username}
-                onChange={setUsername}
+                onChange={(un: string) => setUsername(un)}
             />
             <FormField
-                label="Password"
+                placeholder = "password"
                 value={password}
-                onChange={setPassword}
+                onChange={(n) => setPassword(n)}
             />
             <div className="login button-container">
               <Button
                   disabled={!username || !password}
-                  onClick={doLogin}
+                  width="100%"
+                  onClick={() => doLogin()}
               >
                 Login
               </Button>
+            </div>
+            <div className="register button-container">
               <Button
-                  onClick={() => navigate("/register")}
+                  width="100%"
+                  onClick={navigateToRegister}
               >
                 Register
               </Button>

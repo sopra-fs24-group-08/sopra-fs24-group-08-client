@@ -2,25 +2,32 @@ import React from "react";
 import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
 import { ToastProvider } from "./components/context/ToastContext";
-import { PollingProvider } from "./components/context/PollingContext";
 import { AuthProvider } from "./components/context/AuthContext";
-import PersistentLayout from "./components/routing/PersistentLayout";
-//import { MatchmakingProvider } from "./components/context/MatchmakingContext";
+import { MatchmakingProvider } from "./components/context/MatchmakingContext";
+import { GameProvider } from "./components/context/GameContext";
 //import TurnDecisionModal from "./components/ui//TurnDecisionModal";
+import { ChatProvider } from "./components/context/ChatContext";
+import {BrowserRouter} from "react-router-dom";
+
+
 
 
 const App = () => {
     return (
-        <AuthProvider>
-            <PersistentLayout>
+        <BrowserRouter>
+            <AuthProvider>
                 <ToastProvider>
-                    <PollingProvider>
-                        <Header height="100" />
-                        <AppRouter />
-                    </PollingProvider>
+                    <MatchmakingProvider>
+                        <GameProvider>
+                            <ChatProvider>
+                                <AppRouter />
+                            </ChatProvider>
+                        </GameProvider>
+                    </MatchmakingProvider>
                 </ToastProvider>
-            </PersistentLayout>
-        </AuthProvider>
+            </AuthProvider>
+        </BrowserRouter>
+
     );
 };
 
