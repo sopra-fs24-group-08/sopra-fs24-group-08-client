@@ -18,7 +18,7 @@ export let connect = (callback) => {
     connected = true;
     callback();
     const subscription = stompClient.subscribe(
-      `/topic/greetings`,
+      `/chat/chatbox`,
       function (frame) {
         console.log("Subscribed: " + frame);
       },
@@ -57,7 +57,7 @@ export let disconnect = () => {
 export let isConnected = () => connected;
 
 //doesn't work yet, just leaving here for sb else or I do later.
-export let Translation = (chatId) => {
-  stompClient.send("/app/chat/" + chatId);
+export let send = (message) => {
+  stompClient.send("/chat", message);
 };
 

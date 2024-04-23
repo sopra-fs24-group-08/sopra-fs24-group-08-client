@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { getDomain } from "../helpers/getDomain";
-import { connect, disconnect } from "../helpers/webSocket";
+import { connect, disconnect, send } from "../helpers/webSocket";
 
 const WebSocketContext = createContext(null);
 
@@ -14,8 +14,8 @@ export const WebSocketProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    connect((connectedSocket) => {
-      setSocket(connectedSocket);
+    connect((socket) => {
+      setSocket(socket);
     });
     return () => {
       if (socket) {
@@ -44,11 +44,9 @@ export const WebSocketProvider = ({ children }) => {
   }, [socket]);
 
   const sendMessage = (message) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(message);
-    } else {
-      console.log("WebSocket is not open or not connected.");
-    }
+
+      send(message);
+
   };
 
   return (
