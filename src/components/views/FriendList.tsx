@@ -8,13 +8,21 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import Header from "./Header";
+import {usePolling} from "components/context/PollingContext";
 
 const FriendList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
+  const { inGame } = usePolling();
   const {status} = useParams();
+
+  useEffect(() => {
+    if (inGame === true){
+      navigate("/kittycards");
+    }
+  }, [inGame]);
 
   function userProfile (id){
     let push_to = "/users/" + String(id);

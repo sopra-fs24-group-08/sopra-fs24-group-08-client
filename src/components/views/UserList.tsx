@@ -14,6 +14,13 @@ const UserList = ({ user }: { user: User }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const {status} = useParams();
+  const { inGame } = usePolling();
+
+  useEffect(() => {
+    if (inGame === true){
+      navigate("/kittycards");
+    }
+  }, [inGame]);
 
   function userProfile (id){
     let push_to = "/users/" + String(id);

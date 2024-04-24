@@ -37,7 +37,7 @@ FormField.propTypes = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const { serverRequests, currentUserId, setCurrentUserId  } = usePolling();
+  const {setCurrentUserId} = usePolling();
   const navigateToRegister = () => {
     navigate("/register");
   };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import {useNavigate} from "react-router-dom";
@@ -19,7 +19,14 @@ specific components that belong to the main one in the same file.
 
 const Navigation = () => {
   const navigate = useNavigate();
-  const { serverRequests, currentUserId, setCurrentUserId  } = usePolling();
+  const { setCurrentUserId, inGame } = usePolling();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (inGame === true){
+      navigate("/kittycards");
+    }
+  }, [inGame]);
 
 
   function myProfile (){
@@ -51,66 +58,96 @@ const Navigation = () => {
     navigate("/login");
   }
   const doMatch = async () => {
-    try {/*
-      const requestBody = JSON.stringify({ username, password });
-      const response = await api.post("/login", requestBody);
-
-      // Get the returned user and update a new object.
-      const user = new User(response.data);
-
-      // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
-      localStorage.setItem("id", user.id);*/
-
-      // Login successfully worked --> navigate to the route /game in the GameRouter
-      navigate("/kittycards");
+    try {
+      setLoading(true);
+      const myId = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
+      const response = await api.put(`/games/queue/${myId}`,{}, {headers: {Authorization: `Bearer ${token}`}});
+      const matchResult = (response.data.gameId !== null);
+      setLoading(false);
+      if (matchResult){
+        // Login successfully worked --> navigate to the route /game in the GameRouter
+        navigate("/kittycards");
+      }
     } catch (error) {
       alert(
-        `Something went wrong during the login: \n${handleError(error)}`
+        `Something went wrong during matching a opponent: \n${handleError(error)}`
+      );
+      setLoading(false);
+      doQuitQueueing();
+    }
+  };
+
+  const doQuitQueueing = async () => {
+    try {
+      const myId = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
+      const response = await api.delete(`/games/dequeue/${myId}`, {headers: {Authorization: `Bearer ${token}`}});
+      alert(response.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      alert(
+        `Something went wrong during quiting the queue: \n${handleError(error)}`
       );
     }
   };
 
   return (
-    <BaseContainer>
-      <Header height="100" />
-      <div className="navigation container">
-        <div className="navigation form">
+    <div>
+      {loading?(
+        <div>
+          <div>Loading...</div>
           <div className="navigation button-container">
             <Button
               style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => doMatch()}
+              onClick={() => doQuitQueueing()}
             >
-              Start
-            </Button>
-            <Button
-              style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => navigateToFriendList()}
-            >
-              Friends
-            </Button>
-            <Button
-              style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => navigateToUserList()}
-            >
-              UserList
-            </Button>
-            <Button
-              style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => myProfile()}
-            >
-              My Profile
-            </Button>
-            <Button
-              style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => logout()}
-            >
-              Logout
+              Quit
             </Button>
           </div>
         </div>
-      </div>
-    </BaseContainer>
+      ): (    
+        <BaseContainer>
+          <Header height="100" />
+          <div className="navigation container">
+            <div className="navigation form">
+              <div className="navigation button-container">
+                <Button
+                  style={{ width: "100%", marginBottom: "10px" }}
+                  onClick={() => doMatch()}
+                >
+              Start
+                </Button>
+                <Button
+                  style={{ width: "100%", marginBottom: "10px" }}
+                  onClick={() => navigateToFriendList()}
+                >
+                  Friends
+                </Button>
+                <Button
+                  style={{ width: "100%", marginBottom: "10px" }}
+                  onClick={() => navigateToUserList()}
+                >
+                  UserList
+                </Button>
+                <Button
+                  style={{ width: "100%", marginBottom: "10px" }}
+                  onClick={() => myProfile()}
+                >
+                  My Profile
+                </Button>
+                <Button
+                  style={{ width: "100%", marginBottom: "10px" }}
+                  onClick={() => logout()}
+                >
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </div>
+        </BaseContainer>)}
+    </div>
   );
 };
 

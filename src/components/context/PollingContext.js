@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import React, { createContext, useContext, useState, useEffect} from "react";
 import { api, handleError } from "helpers/api";
 import PropTypes from "prop-types";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,6 +11,7 @@ export const usePolling = () => useContext(PollingContext);
 export const PollingProvider = ({ children }) => {
   const [data, setData] = useState(null); 
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [inGame, setInGame] = useState(false);
 
   useEffect(() => {
     let activeTimerId = null;
@@ -26,7 +27,7 @@ export const PollingProvider = ({ children }) => {
         setData(response.data);
         console.log(response);
         clearTimeout(activeTimerId);
-        activeTimerId = setTimeout(fetchData, 10000);
+        activeTimerId = setTimeout(fetchData, 1000);
 
       } catch (error) {
         console.log(error.name);
@@ -36,7 +37,7 @@ export const PollingProvider = ({ children }) => {
         else if (error.response.status === 408){
           console.error(`Long-polling Message: \n${handleError(error)}`, error);
           clearTimeout(activeTimerId);
-          activeTimerId = setTimeout(fetchData, 10000);
+          activeTimerId = setTimeout(fetchData, 1000);
         }
         else {
           alert(
@@ -106,6 +107,7 @@ export const PollingProvider = ({ children }) => {
         const response = await api.post(`/game/${userId}/invitationresponse`, requestBody, {headers: {Authorization: `Bearer ${token}`}});
         toast.dismiss();
         toast(`you accepted ${para.request.senderName}'s game invitation!`);
+        setInGame(true);
       }catch(error){
         alert(
           `Something went wrong during accept friend request: \n${handleError(error)}`
@@ -167,6 +169,7 @@ export const PollingProvider = ({ children }) => {
           if (requestDTO.status === "ACCEPTED"){
             toast(`${requestDTO.receiverName} accepted your game invitation!`);
             setData(null);
+            setInGame(true);
           }else if (requestDTO.status === "DECLINED"){
             toast(`${requestDTO.receiverName} declined your game invitation!`);
             setData(null);
@@ -177,7 +180,7 @@ export const PollingProvider = ({ children }) => {
   }, [data])
 
   return (
-    <PollingContext.Provider value={{ data, currentUserId, setCurrentUserId}}>
+    <PollingContext.Provider value={{ data, currentUserId, setCurrentUserId, inGame, setInGame}}>
       {children}
     </PollingContext.Provider>
   );

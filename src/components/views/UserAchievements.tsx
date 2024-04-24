@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useEffect} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "styles/ui/UserAchievements.scss";
-
+import {usePolling} from "components/context/PollingContext";
 
 const UserAchievements = () => {
   //perhaps add Icons, greyed out Icons for locked ones??
@@ -9,6 +9,14 @@ const UserAchievements = () => {
   const location = useLocation();
   const { achievements, username } = location.state || { achievements: [], username: '' };
   const navigate = useNavigate();
+  const { setCurrentUserId, inGame } = usePolling();
+
+  useEffect(() => {
+    if (inGame === true){
+      navigate("/kittycards");
+    }
+  }, [inGame]);
+
   const handleClick = () =>{
     navigate(-1)
   }

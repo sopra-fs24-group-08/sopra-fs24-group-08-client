@@ -4,6 +4,7 @@ import {api, handleError} from "helpers/api";
 import {Button} from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfile.scss";
+import {usePolling} from "components/context/PollingContext";
 
 
 const UserProfile = () => {
@@ -13,6 +14,13 @@ const UserProfile = () => {
   const userId = localStorage.getItem("id");
   const token = localStorage.getItem("token");
   const [content, setContent] = useState(null);
+  const { setCurrentUserId, inGame } = usePolling();
+
+  useEffect(() => {
+    if (inGame === true){
+      navigate("/kittycards");
+    }
+  }, [inGame]);
 
 
   function goBack () {
