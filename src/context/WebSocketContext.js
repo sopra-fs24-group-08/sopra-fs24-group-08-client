@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { getDomain } from "../helpers/getDomain";
-import { connect, disconnect, send } from "../helpers/webSocket";
+import { connect, disconnect, send, receiveMessage } from "../helpers/webSocket";
 
 const WebSocketContext = createContext(null);
 
@@ -17,13 +17,16 @@ export const WebSocketProvider = ({ children }) => {
     connect((socket) => {
       setSocket(socket);
     });
+    receiveMessage((receivedMessage) => {
+            setMessages((previousMessages) => [...previousMessages, receivedMessage]);
+          });
     return () => {
       if (socket) {
         socket.close();
       }
       disconnect();
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     if (socket) {
@@ -31,10 +34,7 @@ export const WebSocketProvider = ({ children }) => {
         console.log("WS-Connection established");
       };
 
-      socket.onmessage = (event) => {
-        console.log("Receiving Message", event.data);
-        setMessages(previousMessages => [...previousMessages, event.data]);
-      };
+
 
       socket.onclose = () => {
         console.log("WS-Connection disabled");

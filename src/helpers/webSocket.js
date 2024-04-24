@@ -58,6 +58,12 @@ export let isConnected = () => connected;
 
 //doesn't work yet, just leaving here for sb else or I do later.
 export let send = (message) => {
-  stompClient.send("/chat", message);
+  stompClient.send("/app/chat", {}, message);
 };
-
+export let receiveMessage = (handleMessageCallback) => {
+  stompClient.onmessage = (event) => {
+    console.log("Receiving Message", event.data);
+    const receivedMessage = JSON.parse(event.data);
+    handleMessageCallback(receivedMessage);
+  };
+};
