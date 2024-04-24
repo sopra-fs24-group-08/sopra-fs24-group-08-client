@@ -19,16 +19,16 @@ export const AuthProvider = ({ children }) => {
                 websocket.connect(auth.id, auth.token);
 
                 // Subscribe to friend requests
-                friendRequestSub = websocket.subscribeToFriendRequests(message => {
+                friendRequestSub = websocket.subscribe("/user/queue/friend-requests",message => {
                     const request = JSON.parse(message.body);
                     handleFriendRequest(request);
-                });
+                })
 
                 // Subscribe to game invitations
                 gameInvitationSub = websocket.subscribe(`/user/${auth.id}/game-invitations`, message => {
                     const invitation = JSON.parse(message.body);
                     handleGameInvitation(invitation);
-                });
+                })
             }
         };
 

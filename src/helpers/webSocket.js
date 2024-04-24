@@ -63,16 +63,7 @@ export const useWebSocket = () => {
     }
   };
 
-  const subscribeToFriendRequests = (callback) => {
-    if (isConnected()) {
-      return stompClient.subscribe("/user/queue/friend-requests", (message) => {
-        callback(JSON.parse(message.body));
-      });
-    }
-    return null;
-  };
 
 
-
-  return { connect, disconnect, isConnected, send, subscribe, unsubscribe,sendFriendRequest, subscribeToFriendRequests };
+  return { connect, disconnect, isConnected, send, subscribe, unsubscribe,sendFriendRequest };
 };

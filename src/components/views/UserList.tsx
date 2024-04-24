@@ -19,7 +19,7 @@ const UserList = ({ user }: { user: User }) => {
   function userProfile (id){
     let push_to = "/users/" + String(id);
     navigate(push_to);
-  };
+  }
 
   const sendFriendRequest = (receiverId) => {
     websocket.sendFriendRequest(receiverId);
