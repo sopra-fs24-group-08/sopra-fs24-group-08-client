@@ -2,28 +2,44 @@ import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
-import { useAuth } from "components/context/AuthContext";
+import { toast } from "react-toastify";
+//import { useAuth } from "components/context/AuthContext";
 
 const UserList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
-  const {status} = useParams();
-  const { websocket } = useAuth();
+
 
   function userProfile (id){
     let push_to = "/users/" + String(id);
     navigate(push_to);
   }
 
-  const sendFriendRequest = (receiverId) => {
-    websocket.sendFriendRequest(receiverId);
-    console.log(`Friend request to user with id${receiverId} sent!`);
+  const sendFriendRequest = async(receiverId) => {
+    const id =  localStorage.getItem("id")
+    const token = localStorage.getItem("token")
+      const friendRequest = {
+          senderId: id,          // Assuming senderId is a numeric ID
+          senderName: "John Doe", // Sender's name
+          receiverId: receiverId,        // Assuming receiverId is a numeric ID
+          receiverName: "Jane Smith", // Receiver's name
+          requestType: "FRIENDADDING", // Type of the request, string representing an enum in your backend
+          status: "SENT"       // Current status of the request, string representing an enum in your backend
+      };
+    try{
+        const requestBody = JSON.stringify(friendRequest);
+        const response = await api.post(`/users/${id}/friends/add`,requestBody,{ headers:{Authorization:`Bearer ${token}`}});
+        if (response.status === 200) {
+            console.log('Friend request sent successfully');
+        }}catch(error){
+        alert(error.message);
+    }
   };
 
   /*onsole.log("Game invitation sent!");
@@ -57,6 +73,7 @@ const UserList = ({ user }: { user: User }) => {
         >
           {user.username}
         </Button>
+        <Button onClick={() => toast.info('Test Toast')}>Show Test Toast</Button>
         <Button
           width="500px"
           onClick={() => sendFriendRequest(user.id)}

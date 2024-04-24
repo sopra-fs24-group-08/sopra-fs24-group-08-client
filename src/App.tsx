@@ -1,30 +1,24 @@
 import React from "react";
-import Header from "./components/views/Header";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AppRouter from "./components/routing/routers/AppRouter";
 import { AuthProvider } from "./components/context/AuthContext";
-import { MatchmakingProvider } from "./components/context/MatchmakingContext";
 import { GameProvider } from "./components/context/GameContext";
-//import TurnDecisionModal from "./components/ui//TurnDecisionModal";
 import { ChatProvider } from "./components/context/ChatContext";
-import {BrowserRouter} from "react-router-dom";
-import {ToastContainer} from "react-toastify";
-
-
 
 
 const App = () => {
-    return (
-        <BrowserRouter>
-            <AuthProvider>
-                    <GameProvider>
-                            <ChatProvider>
-                                <AppRouter />
-                            </ChatProvider>
-                        </GameProvider>
-                </AuthProvider>
-        </BrowserRouter>
-
-    );
+  return (
+    <AuthProvider>
+      <GameProvider>
+        <ChatProvider>
+          {/* AppRouter manages routing, ToastContainer provides global toast notifications ,Provider we use for Context*/}
+          <AppRouter />
+          <ToastContainer/>
+        </ChatProvider>
+      </GameProvider>
+    </AuthProvider>
+  );
 };
 
 export default App;

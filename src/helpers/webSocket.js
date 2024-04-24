@@ -10,25 +10,24 @@ export const useWebSocket = () => {
     return !!stompClient && stompClient.connected;
   };
 
-  const connect = (id, token) => {
+  const connect = (id, token, onConnected) => {
     if (isConnected()) {
       console.log("Already connected.");
       return;
     }
     const url = `${getDomain()}/ws?userId=${id}&token=${token}`;
-
-    // Use a factory function to allow Stomp client to reconnect using a new SockJS instance
     const socketFactory = () => new SockJS(url);
-
-    const client = Stomp.over(socketFactory); // Pass the factory function here
+    const client = Stomp.over(socketFactory);
     client.reconnect_delay = 5000;
 
     client.connect({}, frame => {
       console.log("Connected: " + frame);
       setStompClient(client);
+      if (onConnected) onConnected();
     }, error => {
       console.error("Connection error: ", error);
-      // Handle the connection error appropriately (e.g., notify the user)
+      // Implement retry logic or a scheduled reconnection attempt
+      setTimeout(() => connect(id, token, onConnected), client.reconnect_delay);
     });
   };
 
@@ -44,11 +43,18 @@ export const useWebSocket = () => {
   const send = (destination, headers, body) => {
     if (isConnected()) {
       stompClient.send(destination, headers, body);
+    } else {
+      console.log("Send attempted when WebSocket is disconnected.");
     }
   };
 
   const subscribe = (destination, callback) => {
-    return isConnected() ? stompClient.subscribe(destination, callback) : null;
+    if (isConnected()) {
+      return stompClient.subscribe(destination, callback);
+    } else {
+      console.log("Subscribe attempted when WebSocket is disconnected.");
+      return null;
+    }
   };
 
   const unsubscribe = (subscription) => {
@@ -57,13 +63,5 @@ export const useWebSocket = () => {
     }
   };
 
-  const sendFriendRequest = (receiverId) => {
-    if (isConnected()) {
-      stompClient.send("/app/friend/request", {}, JSON.stringify({ receiverId }));
-    }
-  };
-
-
-
-  return { connect, disconnect, isConnected, send, subscribe, unsubscribe,sendFriendRequest };
+  return { connect, disconnect, isConnected, send, subscribe, unsubscribe };
 };

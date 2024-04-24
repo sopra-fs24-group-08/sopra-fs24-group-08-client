@@ -12,8 +12,8 @@ import Matchmaking from "../../views/Matchmaking";
 
 const AppRouter = () => {
   return (
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/navigation" element={<Navigation />} />
@@ -25,6 +25,7 @@ const AppRouter = () => {
         <Route path="/matchmaking" element={<Matchmaking />} />
         <Route path="/kittyCards/:gameId" element={<KittyCards />} />
       </Routes>
+    </BrowserRouter>
   );
 };
 

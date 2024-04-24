@@ -42,6 +42,7 @@ const Register = () => {
       const requestBody = JSON.stringify({ username, name, password });
       const response = await api.post("/users", requestBody);
       const user = new User(response.data); // Assuming 'User' correctly processes the response
+      console.log(user)
       login(user);  // Login and WebSocket connection managed inside AuthProvider
       navigate("/navigation");  // Redirect on successful registration
     } catch (error) {
