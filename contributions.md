@@ -111,3 +111,31 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 - Updated Task state, addition of issues.
 - Add Tests to reach coverage
 
+## 20.04-27.04
+
+Zixian Pang
+•⁠  ⁠Creation of classes of entities of game elements
+•⁠  ⁠Creation of the game logic in GameService
+
+David Tanner
+•⁠  Changes to the github Workflow,app.yaml and google cloud service to hopefully ensure proper flex env with private api keys.
+•⁠  Websocket alternative support for Polling for Matchmaking,Invites,Requests
+•⁠  Translation Google implementation
+•⁠  Heavily adjusted code alternative for the current production(main) version. 
+
+Yiyang Chen
+
+•⁠  ⁠Implementaion of deciding if first turn or second and distribution of 3/2 cards accordingly. #02
+•⁠  ⁠Criteroin 3: If a user does not choose an option after 15 seconds,then the app will randomly decide who goes first. #24
+•⁠  ⁠Design/Mockup for the Game board.
+•⁠  ⁠Criterion 3: Once the user put the card, the action can’t reverse, the scores should be updated. #20
+  -> Rollback disabling mechanism
+
+Jingxuan Tian
+•⁠  matching function for backend and frontend
+•⁠  ⁠FriendRequest controller tests
+
+Luis Schmid
+•⁠  ⁠Updated Task state, addition of issues.
+•⁠  ⁠((Add Tests to reach coverage))
+
