@@ -58,24 +58,25 @@ const Navigation = () => {
     navigate("/login");
   }
   const doMatch = async () => {
-    try {
-      setLoading(true);
-      const myId = localStorage.getItem("id");
-      const token = localStorage.getItem("token");
-      const response = await api.put(`/games/queue/${myId}`,{}, {headers: {Authorization: `Bearer ${token}`}});
-      const matchResult = (response.data.gameId !== null);
-      setLoading(false);
-      if (matchResult){
-        // Login successfully worked --> navigate to the route /game in the GameRouter
-        navigate("/kittycards");
-      }
-    } catch (error) {
-      alert(
-        `Something went wrong during matching a opponent: \n${handleError(error)}`
-      );
-      setLoading(false);
-      doQuitQueueing();
-    }
+    // try {
+    //   setLoading(true);
+    //   const myId = localStorage.getItem("id");
+    //   const token = localStorage.getItem("token");
+    //   const response = await api.put(`/games/queue/${myId}`,{}, {headers: {Authorization: `Bearer ${token}`}});
+    //   const matchResult = (response.data.gameId !== null);
+    //   setLoading(false);
+    //   if (matchResult){
+    //     // Login successfully worked --> navigate to the route /game in the GameRouter
+    //     navigate("/kittycards");
+    //   }
+    // } catch (error) {
+    //   alert(
+    //     `Something went wrong during matching a opponent: \n${handleError(error)}`
+    //   );
+    //   setLoading(false);
+    //   doQuitQueueing();
+    // }
+    navigate("/kittycards");
   };
 
   const doQuitQueueing = async () => {

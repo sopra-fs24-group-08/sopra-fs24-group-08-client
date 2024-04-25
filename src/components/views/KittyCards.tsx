@@ -4,6 +4,7 @@ import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
+import YouTube from "react-youtube";
 
 const emptySlot = null;
 const blockedSlot = "blocked";
@@ -44,6 +45,7 @@ const KittyCards = () => {
     { id: 2, text: "Yes it is!", author: "John" }
   ]);
   const [chatInput, setChatInput] = useState("");
+  const [displayVideo, setDisplayVideo] = useState(false);
 
   // Function to send a chat message
   const sendChatMessage = () => {
@@ -216,11 +218,13 @@ const KittyCards = () => {
     }, 2000); //
   };
 
+
   return (
     <BaseContainer>
       <div className="game-layout">
         {/* Left column for chat and player info */}
         <div className="left-column">
+          <button onClick={() => navigate("/tutorial")} className="hint-btn">Tutorial</button>
           {renderChatBox()}
           {/* Player's avatar and score here if needed */}
           <div className="chat-container">

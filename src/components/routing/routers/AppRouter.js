@@ -10,6 +10,7 @@ import Navigation from "../../views/Navigation";
 import KittyCards from "../../views/KittyCards";
 import FriendList from "../../views/FriendList";
 import UserList from "../../views/UserList";
+import Tutorial from "../../views/Tutorial";
 
 /**
  * Main router of your application.
@@ -60,6 +61,10 @@ const AppRouter = () => {
         <Route path="/" element={
           <Navigate to="/login" replace />
         }/>
+
+        <Route path="/tutorial" element={<GameGuard />}>
+          <Route path="/tutorial" element={<Tutorial />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/login" />} />
 
