@@ -136,6 +136,8 @@ Jingxuan Tian
 •⁠  ⁠FriendRequest controller tests
 
 Luis Schmid
-•⁠  ⁠Updated Task state, addition of issues.
-•⁠  ⁠((Add Tests to reach coverage))
+•⁠  Configure WebSocket for Chat feature
+•⁠  ⁠Updates on tasks in Git
+•⁠  ⁠M3 Reporting
+
 
