@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useWebSocket } from "../../helpers/webSocket";
 import { toast } from "react-toastify";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import ToastRequest from "../ui/ToastRequest";
 
 const AuthContext = createContext();
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     }, [auth, websocket]);
 
     const login = (user) => {
-        localStorage.setItem('token', user.token);
+        localStorage.setItem("token", user.token);
         localStorage.setItem("currUser", JSON.stringify(user));
         localStorage.setItem("id", user.id);
         localStorage.setItem("test", user);
@@ -58,71 +58,113 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('currUser');
-        localStorage.removeItem('id');
+        localStorage.removeItem("token");
+        localStorage.removeItem("currUser");
+        localStorage.removeItem("id");
+        //If we don't need localstorage for anything else -> use localStorage.clear()
         setAuth({ currUser: null, token: null, id: null });
         toast.dismiss();
     };
 
     const handleFriendRequest = (request) => {
-        console.log("Handling friend request:", request);
-        const message = `${request.senderName} wants to be your friend!`;
-        toast.info(<ToastRequest
-          message={message}
-          onAccept={() => acceptFriendRequest(request)}
-          onDecline={() => declineFriendRequest(request)}
-          toastId={`friend-request-${request.id}`}
-        />, {
-            position: "top-right",
-            autoClose: false,
-            closeOnClick: true,
-            draggable: true,
-            toastId: `friend-request-${request.id}`
-        });
+        if (request.status === "PENDING") {
+            // This is a new friend request
+            const message = `${request.senderName} wants to be your friend!`;
+            toast.info(<ToastRequest
+              message={message}
+              onAccept={() => acceptFriendRequest(request)}
+              onDecline={() => declineFriendRequest(request)}
+              toastId={`friend-request-${request.toastId}`}  // Assuming request.id is the unique identifier for the request
+            />, {
+                position: "top-right",
+                autoClose: false,
+                closeOnClick: true,
+                draggable: true,
+                toastId: `friend-request-${request.toastId}`
+            });
+        } else if (request.status === "ACCEPTED") {
+            // This is an update to an existing request that has been accepted
+            const message = `Your friend request to ${request.receiverName} has been accepted!`;
+            toast.success(message, {
+                position: "top-right",
+                autoClose: 5000,  // Auto close after 5 seconds
+                closeOnClick: true,
+                draggable: true,
+                toastId: `friend-request-update-${request.toastId}`
+            });
+
+        }
     };
 
     const handleGameInvitation = (invitation) => {
         console.log("Handling game invitation:", invitation);
-        const message = `${invitation.senderName} invites you for a game!`;
-        toast.info(<ToastRequest
-          message={message}
-          onAccept={() => acceptGameInvitation(invitation)}
-          onDecline={() => declineGameInvitation(invitation)}
-        />, {
-            position: "top-right",
-            autoClose: false,
-            closeOnClick: true,
-            draggable: true,
-            toastId: `game-invitation-${invitation.gameId}`
-        });
+
+        if (invitation.status === "PENDING") {
+            const message = `${invitation.senderName} invites you for a game!`;
+            toast.info(<ToastRequest
+              message={message}
+              onAccept={() => acceptGameInvitation(invitation)}
+              onDecline={() => declineGameInvitation(invitation)}
+              toastId={`game-invitation-${invitation.gameId}`}
+            />, {
+                position: "top-right",
+                autoClose: false,
+                closeOnClick: true,
+                draggable: true,
+                toastId: `game-invitation-${invitation.gameId}`
+            });
+        } else if (invitation.status === "ACCEPTED") {
+            const message = `Your game invitation from ${invitation.senderName} has been accepted!`;
+            toast.success(message, {
+                position: "top-right",
+                autoClose: 5000,
+                closeOnClick: true,
+                draggable: true,
+                toastId: `game-invitation-update-${invitation.gameId}`
+            });
+        }
     };
 
-
     const acceptGameInvitation = (invitation) => {
-        invitation.status = "ACCEPTED"
-        websocket.send(`/app/game/${gameId}/accept`, {}, JSON.stringify(invitation));
-        toast.dismiss(`game-invitation-${gameId}`);
+        const response = {
+            status: "ACCEPTED",
+            senderId: invitation.senderId,
+            receiverId: auth.id
+        };
+        websocket.send(`/app/game/${auth.id}/accept`, {}, JSON.stringify(response));
+        toast.dismiss(`game-invitation-${response.id}`);
     };
 
     const declineGameInvitation = (invitation) => {
-        invitation.status = "DECLINED"
-        websocket.send(`/app/game/${gameId}/decline`, {}, JSON.stringify(invitation));
-        toast.dismiss(`game-invitation-${gameId}`);
+        const response = {
+            status: "DECLINED",
+            senderId: invitation.senderId,
+            receiverId: auth.id
+        };
+        websocket.send(`/app/game/${auth.id}/decline`, {}, JSON.stringify(response));
+        toast.dismiss(`game-invitation-${response.id}`);
     };
 
     const acceptFriendRequest = (request) => {
-        request.status = "ACCEPTED"
-        websocket.send(`/app/${auth.id}/friend-requests/respond`, {}, JSON.stringify(request));
-        toast.dismiss(`friend-request-${requestId}`);
+        const response = {
+            status: "ACCEPTED",
+            senderId: request.senderId,
+            receiverId: auth.id,
+        }
+        websocket.send(`/app/${auth.id}/friend-requests/responds`, {}, JSON.stringify(response));
+        toast.dismiss(`friend-request-${request.toastId}`);
         toast.success("Friend request accepted!");
     };
 
     const declineFriendRequest = (request) => {
-        request.status = "DECLINED"
-        websocket.send(`/app/${auth.id}/friend-requests/respond`, {}, JSON.stringify({ request }));
-        toast.dismiss(`friend-request-${requestId}`);
-        toast.error("Friend request declined.");
+        const response = {
+            status: "DECLINED",
+            senderId: request.senderId,
+            receiverId: auth.id,
+        }
+        websocket.send(`/app/${auth.id}/friend-requests/responds`, {}, JSON.stringify(response));
+        toast.dismiss(`friend-request-${request.toastId}`);
+        toast.success("Friend request accepted!");
     };
 
     return (

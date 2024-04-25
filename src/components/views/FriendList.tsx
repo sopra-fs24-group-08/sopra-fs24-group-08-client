@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
@@ -18,7 +18,7 @@ const FriendList = ({ user }: { user: User }) => {
 
   function userProfile (id){
     navigate("/users/" + id);
-  };
+  }
   /*function myProfile (){
     const myId = localStorage.getItem("id");
     let push_to = "/users/" + myId;
@@ -27,6 +27,27 @@ const FriendList = ({ user }: { user: User }) => {
   const doInvite = (receiverId) => {
     websocket.send(`/app/game/invite`, {}, JSON.stringify({ receiverId }));
     console.log("Game invitation sent to user ID:", receiverId);
+  };
+
+  const sendGameInvite = async(receiverId) => {
+    const id =  localStorage.getItem("id")
+    const token = localStorage.getItem("token")
+    const gameInvite = {
+      senderId: id,          // Assuming senderId is a numeric ID
+      senderName: "",// Sender's name
+      receiverId: receiverId,        // Assuming receiverId is a numeric ID
+      receiverName: "", // Receiver's name
+      requestType: "GAMEINVITATION", // Type of the request, string representing an enum in your backend
+      status: "SENT"       // Current status of the request, string representing an enum in your backend
+    };
+    try{
+      const requestBody = JSON.stringify(gameInvite);
+      const response = await api.post(`/game/invite/${id}`,requestBody,{ headers:{Authorization:`Bearer ${token}`}});
+      if (response.status === 201 || response.status === 200) {
+        console.log('Game Invite sent successfully');
+      }}catch(error){
+      alert(error.message);
+    }
   };
 
 
@@ -54,7 +75,7 @@ const FriendList = ({ user }: { user: User }) => {
         </Button>
         <Button
           width="500px"
-          onClick={() => doInvite(user.id)}
+          onClick={() => sendGameInvite(user.id)}
           className="game username-button-container"
         >
           invite

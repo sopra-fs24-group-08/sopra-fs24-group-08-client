@@ -26,9 +26,9 @@ const UserList = ({ user }: { user: User }) => {
     const token = localStorage.getItem("token")
       const friendRequest = {
           senderId: id,          // Assuming senderId is a numeric ID
-          senderName: "John Doe", // Sender's name
+          senderName: "",// Sender's name
           receiverId: receiverId,        // Assuming receiverId is a numeric ID
-          receiverName: "Jane Smith", // Receiver's name
+          receiverName: "", // Receiver's name
           requestType: "FRIENDADDING", // Type of the request, string representing an enum in your backend
           status: "SENT"       // Current status of the request, string representing an enum in your backend
       };

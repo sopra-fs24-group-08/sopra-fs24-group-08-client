@@ -5,6 +5,7 @@ import { getDomain } from "./getDomain";
 
 export const useWebSocket = () => {
   const [stompClient, setStompClient] = useState(null);
+  let retryCount = 0;
 
   const isConnected = () => {
     return !!stompClient && stompClient.connected;
@@ -15,20 +16,31 @@ export const useWebSocket = () => {
       console.log("Already connected.");
       return;
     }
-    const url = `${getDomain()}/ws?userId=${id}&token=${token}`;
-    const socketFactory = () => new SockJS(url);
-    const client = Stomp.over(socketFactory);
-    client.reconnect_delay = 5000;
 
-    client.connect({}, frame => {
-      console.log("Connected: " + frame);
-      setStompClient(client);
-      if (onConnected) onConnected();
-    }, error => {
-      console.error("Connection error: ", error);
-      // Implement retry logic or a scheduled reconnection attempt
-      setTimeout(() => connect(id, token, onConnected), client.reconnect_delay);
-    });
+    const attemptConnection = () => {
+      const url = `${getDomain()}/ws?userId=${id}&token=${token}`;
+      const socketFactory = () => new SockJS(url);
+      const client = Stomp.over(socketFactory);
+      client.reconnect_delay = 5000;
+
+      client.connect({}, frame => {
+        console.log("Connected: " + frame);
+        setStompClient(client);
+        retryCount = 0;
+        onConnected && onConnected();
+      }, error => {
+        console.error("Connection error: ", error);
+        if (error.message.includes("Invalid token or userId")) {
+          localStorage.clear(); // Clear potentially stale credentials
+          window.location.reload(); // Reload or redirect to login
+        } else {
+          retryCount++;
+          setTimeout(attemptConnection, Math.pow(2, retryCount) * 1000); // Exponential backoff
+        }
+      });
+    };
+
+    attemptConnection();
   };
 
   const disconnect = () => {
@@ -43,18 +55,11 @@ export const useWebSocket = () => {
   const send = (destination, headers, body) => {
     if (isConnected()) {
       stompClient.send(destination, headers, body);
-    } else {
-      console.log("Send attempted when WebSocket is disconnected.");
     }
   };
 
   const subscribe = (destination, callback) => {
-    if (isConnected()) {
-      return stompClient.subscribe(destination, callback);
-    } else {
-      console.log("Subscribe attempted when WebSocket is disconnected.");
-      return null;
-    }
+    return isConnected() ? stompClient.subscribe(destination, callback) : null;
   };
 
   const unsubscribe = (subscription) => {
