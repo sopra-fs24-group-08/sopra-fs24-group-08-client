@@ -7,11 +7,12 @@ interface CardProps {
   name: string;
   points: number;
   color: string;
+  src: string;
   onClick: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ id, name, points, color, onClick }) => {
-  // 如果你在这里使用 CSS Modules，则可能是 styles.card
+const Card: React.FC<CardProps> = ({ id, name, points, color, src, onClick }) => {
+
   return (
     <div
       key={id}
@@ -20,10 +21,10 @@ const Card: React.FC<CardProps> = ({ id, name, points, color, onClick }) => {
       style={{ "--card-color": color }}
     >
       <img
-        src={`${process.env.PUBLIC_URL}/Kittycards.png`}
+        src={src}
         style={{
           display: "block",
-          width: "140%",
+          width: "215%",
           height: "auto",
         }}
         alt=""

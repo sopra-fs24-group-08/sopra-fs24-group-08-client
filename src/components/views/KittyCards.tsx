@@ -4,18 +4,35 @@ import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
-import YouTube from "react-youtube";
 
-const emptySlot = null;
+const emptySlot = "empty";
 const blockedSlot = "blocked";
-const cardsrepo = "repo"; // A special marker for the blocked slot
+const repository = "repo";
 
-// Initialize a 3x3 grid where the center is a blocked slot
+const getRandomColor = () => {
+  const colors = ["blue", "green", "red","white"];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+const getEmptySlot = () => ({ type: "empty", color: getRandomColor() });
+
 const initialGrid = () => [
-  [emptySlot, emptySlot, emptySlot],
-  [emptySlot, cardsrepo, emptySlot],
-  [emptySlot, emptySlot, emptySlot]
+  [getEmptySlot(), getEmptySlot(), getEmptySlot()],
+  [getEmptySlot(), repository, getEmptySlot()],
+  [getEmptySlot(), getEmptySlot(), getEmptySlot()]
 ];
+const colorToCup = {
+  blue: `${process.env.PUBLIC_URL}/blue.png`,
+  green: `${process.env.PUBLIC_URL}/green.png`,
+  red: `${process.env.PUBLIC_URL}/red.png`,
+  white: `${process.env.PUBLIC_URL}/white.png`
+};
+
+const colorToCard = {
+  blue: `${process.env.PUBLIC_URL}/bluecard.png`,
+  green: `${process.env.PUBLIC_URL}/greencard.png`,
+  red: `${process.env.PUBLIC_URL}/redcard.png`,
+
+};
 
 interface Card {
   id: number;
@@ -26,13 +43,14 @@ interface Card {
 
 // Initial set of cards in the player's hand
 const initialHand: Card[] = [
-  { id: 1, name: "Card 1", points: 5, color: "red" },
-  { id: 2, name: "Card 2", points: 5, color: "red"  },
-  { id: 3, name: "Card 3", points: 5, color: "red"  },
-  { id: 4, name: "Card 4", points: 5 , color: "red" },
-  { id: 5, name: "Card 5", points: 5 , color: "red" },
+  { id: 1, name: "Card 1", points: 5, color: "blue" },
+  { id: 2, name: "Card 2", points: 3, color: "red"  },
+  { id: 3, name: "Card 3", points: 6, color: "green"  },
+  { id: 4, name: "Card 4", points: 2 , color: "blue" },
+  { id: 5, name: "Card 5", points: 1 , color: "red" },
   { id: 6, name: "Card 6", points: 5 , color: "red" },
 ];
+
 const KittyCards = () => {
   const [hand, setHand] = useState<Card[]>(initialHand);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -75,10 +93,10 @@ const KittyCards = () => {
             {row.map((slot, columnIndex) => {
               let slotClasses = "game-board-slot";
               let slotContent;
-              if (slot === blockedSlot) {
+              if (slot.type === "blocked") {
                 slotClasses += " game-board-center";
                 slotContent = <img
-                  src={`${process.env.PUBLIC_URL}/Kittycards.png`}
+                  src={`${process.env.PUBLIC_URL}/blocked.png`}
                   style={{
                     display: "block",
                     width: "80%",
@@ -86,16 +104,15 @@ const KittyCards = () => {
                   }}
                   alt=""
                 />;
-              } else if (slot === emptySlot) {
+              } else if (slot.type === "empty") {
                 slotContent = <img
-                  src={`${process.env.PUBLIC_URL}/cup.png`}
+                  src={colorToCup[slot.color]}
                   style={{
                     display: "block",
                     width: "80%",
                     height: "auto",
                   }}
-                  alt=""
-                />;
+                  alt=""/>;
               } else{
                 slotContent = <img
                   src={`${process.env.PUBLIC_URL}/repo.png`}
@@ -112,7 +129,8 @@ const KittyCards = () => {
                 <div
                   key={`${rowIndex}-${columnIndex}`}
                   className={slotClasses}
-                  onClick={() => placeCard(rowIndex, columnIndex)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleCardDrop(e, rowIndex, columnIndex)}
                 >
                   {slotContent}
                 </div>
@@ -157,11 +175,25 @@ const KittyCards = () => {
           name={card.name}
           points={card.points}
           color={card.color}
+          src={colorToCard[card.color]}
           onClick={() => selectCardFromHand(card)}
+          draggable="true"
+          onDragStart={(e) => handleDragStart(e, card)}
         />
       ))}
     </div>
   );
+  const handleDragStart = (event, card) => {
+    event.dataTransfer.setData("text/plain", card.id);
+  };
+  const handleCardDrop = (event, rowIndex, columnIndex) => {
+    const cardId = parseInt(event.dataTransfer.getData("text/plain"));
+    const cardToPlace = hand.find(card => card.id === cardId);
+
+    if (cardToPlace) {
+      placeCard(rowIndex, columnIndex, cardToPlace);
+    }
+  };
 
   const drawCard = () => {
     const newCardId = Math.max(...hand.map(c => c.id)) + 1; // Get the next ID
@@ -171,24 +203,29 @@ const KittyCards = () => {
     setHand(hand.concat(newCard));
   };
 
-  const placeCard = (rowIndex: number, columnIndex: number) => {
+  const placeCard = (rowIndex: number, columnIndex: number, card = selectedCard) => {
     // Check if the center slot is clicked, if so draw a card
+    if (!card) {
+      alert("Please select a card first.");
+
+      return;
+    }
     if (rowIndex === 1 && columnIndex === 1) {
       drawCard();
-      
+
       return; // Early return to prevent further actions since it's a special slot
     }
     // Check if a card is selected
     if (!selectedCard) {
       alert("Please select a card first.");
-      
+
       return;
     }
 
     // Check if the slot is blocked or already occupied
     if (grid[rowIndex][columnIndex] === blockedSlot || grid[rowIndex][columnIndex]) {
       alert("This slot is not available.");
-      
+
       return;
     }
 

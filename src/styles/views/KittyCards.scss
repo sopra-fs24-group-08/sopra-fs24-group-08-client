@@ -6,7 +6,7 @@ html, body, #root, .game-layout {
 }
 .game-layout {
   display: grid;
-  grid-template-rows: 15fr 1fr; /* 页面分成上15/16和下1/16 */
+  grid-template-rows: 15fr 4fr; /* 页面分成上15/16和下1/16 */
   grid-template-columns: 2fr 6fr 2fr; /* 页面分成左1/3，中2/3，右1/3 */
   height: 100vh;
   gap: 1rem; // Adjust the gap to your liking
@@ -54,25 +54,32 @@ html, body, #root, .game-layout {
   margin-top: 40px;
 }
 .controls button:first-child {
-  margin-bottom: 290px;
-}
+  margin-bottom: 300px;
+}.controls button:nth-child(2) {
+   margin-bottom: 14px;
+ }
+
 
 .chat-container {
-  background-color: #f0f0f0;
+  background-color: #fafafc;
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1rem;
   margin-bottom: 4rem;
-  height: 70%;
+  height: auto;
   overflow-y: auto;
+  border: 2px solid #7f92ec;
+
 
   .message {
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     border-radius: 12px;
     box-shadow: 0px 0px 2px #ccc;
+    border: 2px solid #c1c2c7;
+
 
     &.self {
-      background-color: #c0e0ff;
+      background-color: #bdd2ff;
       align-self: flex-end;
       border-radius: 12px;
     }
@@ -119,7 +126,7 @@ html, body, #root, .game-layout {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 可选的轻微阴影效果 */
   text-align: center; /* 文本居中 */
   background-color: #7f92ec; /* 背景颜色 */
-  width: 80%; /* 宽度，根据需要调整 */
+  width: auto; /* 宽度，根据需要调整 */
   margin: 1rem auto; /* 垂直方向的间距和水平居中 */
   display: flex; /* 采用flex布局 */
   flex-direction: column; /* 子元素垂直排列 */
@@ -127,6 +134,7 @@ html, body, #root, .game-layout {
   justify-content: center; /* 子元素垂直居中 */
   align-self: start;
   color: black;
+
 
   .player-avatar {
     border-radius: 70%;
