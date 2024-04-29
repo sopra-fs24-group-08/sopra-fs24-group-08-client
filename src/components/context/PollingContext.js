@@ -27,7 +27,7 @@ export const PollingProvider = ({ children }) => {
         setData(response.data);
         console.log(response);
         clearTimeout(activeTimerId);
-        activeTimerId = setTimeout(fetchData, 1000);
+        // activeTimerId = setTimeout(fetchData, 1000);
 
       } catch (error) {
         console.log(error.name);
@@ -37,7 +37,7 @@ export const PollingProvider = ({ children }) => {
         else if (error.response.status === 408){
           console.error(`Long-polling Message: \n${handleError(error)}`, error);
           clearTimeout(activeTimerId);
-          activeTimerId = setTimeout(fetchData, 1000);
+          // activeTimerId = setTimeout(fetchData, 1000);
         }
         else {
           alert(
