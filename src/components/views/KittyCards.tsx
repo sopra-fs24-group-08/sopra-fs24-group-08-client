@@ -1,4 +1,4 @@
-import { React,useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
@@ -11,7 +11,6 @@ const repository = "repo";
 
 const getRandomColor = () => {
   const colors = ["blue", "green", "red","white"];
-  
   return colors[Math.floor(Math.random() * colors.length)];
 };
 const getEmptySlot = () => ({ type: "empty", color: getRandomColor() });
@@ -65,6 +64,7 @@ const KittyCards = () => {
   ]);
   const [chatInput, setChatInput] = useState("");
   const [displayVideo, setDisplayVideo] = useState(false);
+  const messageEndRef = useRef(null);
 
   // Function to send a chat message
   const sendChatMessage = () => {
@@ -85,6 +85,16 @@ const KittyCards = () => {
 
     </div>
   );
+
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    scrollToBottom();
+  }, [chatMessages]);
+
 
   const renderGameBoard = () => {
     return (
@@ -266,12 +276,18 @@ const KittyCards = () => {
           {renderChatBox()}
           {/* Player's avatar and score here if needed */}
           <div className="chat-container">
-            {chatMessages.map(message => (
-              <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
-                <span className="message-author">{message.author}: </span>
-                {message.text}
-              </div>
-            ))}
+            {/* 消息滚动区域 */}
+            <div className="message-container">
+              {chatMessages.map(message => (
+                <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
+                  <span className="message-author">{message.author}: </span>
+                  {message.text}
+                </div>
+              ))}
+              {/* 这里是新添加的 div 用于滚动定位 */}
+              <div ref={messageEndRef} />
+            </div>
+            {/* 输入和发送控制区域 */}
             <div className="chat-controls">
               <input
                 type="text"
@@ -283,12 +299,17 @@ const KittyCards = () => {
               <button onClick={sendChatMessage} className="chat-send-btn">Send</button>
             </div>
           </div>
+
           {renderPlayerProfile("blue", "John S", 18)}
         </div>
 
         {/* Center column for the game board */}
         <div className="center-column">
           {renderGameBoard()}
+          {/* Render the hand of cards */}
+          <div className="hand-of-cards">
+            {renderHand()}
+          </div>
         </div>
         {/* Opponent info and controls */}
         <div className="right-column">
@@ -299,10 +320,6 @@ const KittyCards = () => {
             <Button className="exit-btn" onClick={() => doExit()}>Exit</Button>
           </div>
         </div>
-      </div>
-      {/* Render the hand of cards */}
-      <div className="hand-of-cards">
-        {renderHand()}
       </div>
     </BaseContainer>
   );
