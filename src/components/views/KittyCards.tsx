@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
@@ -11,6 +11,7 @@ const repository = "repo";
 
 const getRandomColor = () => {
   const colors = ["blue", "green", "red","white"];
+  
   return colors[Math.floor(Math.random() * colors.length)];
 };
 const getEmptySlot = () => ({ type: "empty", color: getRandomColor() });

@@ -3,6 +3,7 @@
   "version": "0.24.0",
   "private": true,
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.6.7",
     "eslint-config-react-app": "^7.0.1",
     "net": "^1.0.2",
@@ -15,7 +16,6 @@
     "react-youtube": "^10.1.0",
     "serve": "^14.2.1",
     "sockjs-client": "^1.6.1",
-    "@stomp/stompjs": "^7.0.0",
     "typescript": "^3.2.1"
   },
   "scripts": {
@@ -45,6 +45,7 @@
   ],
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "eslint": "^8.57.0",
     "sass": "^1.70.0"
   }
 }
