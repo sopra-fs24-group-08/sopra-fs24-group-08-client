@@ -4,7 +4,7 @@ import {Button} from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/EditProfile.scss";
 import { React,useState } from "react";
-const EditProfile = () => {
+const UserProfileEdit = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token")
 
@@ -97,4 +97,4 @@ const EditProfile = () => {
   );
 }
 
-export default EditProfile;
+export default UserProfileEdit;

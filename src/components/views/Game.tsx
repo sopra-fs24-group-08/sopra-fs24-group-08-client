@@ -7,7 +7,6 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
-import {usePolling} from "components/context/PollingContext";
 
 const Game = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
@@ -15,7 +14,6 @@ const Game = ({ user }: { user: User }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
   const {status} = useParams();
-  const { serverRequests } = usePolling();
   console.log(localStorage.getItem("token"));
 
   function userProfile (id){

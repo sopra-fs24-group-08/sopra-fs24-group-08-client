@@ -1,9 +1,6 @@
 import React from "react";
-import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
-import {PollingProvider} from "./components/context/PollingContext";
-import {ToastProvider} from "./components/context/ToastContext";
-import KittyCards from "components/views/KittyCards";
+import {UserProvider} from "./components/context/UserContext";
 
 
 /**
@@ -14,11 +11,9 @@ import KittyCards from "components/views/KittyCards";
  */
 const App = () => {
   return (
-    <ToastProvider>
-      <PollingProvider>
-        <AppRouter />
-      </PollingProvider>         
-    </ToastProvider>       
+    <UserProvider>
+      <AppRouter />
+    </UserProvider>
   );
 };
 

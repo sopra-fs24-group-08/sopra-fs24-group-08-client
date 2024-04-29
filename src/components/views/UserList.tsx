@@ -5,26 +5,44 @@ import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import "styles/views/Game.scss";
+import "styles/views/UserList.scss";
 import { User } from "types";
-import {usePolling} from "components/context/PollingContext";
+import { useCurrUser } from "../context/UserContext";
 
-const UserList = ({ user }: { user: User }) => {
-  // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
+
+
+const UserList = () => {
   const navigate = useNavigate();
+  const {currUser } = useCurrUser();
   const [users, setUsers] = useState<User[]>([]);
-  const {status} = useParams();
-  const { inGame } = usePolling();
+  const [isLoading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (inGame === true){
-      navigate("/kittycards");
+  // Function to fetch user data
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("/users", {headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}});
+      setUsers(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching users:", handleError(error));
+      setLoading(false);
     }
-  }, [inGame]);
+  };
 
-  function userProfile (id){
-    let push_to = "/users/" + String(id);
-    navigate(push_to);
+  // Initial data fetch on component mount
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // Function to navigate to user profile
+  const navigateToUserProfile = (id) => {
+    navigate(`/users/${id}`);
+  };
+
+  // Function to go back
+  const goBack = () => {
+    navigate(-1);
   };
 
   const doAddFriend = async(receiverId) => {
@@ -35,109 +53,45 @@ const UserList = ({ user }: { user: User }) => {
     console.log(token);
     try{
       const requestBody = JSON.stringify({ receiverId, requestType});
-      const response = await api.post(`/users/${myId}/friends/add`,requestBody, {headers: {Authorization: `Bearer ${token}`}});
+      const response = await api.post(`/users/${myId}/friends/add`,requestBody, {headers: {Authorization: `Bearer ${currUser.token}`}});
       console.log("You have a new message!");
     }catch(error){
       alert(`Something went wrong with friend request: \n${handleError(error)}`);
     }
   };
 
-  function goBack (){
-    navigate("/navigation")
 
-  };
-  const Player = ({ user }: { user: User }) => {
+  // Define content based on loading state and users, perhaps we could query
+  // userlist / friendlist together and somehow pass a boolean in each user object, so that the add button only gets displayed for non friends
+  let content = isLoading ? <Spinner /> : (
+    <ul className="game user-list">
+      {users.map((user) => (
+        <li key={user.id}>
+          <div className="player container">
+            <Button width="500px" onClick={() => navigateToUserProfile(user.id)}>
+              {user.username}
+            </Button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
 
-    return (
-      <div className="player container">
-        <Button
-          width="500px"
-          onClick={() => userProfile(user.id)}
-          className="game username-button-container"
-        >
-          {user.username}
-        </Button>
-        <Button
-          width="500px"
-          onClick={() => doAddFriend(user.id)}
-          className="game username-button-container"
-        >
-          add
-        </Button>
-      </div>
-    );
-  };
-
-
-  Player.propTypes = {
-    user: PropTypes.object,
-  };
-
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await api.get("/users",{headers: {Authorization: `Bearer ${localStorage.getItem("token")}`}});
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Get the returned users and update the state.
-        if (response.data !== null) {
-          setUsers(response.data);
-        }
-
-        // See here to get more data.
-        console.log(response.status);
-        console.log(response.data);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the friends: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the friends! See the console for details."
-        );
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  let content = <Spinner />;
-
-  if (users) {
-    content = (
-      <div className="game">
-        <ul className="game user-list">
-          {users.map((user: User) => (
-            <li key={user.id}>
-              <Player user={user} />
-            </li>
-          ))
-          }
-        </ul>
-
-      </div>
-    );
-  }
-
-  return (
+  return (  //TODO add some better scss stuff
     <BaseContainer className="game container">
       <h2>Users Overview</h2>
-      <p className="game paragraph">
-        Select a friend to view!
-      </p>
+      <p className="game paragraph">Select a user to view their profile.</p>
       {content}
-      <Button
-        width="500px"
-        onClick={() => goBack()}
-        className="game username-button-container"
-      >
+      <Button width="500px" onClick={fetchUsers} className="game username-button-container">
+        Refresh
+      </Button>
+      <Button width="500px" onClick={goBack} className="game username-button-container">
         Back
       </Button>
     </BaseContainer>
   );
 };
+
+
 
 export default UserList;

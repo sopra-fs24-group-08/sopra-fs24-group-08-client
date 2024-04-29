@@ -8,21 +8,13 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import Header from "./Header";
-import {usePolling} from "components/context/PollingContext";
 
 const FriendList = ({ user }: { user: User }) => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
-  const { inGame } = usePolling();
   const {status} = useParams();
-
-  useEffect(() => {
-    if (inGame === true){
-      navigate("/kittycards");
-    }
-  }, [inGame]);
 
   function userProfile (id){
     let push_to = "/users/" + String(id);
@@ -35,8 +27,8 @@ const FriendList = ({ user }: { user: User }) => {
   };*/
 
   const doInvite = async(receiverId) => {
-    const myId = localStorage.getItem("id");
-    const token = localStorage.getItem("token");
+    const myId = sessionStorage.getItem("id");
+    const token = sessionStorage.getItem("token");
     const requestType = "GAMEINVITATION";
     console.log(myId);
     console.log(token);
@@ -50,8 +42,8 @@ const FriendList = ({ user }: { user: User }) => {
   };
 
   const doDelete = async(friendId) => {
-    const myId = localStorage.getItem("id");
-    const token = localStorage.getItem("token");
+    const myId = sessionStorage.getItem("id");
+    const token = sessionStorage.getItem("token");
     try{
       const response = await api.put(`/users/${myId}/friends/delete`,{}, {headers: {Authorization: `Bearer ${token}`}, params: {FriendId: friendId}});
       console.log(response.data)
@@ -65,7 +57,7 @@ const FriendList = ({ user }: { user: User }) => {
 
   };
   const Player = ({ user }: { user: User }) => {
-    const myId = localStorage.getItem("id");
+    const myId = sessionStorage.getItem("id");
 
     if (user.id.toString() === myId) return null;
 
