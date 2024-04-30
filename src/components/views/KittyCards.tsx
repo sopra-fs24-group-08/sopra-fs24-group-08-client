@@ -91,13 +91,7 @@ const KittyCards = () => {
   // Function to render the chat box
 const renderChatBox = () => (
   <div className="chat-box">
-    {chatMessages.map(message => (
-      <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
-        <span className="message-author">{message.author}: </span>
-        {message.text}
-        <button onClick={() => handleTranslateClick(message.id)} className="translate-btn">Translate</button>
-      </div>
-    ))}
+    
   </div>
 );
 
@@ -298,6 +292,7 @@ const renderChatBox = () => (
                 <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
                   <span className="message-author">{message.author}: </span>
                   {message.text}
+                  <button onClick={() => handleTranslateClick(message.id)} className="translate-btn">Translate</button>
                 </div>
               ))}
               {/* 这里是新添加的 div 用于滚动定位 */}
