@@ -31,25 +31,6 @@ export const ChatProvider = ({ children }) => {
         client.send(`/app/chat/${chatId}`, {}, JSON.stringify({ message }));
     };
 
-    // Translate a message
-    const translateMessage = async (msgId, targetLang = 'de') => {
-        const msg = messages.find(m => m.id === msgId);
-        if (msg) {
-            try {
-                const response = await api.post('/translate', {
-                    text: msg.text,
-                    targetLang
-                });
-                const translatedText = response.data.translatedText;
-                const updatedMessages = messages.map(m =>
-                    m.id === msgId ? { ...m, text: translatedText } : m
-                );
-                setMessages(updatedMessages);
-            } catch (error) {
-                console.error('Translation error:', error);
-            }
-        }
-    };
 
         return (
         <ChatContext.Provider value={{ messages, subscribeToChat, sendMessage, translateMessage }}>
@@ -63,3 +44,25 @@ ChatProvider.propTypes = {
 };
 
 export const useChat = () => useContext(ChatContext);
+export const translateMessage = async (messages, setMessages, msgId, sourceLang = "en", targetLang = 'de') => {
+    if (Array.isArray(messages)) {
+        const msg = messages.find(m => m.id === msgId);
+        if (msg) {
+            try {
+                const response = await api.post('/api/translate/es', {
+                    message: msg.text,
+                   sourceLang
+                });
+                const translatedText = response.data.data.translations[0].translatedText;
+                const updatedMessages = messages.map(m =>
+                    m.id === msgId ? { ...m, text: translatedText } : m
+                );
+                setMessages(updatedMessages);
+            } catch (error) {
+                console.error('Translation error:', error);
+            }
+        }
+    } else {
+        console.error('messages is not an array');
+    }
+};

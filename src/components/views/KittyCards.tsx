@@ -4,6 +4,7 @@ import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
+import { translateMessage } from '../context/ChatContext';
 
 const emptySlot = "empty";
 const blockedSlot = "blocked";
@@ -81,11 +82,25 @@ const KittyCards = () => {
   };
 
   // Function to render the chat box
-  const renderChatBox = () => (
-    <div className="chat-box">
 
-    </div>
-  );
+
+ const handleTranslateClick = (msgId: number) => {
+    translateMessage(chatMessages, setChatMessages, msgId);
+  };
+
+  // Function to render the chat box
+const renderChatBox = () => (
+  <div className="chat-box">
+    {chatMessages.map(message => (
+      <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
+        <span className="message-author">{message.author}: </span>
+        {message.text}
+        <button onClick={() => handleTranslateClick(message.id)} className="translate-btn">Translate</button>
+      </div>
+    ))}
+  </div>
+);
+
 
 
   useEffect(() => {
