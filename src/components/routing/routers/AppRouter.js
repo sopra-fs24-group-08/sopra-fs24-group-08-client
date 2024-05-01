@@ -64,7 +64,7 @@ const AppRouter = () => {
 
         <Route path="/tutorial" element={<GameGuard />}>
           <Route path="/tutorial" element={<Tutorial />} />
-        </Route>
+        </Route>      
 
         <Route path="*" element={<Navigate to="/login" />} />
 

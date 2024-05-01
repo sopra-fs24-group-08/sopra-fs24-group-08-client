@@ -9,6 +9,9 @@ import PropTypes from "prop-types";
 import {usePolling} from "components/context/PollingContext";
 import { toast } from "react-toastify";
 import Header from "./Header";
+import subscribeToGameUpdates from 'components/functions/EventGetter';
+import {handleMatch, doQuitQueueing} from 'components/functions/HandleMatch';
+import GameBoard from "./GameBoard";
 
 /*
 It is possible to add multiple components inside a single file,
@@ -21,14 +24,15 @@ const Navigation = () => {
   const navigate = useNavigate();
   const { setCurrentUserId, inGame } = usePolling();
   const [loading, setLoading] = useState(false);
+  const [gameId, setGameId] = useState(null);
+  const myId = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (inGame === true){
       navigate("/kittycards");
     }
-  }, [inGame]);
-
-
+  }, [inGame])
   function myProfile (){
     const myId = localStorage.getItem("id");
     let push_to = "/users/" + myId;
@@ -40,6 +44,13 @@ const Navigation = () => {
   function navigateToUserList(){
     navigate("/userList");
   };
+
+  async function doMatch(myId, token, setLoading){
+    const matchResult = await handleMatch(myId, token, setLoading);
+    if (matchResult !== null){
+      setGameId(matchResult);
+    }
+  }
   async function logout() {
     const myId = localStorage.getItem("id");
     const request_to = "/logout/" + myId
@@ -57,97 +68,71 @@ const Navigation = () => {
     toast.dismiss();
     navigate("/login");
   }
-  const doMatch = async () => {
-    try {
-      setLoading(true);
-      const myId = localStorage.getItem("id");
-      const token = localStorage.getItem("token");
-      const response = await api.put(`/games/queue/${myId}`,{}, {headers: {Authorization: `Bearer ${token}`}});
-      const matchResult = (response.data.gameId !== null);
-      setLoading(false);
-      if (matchResult){
-        // Login successfully worked --> navigate to the route /game in the GameRouter
-        navigate("/kittycards");
-      }
-    } catch (error) {
-      alert(
-        `Something went wrong during matching a opponent: \n${handleError(error)}`
-      );
-      setLoading(false);
-      doQuitQueueing();
-    }
-    navigate("/kittycards");
-  };
 
-  const doQuitQueueing = async () => {
-    try {
-      const myId = localStorage.getItem("id");
-      const token = localStorage.getItem("token");
-      const response = await api.delete(`/games/dequeue/${myId}`, {headers: {Authorization: `Bearer ${token}`}});
-      alert(response.data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      alert(
-        `Something went wrong during quiting the queue: \n${handleError(error)}`
-      );
-    }
-  };
-
-  return (
-    <div>
-      {loading?(
+  function renderContent() {
+    if (loading) {
+      return (
         <div>
           <div>Loading...</div>
           <div className="navigation button-container">
             <Button
               style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => doQuitQueueing()}
+              onClick={() => doQuitQueueing(myId, token, setLoading)}
             >
               Quit
             </Button>
           </div>
         </div>
-      ): (    
-        <BaseContainer>
-          <Header height="100" />
-          <div className="navigation container">
-            <div className="navigation form">
-              <div className="navigation button-container">
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => doMatch()}
-                >
-              Start
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => navigateToFriendList()}
-                >
-                  Friends
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => navigateToUserList()}
-                >
-                  UserList
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => myProfile()}
-                >
-                  My Profile
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => logout()}
-                >
-                  Logout
-                </Button>
-              </div>
+      );
+    }
+    if (gameId) {
+      return <GameBoard gameId={gameId} myId={myId} />;
+    }
+    return (    
+      <BaseContainer>
+        <Header height="100" />
+        <div className="navigation container">
+          <div className="navigation form">
+            <div className="navigation button-container">
+              <Button
+                style={{ width: "100%", marginBottom: "10px" }}
+                onClick={() => doMatch(myId, token, setLoading)}
+              >
+            Start
+              </Button>
+              <Button
+                style={{ width: "100%", marginBottom: "10px" }}
+                onClick={() => navigateToFriendList()}
+              >
+                Friends
+              </Button>
+              <Button
+                style={{ width: "100%", marginBottom: "10px" }}
+                onClick={() => navigateToUserList()}
+              >
+                UserList
+              </Button>
+              <Button
+                style={{ width: "100%", marginBottom: "10px" }}
+                onClick={() => myProfile()}
+              >
+                My Profile
+              </Button>
+              <Button
+                style={{ width: "100%", marginBottom: "10px" }}
+                onClick={() => logout()}
+              >
+                Logout
+              </Button>
             </div>
           </div>
-        </BaseContainer>)}
+        </div>
+      </BaseContainer>);
+  }
+
+  return (
+    <div>
+      {renderContent()}
     </div>
   );
 };
