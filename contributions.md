@@ -193,3 +193,14 @@ Todo List:
 
 - Tests for some of my methods #85
 - Work loading progress feedback #8
+
+  **Luis Schmid**
+
+Done List:
+- Implementation of Chat Translation on Client #10
+- Translation Service Tests #81
+
+Todo List:
+
+- Review Task list and update what is done and what has to be done on Git
+- Finalize Translation Service after getting feedback from the Group.
