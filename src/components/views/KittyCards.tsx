@@ -93,7 +93,7 @@ const handleSourceLanguageChange = (selectedLanguage: string) => {
 
   const handleTargetLanguageChange = (selectedLanguage: string) => {
     setTargetLanguage(selectedLanguage);
-    // Hier könntest du weitere Logik hinzufügen, die bei der Änderung der Zielsprache ausgeführt werden soll
+    // Hier könntest du weitere Logik hinzufügen,  die bei der Änderung der Zielsprache ausgeführt werden soll
   };
 
  const handleTranslateClick = (msgId: number) => {
