@@ -188,6 +188,7 @@ Done List:
 - Some minor changes to make server #78 more suitable to refactored client #36
 - Styling Changes to the all Views besides KittyCards, solely starting up open for changes #38
 - Using some of my code from commit 83092a1 to make #37 happen.
+
 Todo List:
 
 - Tests for some of my methods #85
