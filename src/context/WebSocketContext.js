@@ -37,7 +37,7 @@ export const WebSocketProvider = ({ children }) => {
 
 
       socket.onclose = () => {
-        console.log("WS-Connection  disabled");
+        console.log("WS-Connection disabled");
         setSocket(null);
       };
     }
