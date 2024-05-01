@@ -4,7 +4,7 @@ import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
-import { translateMessage } from '../context/ChatContext';
+import { translateMessage, LanguageDropdown } from '../context/ChatContext';
 
 const emptySlot = "empty";
 const blockedSlot = "blocked";
@@ -91,7 +91,12 @@ const KittyCards = () => {
   // Function to render the chat box
 const renderChatBox = () => (
   <div className="chat-box">
-    
+  <div>
+      <h1>My Component</h1>
+         <LanguageDropdown languageType="source" />
+                 <LanguageDropdown languageType="target" />
+      {/* Other content */}
+    </div>
   </div>
 );
 
