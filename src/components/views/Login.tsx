@@ -1,50 +1,84 @@
 import React, { useState } from "react";
 import { useCurrUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import "../../styles/views/Login.scss";
+import "styles/views/Login.scss";
+import { Button } from "../ui/Button";
+import BaseContainer from "../ui/BaseContainer";
+import PropTypes from "prop-types";
 
+const FormField = (props) => {
+  return (
+    <div className="login field">
+      <label className="login label">{props.label}</label>
+      <input
+        className="login input"
+        placeholder="enter here.."
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+      />
+    </div>
+  );
+};
 
+FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState<string>(null);
+  const [username, setUsername] = useState<string>(null);
   const { login } = useCurrUser();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await login(username, password);
-      navigate("/main");
-    } catch (error){}
-  };
+  const doLogin = async ()=> {
+    const success = await login(username, password);
+    if (success) navigate("/main");
 
+  }
   const handleRegister = () => {
     navigate("/registration"); // Update this with your registration route if different
   };
 
   return (
-    <div className="login container">
-      <h2>Welcome to KittyCards</h2>
-      <form onSubmit={handleSubmit} className="login form">
-        <div className="login field">
-          <label className="login label">Username:
-            <input className="login input" type="username" value={username} onChange={e => setUsername(e.target.value)} placeholder="Enter your username" />
-          </label>
+    <BaseContainer>
+      <div className="login container">
+        <div className="login form">
+          <FormField
+            label="Username"
+            value={username}
+            onChange={(un: string) => setUsername(un)}
+          />
+          <FormField
+            label="Password"
+            value={password}
+            onChange={(n) => setPassword(n)}
+          />
+          <div className="login button-container">
+            <Button
+              disabled={!username || !password}
+              width="100%"
+              onClick={() => doLogin()}
+            >
+              Login
+            </Button>
+          </div>
         </div>
-        <div className="login field">
-          <label className="login label">Password:
-            <input className="login input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" />
-          </label>
-        </div>
-        <div className="login button-container">
-          <button type="submit">Login</button>
-          <button type="button" onClick={handleRegister} className="register-button">Sign Up</button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div className="login button-container-re">
+        <Button
+          width="100"
+          onClick={() => handleRegister()}
+        >
+          Create a new account
+        </Button>
+
+      </div>
+    </BaseContainer>
   );
-}
+};
+
 
 
 export default Login;

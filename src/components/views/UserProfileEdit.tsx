@@ -2,99 +2,107 @@ import {api, handleError} from "helpers/api";
 import {useNavigate, useParams } from "react-router-dom";
 import {Button} from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
-import "styles/views/EditProfile.scss";
-import { React,useState } from "react";
+import "styles/views/UserProfileEdit.scss";
+import { React, useEffect, useState } from "react";
+import Refresh from "../ui/Refresh";
+import { useCurrUser} from "../context/UserContext";
+
 const UserProfileEdit = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token")
-
-  const {current_username} = useParams();
-  const {current_birthday} = useParams();
-  const {creation_date} = useParams();
-  const {status} = useParams();
   const {id} = useParams();
+  const currUserString = sessionStorage.getItem("currUser")
+  const [username, setUsername] = useState<string>("");
+  const [birthday, setBirthday] = useState<string>(null);
+  const [password, setPassword] = useState<string>("");
 
-  const [username, setUsername] = useState(null);
-  const [birthday, setBirthday] = useState(null);
-  const [password, setPassword] = useState(null);
+  const {currUser,logout} = useCurrUser();
 
-  const doEdit = async () => {
+  useEffect(() => {
+    !currUserString && logout();
+  }, [currUserString, logout]);
+  //Define with others how we want to manage customization changes.
+
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handleBirthdayChange = (event) => {
+    setBirthday(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      const request_to = "/users/"+ String(id);
-      const requestBody = JSON.stringify({username, birthday,password});
-      await api.put(request_to, requestBody);
-      const push_to = "/users/" + String(id);
-      navigate(push_to);
+      const requestBody = JSON.stringify({
+        username,
+        birthday,
+        password
+      });
+      await api.put(`/users/${id}`,requestBody,{
+        headers: { Authorization: `Bearer ${currUser.token}` }});
 
-    } catch (error) {
-      alert(`Something went wrong during the editing: \n${handleError(error)}`);
+      await Refresh();
+      navigate(`/profiles/${id}`);
+
+    }
+    catch (error) {
+      alert(
+        `Something went wrong during the login: \n${handleError(error)}`
+      );
+
     }
   }
-
-  function userProfile (id) {
-    let push_to = "/users/" + String(id);
-    navigate(push_to);
-  }
-
-  let content;
-  content = (
-    <div className="editProfile text">
-      <div className="editProfile text">
-        username:
-        <input
-          className="editProfile input"
-          placeholder={current_username}
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          required
-        />
-      </div>
-      <div className="editProfile text">
-        password:
-        <input
-          className="editProfile input"
-          placeholder="Enter new password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <div className="editProfile text"> online status: {status}</div>
-      <div className="editProfile text"> creation date: {creation_date} </div>
-
-      <div className="editProfile text">
-        birthday:
-        <input
-          className="editProfile input"
-          type={"date"}
-          placeholder={current_birthday}
-          value={birthday}
-          onChange={e => setBirthday(e.target.value)}
-        />
-      </div>
-      <Button
-        width="100%"
-        onClick={() => doEdit()}
-        className = "editProfile button-container"
-      >
-        Save
-      </Button>
-      <Button
-        width="100%"
-        onClick={() => userProfile(id)}
-        className = "editProfile button-container"
-      >
-        Back
-      </Button>
-    </div>
-  );
-
   return (
-    <BaseContainer className="editProfile container">
-      <h2>Edit Profile</h2>
-      {content}
+    <BaseContainer>
+      <div className="edit container">
+        <form className="edit form" onSubmit={handleSubmit}>
+          <div className="edit field">
+            <label className="edit label" htmlFor="username">Choose new Username</label>
+            <input
+              className="edit input"
+              type="text"
+              id="username"
+              name="username"
+              value={username}
+              onChange={handleUsernameChange}
+            />
+          </div>
+          <div className="edit field">
+            <label className="edit label" htmlFor="password">Enter New Password</label>
+            <input
+              className="edit input"
+              type="text"
+              id="password"
+              name="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <div className="edit field">
+            <label className="edit label" htmlFor="birthday">Choose Birthday</label>
+            <input
+              className="edit input"
+              type="date"
+              id="birthday"
+              name="birthday"
+              value={birthday}
+              onChange={handleBirthdayChange}
+            />
+          </div>
+          <div className="edit button-container">
+            <Button type="submit">Apply Changes</Button>
+          </div>
+        </form>
+      </div>
     </BaseContainer>
   );
-}
+};
+
 
 export default UserProfileEdit;

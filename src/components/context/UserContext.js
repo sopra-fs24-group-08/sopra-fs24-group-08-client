@@ -1,76 +1,75 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import BaseContainer from "../ui/BaseContainer";
-import { Button } from "../ui/Button";
-import { useCurrUser } from '../context/UserContext';
-import { api, handleError } from "helpers/api";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { api, handleError} from "../../helpers/api";
+import PropTypes from "prop-types";
 
-const Matchmaking = () => {
-  const { currUser } = useCurrUser();  // Retrieves the current user and helper functions from context
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+const UserContext = createContext(null);
+//Should have chosen better Name, currUser in context is token , id and currUser in sessionStorage is full object.
+export const UserProvider = ({ children }) => {
+  const [currUser, setCurrUser] = useState(() => {
+    const savedUser = sessionStorage.getItem("currUser");
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser);
+      return { id: parsedUser.id, token: parsedUser.token };
+    }
+    return { id: null, token: null };
+  });
 
-  useEffect(() => {
-    const startQueueing = async () => {
-      if (!currUser.token) {
-        toast.error("You must be logged in to start matchmaking.");
-        navigate('/login');
-        return;
-      }
-      setLoading(true);
-      try {
-        const response = await api.put(`/games/queue/${currUser.id}`, {}, {
-          headers: { Authorization: `Bearer ${currUser.token}` }
-        });
-        if (response.data.gameId) {
-          navigate(`/kittycards/${response.data.gameId}`);
-        } else {
-          toast.info("Queueing for a match...");
-        }
-      } catch (error) {
-        toast.error(`Error during matchmaking: ${handleError(error)}`);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    startQueueing();
+  const login = async (username, password) => {
+    try {
+      const response = await api.post("/users/login", { username, password });
+      sessionStorage.setItem("currUser", JSON.stringify(response.data));
+      sessionStorage.setItem("id", response.data.id);
+      sessionStorage.setItem("token", response.data.token);
+      setCurrUser({ id: response.data.id, token: response.data.token });
 
-    return () => {
-      // Called when the component unmounts
-      const doQuitQueueing = async () => {
-        if (currUser.id && currUser.token) {
-          try {
-            await api.delete(`/games/dequeue/${currUser.id}`, {
-              headers: { Authorization: `Bearer ${currUser.token}` }
-            });
-            toast.info("You have left the queue.");
-          } catch (error) {
-            toast.error(`Error quitting the queue: ${handleError(error)}`);
-          }
-        }
-      };
+      return true;
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      alert(`Login failed: ${error.message}`);
+      return false; // Indicate complete failure
+    }
+  };
 
-      doQuitQueueing();
-    };
-  }, [currUser, navigate]);
+  const register = async (username, password) => {
+    try {
+      const response = await api.post("/users", { username, password });
+      sessionStorage.setItem("currUser", JSON.stringify(response.data));
+      sessionStorage.setItem("id", response.data.id);
+      sessionStorage.setItem("token", response.data.token);
+      setCurrUser({ id: response.data.id, token: response.data.token });
+
+      return true;
+    } catch (error) {
+      console.error("Registration failed:", error.message);
+      alert(`Registration failed: ${error.message}`);
+      return false;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await api.post(`/users/${currUser.id}/logout`, null, {
+        headers: { Authorization: `Bearer ${currUser.token}` }
+      });
+      sessionStorage.clear();
+      setCurrUser({ id: null, token: null });
+
+    } catch (error) {
+      handleError(error);
+      alert(`Logout failed: ${error.message}`);
+    }
+  };
 
   return (
-    <BaseContainer>
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h2>Waiting for an opponent...</h2>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <Button onClick={() => {
-            // This will trigger the cleanup function via a manual route change
-            navigate("/main");
-          }}>Cancel Matchmaking</Button>
-        )}
-      </div>
-    </BaseContainer>
+    <UserContext.Provider value={{ currUser, login, register, logout }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 
-export default Matchmaking;
+UserProvider.propTypes = {
+  children: PropTypes.node
+};
+
+export const useCurrUser = () => useContext(UserContext);

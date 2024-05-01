@@ -1,0 +1,63 @@
+@import "../theme";
+
+.main {
+  &.container {
+    margin-top: 1em;
+    min-height: 300px;
+    @include center;
+    flex-direction: column;
+  }
+
+  .button-list {
+    list-style-type: none; // Removes bullet points from list
+    padding: 0; // Removes padding from list
+
+    &.container {
+      background: $background;
+      padding: 1.5em;
+      border-radius: $borderRadius;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: $dropShadow;
+    }
+
+    &.user-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main {
+      &.form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 60%;
+        max-width: 30em;
+        height: 20em;
+        font-size: 16px;
+        font-weight: 300;
+        padding: 37px;
+        border-radius: 0.75em;
+        background-color: $background;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+        box-shadow: $dropShadow;
+      }
+
+      .main .button-container button + button {
+        margin-top: 20px;
+      }
+
+      &.button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 2em;
+        flex-direction: column;
+        padding: 37px;
+        align-items: center;
+      }
+    }
+  }
+}

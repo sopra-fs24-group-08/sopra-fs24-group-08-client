@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import {useNavigate} from "react-router-dom";
 import { Button } from "components/ui/Button";
-import "styles/views/Navigation.scss";
+import "styles/views/Main.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import Header from "./Header";
 import YouTube from "react-youtube";
@@ -36,7 +36,7 @@ const Tutorial = () => {
           <div className="navigation button-container"> 
             <Button
               style={{ width: "100%", marginBottom: "10px" }}
-              onClick={() => navigate("/kittycards")}
+              onClick={() => navigate("/main")}
             >
               Back
             </Button>   

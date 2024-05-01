@@ -1,123 +1,77 @@
 import React, { useEffect } from "react";
-import { useCurrUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "../ui/BaseContainer";
 import Header from "./Header";
 import { Button } from "../ui/Button";
 import { useData } from '../context/DataContext';
-import {api,handleError} from "../../helpers/api"
+import { useCurrUser } from "../context/UserContext";
+import "styles/views/Main.scss";
+
 
 function Main() {
-  const { logout,currUser } = useCurrUser();
+  const { logout, currUser } = useCurrUser();
   const navigate = useNavigate();
-  const { userData, setUserData } = useData();
+  const { data, refreshData } = useData();
+  const { usersLastFetched, friendsLastFetched } = data;
 
-  //Fetch whenever somebody enters Main Page-> Longer game -> some client issue and the users was logged out as a response
-  const fetchDataIfNeeded = async () => {
+  // Helper function to determine if data needs refreshing
+  const needsRefresh = (lastFetched) => {
     const now = new Date().getTime();
-    const shouldFetchUsers = !userData.usersLastFetched || (now - new Date(userData.usersLastFetched).getTime()) > 3600000;
-    const shouldFetchFriends = !userData.friendsLastFetched || (now - new Date(userData.friendsLastFetched).getTime()) > 3600000;
-
-    //Could make it more efficient if we would compare the users friends with currUser.id and then imemdiately return them as well,
-    // so we wouldnt have to do next call
-    if (shouldFetchUsers) {
-      const usersResponse = await api.get('/users',{headers: {Authorization: `Bearer ${currUser.token}`}});
-      setUserData(prev => ({
-        ...prev,
-        users: usersResponse.data,
-        usersLastFetched: new Date().toISOString()
-      }));
-    }
-    if (shouldFetchFriends) {
-      const friendsResponse = await api.get('/users/friends',{headers: {Authorization: `Bearer ${currUser.token}`}});
-      setUserData(prev => ({
-        ...prev,
-        friends: friendsResponse.data,
-        friendsLastFetched: new Date().toISOString()
-      }));
-    }
+    return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour, set it to whatever later
+    // or to event for example new friend toast.
   };
 
   useEffect(() => {
-    fetchDataIfNeeded();
-  }, []);
+    const fetchDataIfNeeded = async () => {
+      if (needsRefresh(usersLastFetched) || needsRefresh(friendsLastFetched)) {
+        await refreshData();
+      }
+    };
 
+    if (currUser?.token) {
+      fetchDataIfNeeded();
+    }
+  }, [refreshData, usersLastFetched, friendsLastFetched, currUser?.token]);
 
-  const handleLogout = () => {
-    console.log(currUser,"AUTH");
-    console.log(currUser.token);
-    logout();
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   const proceedToMatchmaking = () => {
-    const userId = sessionStorage.getItem("id") || currUser.id;
-    navigate(`/matchmaking/queue/${userId}`)
-  }
+    navigate(`/matchmaking/queue/${currUser.id}`);
+  };
 
-    const proceedToMyProfile = (id) =>{
-    if (currUser.id === id && currUser.id != null || undefined){
-      navigate(`/profiles/${currUser.id}`);}
-    else{
-      logout()
-      alert("You have been send to the login page, something when wrong while trying to fetch your profile")
+  const proceedToMyProfile = () => {
+    navigate(`/profiles/${currUser.id}`);
+  };
 
-      }};
+  const navigateToFriendList = () => {
+    navigate(`/friendlist/${currUser.id}`);
+  };
 
-   const  navigateToFriendList = (userId) =>{
-     const id = sessionStorage.getItem("id");
-     if (currUser.id === id && currUser.id != null || undefined){
-       navigate(`/friendlist`);}
-     else{
-       logout() //perhaps add less aggressive measures
-       alert("You have been send to the login page, something when wrong while trying to fetch your profile")
-     }
-   };
+  const navigateToUserList = () => {
 
-   const  navigateToUserList = () =>{
-     navigate("/userList")
-   }
+    navigate(`/userlist/${currUser.id}`);
+  };
 
-   return (
-        <BaseContainer>
-          <Header height="100" />
-          <div className="navigation container">
-            <div className="navigation form">
-              <div className="navigation button-container">
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => proceedToMatchmaking()}
-                >
-                  Start
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => navigateToFriendList(currUser.id)}
-                >
-                  Friends
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => navigateToUserList()}
-                >
-                  UserList
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => proceedToMyProfile(currUser.id)}
-                >
-                  My Profile
-                </Button>
-                <Button
-                  style={{ width: "100%", marginBottom: "10px" }}
-                  onClick={() => logout()}
-                >
-                  Logout
-                </Button>
-                <Button onClick={handleLogout}>Logout</Button>
-              </div>
-            </div>
-          </div>
-        </BaseContainer>
+  return (
+    <BaseContainer className="main container">
+      <Header height="100" />
+      <div className="navigation form">
+        <div className="login button-container">
+
+          <Button onClick={proceedToMatchmaking}>Start</Button>
+          <Button onClick={navigateToFriendList}>Friends</Button>
+          <Button onClick={navigateToUserList}>UserList</Button>
+          <Button onClick={proceedToMyProfile}>My Profile</Button>
+          <Button onClick={handleLogout}>Logout</Button>
+          <Button onClick={()=> navigate("/tutorial")}>Tutorial</Button>
+
+
+        </div>
+      </div>
+    </BaseContainer>
   );
 }
 

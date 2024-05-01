@@ -1,6 +1,7 @@
 import { useCurrUser } from "../../context/UserContext";
 import { Navigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import React from 'react';
 
 const PrivateRoute = ({ children, validate }) => {
   const { currUser } = useCurrUser();
@@ -13,7 +14,7 @@ const PrivateRoute = ({ children, validate }) => {
 
 PrivateRoute.propTypes = {
   children: PropTypes.node.isRequired,
-  validate: PropTypes.func // validate is optional, but if provided, it should expect currUser and location as arguments
+  validate: PropTypes.func
 };
 
 export default PrivateRoute;

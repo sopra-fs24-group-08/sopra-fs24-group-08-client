@@ -9,8 +9,19 @@
  */
 
 export const matchPathWithParameter = (object, location, nr) => {
+  if (!object || !object.id || !location || !location.pathname) {
+    console.warn("Invalid arguments passed to matchPathWithParameter.");
+    return false;
+  }
+
   const pathSegments = location.pathname.split('/');
+  if (nr >= pathSegments.length) {
+    console.error("The URL does not contain enough segments to match the given index.");
+    return false;
+  }
+
   const pathId = pathSegments[nr];
-  return object.id === pathId;
+  return object.id.toString() === pathId;
 };
+
 
