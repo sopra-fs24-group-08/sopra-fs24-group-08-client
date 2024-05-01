@@ -323,7 +323,7 @@ const renderChatBox = () => (
                   <button onClick={() => handleTranslateClick(message.id)} className="translate-btn">Translate</button>
                 </div>
               ))}
-              {/* 这里是新添加的 div 用于滚动定位 */}
+              {/* 这里是新添加的  div 用于滚动定位 */}
               <div ref={messageEndRef} />
             </div>
             {/* 输入和发送控制区域 */}
