@@ -203,4 +203,5 @@ Done List:
 Todo List:
 
 - Review Task list and update what is done and what has to be done on Git
+->   Work on open tasks
 - Finalize Translation Service after getting feedback from the Group.
