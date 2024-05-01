@@ -99,7 +99,6 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 
 - Implementaion of deciding if first turn or second and distribution of 3/2 cards accordingly. #02
 - Criteroin 3: If a user does not choose an option after 15 seconds,then the app will randomly decide who goes first. #24
-- Design/Mockup for the Game board.
 - Criterion 3: Once the user put the card, the action can’t reverse, the scores should be updated. #20
   -> Rollback disabling mechanism
 
@@ -125,11 +124,12 @@ David Tanner
 
 Yiyang Chen
 
-•⁠  ⁠Implementaion of deciding if first turn or second and distribution of 3/2 cards accordingly. #02
-•⁠  ⁠Criteroin 3: If a user does not choose an option after 15 seconds,then the app will randomly decide who goes first. #24
-•⁠  ⁠Design/Mockup for the Game board.
-•⁠  ⁠Criterion 3: Once the user put the card, the action can’t reverse, the scores should be updated. #20
-  -> Rollback disabling mechanism
+•⁠  ⁠Design/Mockup for the Game board #84
+Further Adjustments：
+•⁠  Responsive Design: Implemented responsive layout to ensure consistent viewing across different browsers by removing fixed positioning.
+•⁠  Fixed Chat Box Height: Set a fixed height for the chat box to maintain a consistent interface size.
+•⁠  Scrollable Chat History: Added a scrollbar to the chat window when the number of messages exceeds the viewable area.
+•⁠  Auto-scroll to Latest Message*: Implemented automatic scrolling to the newest message upon sending, ensuring the latest conversation is always visible.
 
 Jingxuan Tian
 •⁠  matching function for backend and frontend
@@ -151,7 +151,7 @@ Done list
 
 Todo List
 
-- merge with other members work
+- merge with other members' work
 - sse for updating game operations
 
 **Zixian Pang**
@@ -165,5 +165,17 @@ Done List
 
 Todo List
 
-- merge with other members work
+- merge with other members' work
 - update css files
+
+  **Yiyang Chen**
+
+Done list
+
+- Chatbox Controller & Service #79
+- Tests for Chatbox Controller & Service #80
+
+Todo List
+
+- merge with other members' work
+- link chatbox service to client and test
