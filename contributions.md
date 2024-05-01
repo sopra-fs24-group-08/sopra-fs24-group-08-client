@@ -154,3 +154,16 @@ Todo List
 - merge with other members work
 - sse for updating game operations
 
+**Zixian Pang**
+
+Done List
+
+- creation of winner page
+- images path fixed
+- drag effect
+- ocuupied-cup images
+
+Todo List
+
+- merge with other members work
+- update css files
