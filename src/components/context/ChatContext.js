@@ -2,12 +2,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from "./AuthContext";
 import { api } from '../../helpers/api';
 import PropTypes from 'prop-types';
+import { LanguageDropdown } from '../ui/LanguageDropdown'
 
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
-    const { client } = useAuth();
+   const { client } = useAuth();
     const [messages, setMessages] = useState([]);
+
 
     // Subscribe to a chat channel
     const subscribeToChat = (chatId) => {
@@ -33,9 +35,10 @@ export const ChatProvider = ({ children }) => {
 
 
         return (
-        <ChatContext.Provider value={{ messages, subscribeToChat, sendMessage, translateMessage }}>
-            {children}
-        </ChatContext.Provider>
+      <ChatContext.Provider value={{ messages, subscribeToChat, sendMessage, translateMessage}}>
+
+             {children}
+         </ChatContext.Provider>
     );
 };
 
@@ -44,14 +47,15 @@ ChatProvider.propTypes = {
 };
 
 export const useChat = () => useContext(ChatContext);
-export const translateMessage = async (messages, setMessages, msgId, sourceLang = "en", targetLang = 'de') => {
+
+export const translateMessage = async (messages, setMessages, msgId, sourceLanguage = "en", targetLanguage = 'de') => {
     if (Array.isArray(messages)) {
         const msg = messages.find(m => m.id === msgId);
         if (msg) {
             try {
-                const response = await api.post('/api/translate/es', {
+                const response = await api.post('/api/translate/'+targetLanguage, {
                     message: msg.text,
-                   sourceLang
+                   sourceLanguage
                 });
                 const translatedText = response.data.data.translations[0].translatedText;
                 const updatedMessages = messages.map(m =>
@@ -66,3 +70,6 @@ export const translateMessage = async (messages, setMessages, msgId, sourceLang 
         console.error('messages is not an array');
     }
 };
+
+
+
