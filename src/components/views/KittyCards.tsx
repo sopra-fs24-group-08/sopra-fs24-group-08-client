@@ -100,7 +100,7 @@ const handleSourceLanguageChange = (selectedLanguage: string) => {
     translateMessage(chatMessages, setChatMessages, msgId, sourceLanguage, targetLanguage);
   };
 
-  // Function to render the chat box
+  // Function to render the  chat box
 const renderChatBox = () => (
   <div className="chat-box">
   <div>
