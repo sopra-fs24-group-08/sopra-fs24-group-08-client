@@ -1,25 +1,56 @@
 @import "../theme";
 
-
 .userprofile {
   &.container {
-    margin-top: 00.75em;
     background: $background;
     padding: 1.5em;
     border-radius: $borderRadius;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row; // To lay out the profile details and the icon side by side
+    justify-content: center; // Centering the content horizontally
+    align-items: center; // Aligning content vertically
     box-shadow: $dropShadow;
-    font-size: 30px;
+    width: 60%; // Adjust width as necessary
+    min-height: 250px; // Ensuring there's enough vertical space
+    margin: 3em auto; // More vertical margin for better centering
+    font-size: 16px;
     font-weight: 400;
   }
+
   &.text {
     font-size: 18px;
     font-weight: 300;
   }
+
   &.button-container {
-    margin-top: 2em;
-    font-size: medium;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    margin-top: 1em;
+    gap: 1em;
+  }
+
+  img {
+    width: 100px;
+    height: 100px;
+    border: 4px solid $accent;
+    border-radius: 50%;
+    box-shadow: $dropShadow;
+    margin-left: 2em; // Space between text and image
+  }
+
+  button {
+    background: $accent;
+    color: $textColor;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: $borderRadius;
+    box-shadow: $dropShadow;
+
+    &:hover {
+      background: lighten($accent, 10%);
+    }
   }
 }

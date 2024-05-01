@@ -7,6 +7,7 @@ import { React, useEffect, useState } from "react";
 import Refresh from "../ui/Refresh";
 import { useCurrUser} from "../context/UserContext";
 
+
 const UserProfileEdit = () => {
   const navigate = useNavigate();
   const {id} = useParams();
@@ -59,47 +60,25 @@ const UserProfileEdit = () => {
     }
   }
   return (
-    <BaseContainer>
-      <div className="edit container">
-        <form className="edit form" onSubmit={handleSubmit}>
-          <div className="edit field">
-            <label className="edit label" htmlFor="username">Choose new Username</label>
-            <input
-              className="edit input"
-              type="text"
-              id="username"
-              name="username"
-              value={username}
-              onChange={handleUsernameChange}
-            />
-          </div>
-          <div className="edit field">
-            <label className="edit label" htmlFor="password">Enter New Password</label>
-            <input
-              className="edit input"
-              type="text"
-              id="password"
-              name="password"
-              value={password}
-              onChange={handlePasswordChange}
-            />
-          </div>
-          <div className="edit field">
-            <label className="edit label" htmlFor="birthday">Choose Birthday</label>
-            <input
-              className="edit input"
-              type="date"
-              id="birthday"
-              name="birthday"
-              value={birthday}
-              onChange={handleBirthdayChange}
-            />
-          </div>
-          <div className="edit button-container">
-            <Button type="submit">Apply Changes</Button>
-          </div>
-        </form>
-      </div>
+    <BaseContainer className="edit container">
+      <form onSubmit={handleSubmit} className="edit form">
+        <div className="edit field">
+          <label htmlFor="username">Choose new Username</label>
+          <input type="text" id="username" value={username} onChange={handleUsernameChange} />
+        </div>
+        <div className="edit field">
+          <label htmlFor="password">Enter New Password</label>
+          <input type="password" id="password" value={password} onChange={handlePasswordChange} />
+        </div>
+        <div className="edit field">
+          <label htmlFor="birthday">Choose Birthday</label>
+          <input type="date" id="birthday" value={birthday} onChange={handleBirthdayChange} />
+        </div>
+        <div className="userprofile button-container">
+          <Button type="submit">Apply Changes</Button>
+          <Button onClick={() => navigate("/main")} className="back-btn">Back</Button></div>
+      </form>
+
     </BaseContainer>
   );
 };

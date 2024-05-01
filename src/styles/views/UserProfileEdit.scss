@@ -1,58 +1,44 @@
 @import "../theme";
-
 .edit {
     &.container {
-        margin-top: 2em;
-        min-height: 300px;
-        /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
-        @include center;
-        flex-direction: column;
-    }
-    &.form {
         display: flex;
         flex-direction: column;
+        align-items: center;
         justify-content: center;
-        width: 60%;
-        max-width: 30em;
-        height: 20em;
-        font-size: 16px;
-        font-weight: 300;
-        padding-left: 37px;
-        padding-right: 37px;
-        border-radius: 0.75em;
-        background-color: $background;
-        transition: opacity 0.5s ease, transform 0.5s ease;
+        padding: 20px;
+        background: $background;
+        border-radius: $borderRadius;
         box-shadow: $dropShadow;
+        width: 60%; // Adjust according to layout needs
+        margin: 20px auto; // Centering the container
     }
+
+    &.form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px; // Provides space between form items
+    }
+
     &.field {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        width: 100%;
     }
-    &.input {
-        height: 35px;
-        padding-left: 15px;
-        margin-left: -4px;
-        border: none;
-        border-radius: 0.75em;
-        margin-bottom: 30px;
-        background: transparentize(white, 0.85);
-        color: $textColor;
+
+    .edit.input,
+    .edit.label {
+        width: 100%;
     }
-    &.label {
-        color: $textColor;
-        margin-bottom: 10px;
-        text-transform: lowercase;
-        font-weight: 300;
-    }
-    &.button-container {
+
+    .button-container {
+        width: 100%;
         display: flex;
         justify-content: center;
-        margin-top: 2em;
+        gap: 10px;
     }
-    &.button-container-re{
-        display:flex;
-        justify-content: center;
-        margin-top: 2em;
+
+    .back-btn {
+        background-color: $accent;
     }
 }

@@ -5,8 +5,6 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useCurrUser } from "../context/UserContext";
 import { api, handleError } from "helpers/api";
-import { User } from "../../types";
-import game from "./Game";
 import "../../styles/views/Game.scss";
 
 
@@ -41,7 +39,6 @@ const Matchmaking = () => {
     }
   };
 
-  // Function to handle unqueuing process
   const doQuitQueueing = async () => {
     try {
       await api.delete(`/games/dequeue/${currUser.id}`, {
@@ -54,12 +51,9 @@ const Matchmaking = () => {
       navigate("/main")
     }
   };
-
-  // Effect hook for starting the queueing when the component mounts
   useEffect(() => {
     startQueueing();
 
-    // Cleanup function to call when the component unmounts or if the dependencies change
     return () => {
       doQuitQueueing();
     };
@@ -72,7 +66,6 @@ const Matchmaking = () => {
         <h2>Waiting for an opponent...</h2>
         <div className="login button-container">
           <Button onClick={doQuitQueueing}>Cancel Matchmaking</Button>
-            <Button onClick={() => navigate(`/kittycards/${currUser.id}/10`)}>FAKE MATCH MOCK</Button>
         </div>
       </div>
     </BaseContainer>

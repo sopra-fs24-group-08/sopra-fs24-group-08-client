@@ -49,9 +49,10 @@ export const UserProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post(`/users/${currUser.id}/logout`, null, {
+      await api.put(`/users/${currUser.id}/logout`, null, {
         headers: { Authorization: `Bearer ${currUser.token}` }
       });
+      console.log("Logout successful");
       sessionStorage.clear();
       setCurrUser({ id: null, token: null });
 

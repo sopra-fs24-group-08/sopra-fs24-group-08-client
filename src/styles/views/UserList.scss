@@ -1,0 +1,114 @@
+@import "../theme";
+
+.userlist {
+  &.container {
+    margin-top: 1em;
+    min-height: 300px;
+    @include center;
+    flex-direction: column;
+    padding: 2em;
+    background: $background;
+    border-radius: $borderRadius;
+    box-shadow: $dropShadow;
+    width: 70%;
+    margin: 2em auto;
+
+    h2 {
+      color: $textColor;
+      margin-bottom: 1em;
+    }
+
+    .paragraph {
+      color: darken($textColor, 20%);
+      margin-bottom: 1em;
+    }
+  }
+
+  .user-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+
+    .user-item {
+      background: lighten($background, 3%);
+      border-radius: $borderRadius;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1em;
+      margin-bottom: 1em;
+      box-shadow: $dropShadow;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+
+      &:hover {
+        background-color: lighten($background, 5%);
+        transform: translateY(-2px);
+      }
+
+      .user-info {
+        flex-grow: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .player-status {
+          &.online {
+            color: #28a745; // Green for online
+          }
+          &.offline {
+            color: #ff4757; // Red for offline
+          }
+        }
+      }
+
+      .friend-request-btn {
+        width: auto; // Ensures the button size adjusts to content
+        padding: 0.5em 1em;
+        font-size: 14px;
+        background-color: $accent;
+        color: $textColor;
+        border-radius: $borderRadius;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: lighten($accent, 10%);
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between; // Adjusted for layout alignment
+    margin-top: 1em;
+
+    .refresh-btn {
+      display: inline-block;
+      background: url("../../assets/Refresh_icon.png") no-repeat center center;
+      background-size: contain;
+      width: 40px;
+      height: 40px;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background-color: lighten($background, 5%);
+      }
+    }
+
+    .back-btn {
+      padding: 0.5em 1em;
+      margin-left: 1em;
+      font-size: 14px;
+      background-color: $accent;
+      color: $textColor;
+      border-radius: $borderRadius;
+
+      &:hover {
+        background-color: lighten($accent, 10%);
+      }
+    }
+  }
+}

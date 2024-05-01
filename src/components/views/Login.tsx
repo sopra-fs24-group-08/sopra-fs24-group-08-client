@@ -63,17 +63,14 @@ function Login() {
             >
               Login
             </Button>
+            <Button
+              width="100"
+              onClick={() => handleRegister()}
+            >
+              Create a new account
+            </Button>
           </div>
         </div>
-      </div>
-      <div className="login button-container-re">
-        <Button
-          width="100"
-          onClick={() => handleRegister()}
-        >
-          Create a new account
-        </Button>
-
       </div>
     </BaseContainer>
   );

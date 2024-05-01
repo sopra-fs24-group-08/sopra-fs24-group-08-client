@@ -263,7 +263,7 @@ const KittyCards = () => {
     setShowMessage(true);
 
     setTimeout(() => {
-      navigate("/navigation");
+      navigate("/main");
     }, 2000); //
   };
 

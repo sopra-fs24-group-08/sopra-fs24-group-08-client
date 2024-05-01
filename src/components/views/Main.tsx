@@ -33,46 +33,40 @@ function Main() {
     }
   }, [refreshData, usersLastFetched, friendsLastFetched, currUser?.token]);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
+  const doLogout=() =>{
+    logout()
+    navigate("/login")
+  }
 
-  const proceedToMatchmaking = () => {
-    navigate(`/matchmaking/queue/${currUser.id}`);
-  };
 
-  const proceedToMyProfile = () => {
-    navigate(`/profiles/${currUser.id}`);
-  };
+  const buttons = [
+    { label: "Start", onClick: () => navigate(`/matchmaking/queue/${currUser.id}`) },
+    { label: "Friends", onClick: () => navigate(`/friendlist/${currUser.id}`) },
+    { label: "User List", onClick: () => navigate(`/userlist/${currUser.id}`) },
+    { label: "My Profile", onClick: () => navigate(`/profiles/${currUser.id}`) },
+    { label: "Tutorial", onClick: () => navigate("/tutorial") },
+    { label: "Logout", onClick: () => doLogout() },
+  ];
 
-  const navigateToFriendList = () => {
-    navigate(`/friendlist/${currUser.id}`);
-  };
-
-  const navigateToUserList = () => {
-
-    navigate(`/userlist/${currUser.id}`);
-  };
-
+  const fakejoin = () =>{
+    const gameId = 10;
+    navigate(`/kittycards/${currUser.id}/${gameId}`)
+  }
   return (
-    <BaseContainer className="main container">
-      <Header height="100" />
-      <div className="navigation form">
-        <div className="login button-container">
+    <BaseContainer>
+      <Header height="50" />
+      <div className="main container">
 
-          <Button onClick={proceedToMatchmaking}>Start</Button>
-          <Button onClick={navigateToFriendList}>Friends</Button>
-          <Button onClick={navigateToUserList}>UserList</Button>
-          <Button onClick={proceedToMyProfile}>My Profile</Button>
-          <Button onClick={handleLogout}>Logout</Button>
-          <Button onClick={()=> navigate("/tutorial")}>Tutorial</Button>
-
-
-        </div>
+          <div className="main button-container">
+            {buttons.map((button, index) => (
+              <Button key={index} onClick={button.onClick}>{button.label}</Button>
+            ))}
+            <Button onClick={fakejoin} >FAKE MATCH MOCK</Button>
+          </div>
       </div>
     </BaseContainer>
-  );
+);
 }
+
 
 export default Main;

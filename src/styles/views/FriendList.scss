@@ -1,0 +1,129 @@
+@import "../theme";
+
+.friendlist {
+  &.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2em;
+    background: $background;
+    border-radius: $borderRadius;
+    box-shadow: $dropShadow;
+    width: 80%;
+    margin: 2em auto;
+
+    h2 {
+      color: $textColor;
+      margin-bottom: 1em;
+    }
+
+    .paragraph {
+      color: darken($textColor, 20%);
+      margin-bottom: 1em;
+    }
+  }
+
+  .mailbox-icon-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    background: url("../../assets/mail.svg") no-repeat center center;
+    background-size: contain;
+
+    .mailbox-notification {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+
+
+  .user-list {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+
+    li {
+      background: lighten($background, 5%);
+      border-radius: $borderRadius;
+      margin-bottom: 1em;
+      padding: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: $dropShadow;
+
+      &:hover {
+        background: lighten($background, 7%);
+      }
+    }
+
+    .player {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    button {
+      margin: 0 10px;
+      background-color: $accent;
+      color: $textColor;
+      border: none;
+      border-radius: $borderRadius;
+      padding: 0.5em 2em;
+      font-size: 16px;
+
+      &:hover {
+        background-color: lighten($accent, 10%);
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 1em;
+    padding: 0 10px;
+
+    .refresh-btn, .back-btn, .mailbox-icon-container {
+      margin: 0 10px;
+    }
+
+    .refresh-btn {
+      background: url("../../assets/Refresh_icon.png") no-repeat center center;
+      background-size: contain;
+      width: 40px;
+      height: 40px;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background-color: lighten($background, 5%);
+      }
+    }
+
+    .back-btn {
+      padding: 0.5em 1em;
+      margin-left: 1em;
+      font-size: 14px;
+      background-color: $accent;
+      color: $textColor;
+      border-radius: $borderRadius;
+
+      &:hover {
+        background-color: lighten($accent, 10%);
+      }
+    }
+  }
+}

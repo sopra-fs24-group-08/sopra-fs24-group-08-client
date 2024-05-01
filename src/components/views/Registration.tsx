@@ -28,7 +28,6 @@ FormField.propTypes = {
   onChange: PropTypes.func,
 };
 
-
 function Registration() {
   const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);

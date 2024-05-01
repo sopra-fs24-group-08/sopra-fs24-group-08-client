@@ -13,6 +13,7 @@ import FriendList from "../../views/FriendList";
 import UserList from "../../views/UserList";
 import KittyCards from "../../views/KittyCards";
 import Tutorial from "../../views/Tutorial";
+import UserAchievements from "../../views/UserAchievements";
 
 
 
@@ -44,18 +45,26 @@ const AppRouter = () => {
             <UserProfileEdit />
           </PrivateRoute>
         } />
+        <Route path="/profiles/:id/achievements" element={
+          <PrivateRoute validate={(user, location) => matchPathWithParameter(user, location, 2)}>
+            <UserAchievements />
+          </PrivateRoute>
+        } />
         <Route path="/matchmaking/queue/:userId" element={
           <PrivateRoute validate={(user, location) => matchPathWithParameter(user, location, 3)}>
             <Matchmaking />
           </PrivateRoute>
         } />
-        <Route path="/kittycards/:userId/:gameId" element={ //Will need to adapt the guard
+
+        <Route path="/kittycards/:userId/:gameId" element={<PrivateRoute><KittyCards /></PrivateRoute>} />
+
+        {/*<Route path="/kittycards/:userId/:gameId" element={ //Will need to adapt the guard
           <PrivateRoute validate={(user, location) => matchPathWithParameter(user, location, 2)}>
             <KittyCards />
           </PrivateRoute>
         } />
-
-        <Route path="*" element={<Navigate to="/login"/>}/>
+*/}
+        <Route path="/*" element={<Navigate to="/login"/>}/>
       </Routes>
     </BrowserRouter>
     </DataProvider>
