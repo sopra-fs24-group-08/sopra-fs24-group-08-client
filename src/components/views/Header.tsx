@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "../../styles/views/Header.scss";
-
+// @ts-ignore
+import Kittycards from "../../images/Kittycards.png";
 /**
  * This is an example of a Functional and stateless component (View) in React. Functional components are not classes and thus don't handle internal state changes.
  * Conceptually, components are like JavaScript functions. They accept arbitrary inputs (called “props”) and return React elements describing what should appear on the screen.
@@ -13,7 +14,7 @@ import "../../styles/views/Header.scss";
 const Header = props => (
   <div className="header container" style={{height: props.height}}>
     <img
-      src={`${process.env.PUBLIC_URL}/Kittycards.png`}
+      src={Kittycards.png}
       style={{
         display: "block",
         width: "30%",

@@ -4,37 +4,74 @@ import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
+// @ts-ignore
+import repo from "../../images/repo.png";
+// @ts-ignore
+import avatar from "../../images/avatar.png";
+// @ts-ignore
+import blue from "../../images/blue.png"
+// @ts-ignore
+import bluecard from "../../images/bluecard.png"
+// @ts-ignore
+import red from "../../images/red.png"
+// @ts-ignore
+import redcard from "../../images/redcard.png"
+// @ts-ignore
+import green from "../../images/green.png"
+// @ts-ignore
+import greencard from "../../images/greencard.png"
+// @ts-ignore
+import white from "../../images/white.png"
+// @ts-ignore
+import occupiedBlue from "../../images/occupiedBlue.png"
+// @ts-ignore
+import occupiedRed from "../../images/occupiedRed.png"
+// @ts-ignore
+import occupiedGreen from "../../images/occupiedGreen.png"
 
-const emptySlot = "empty";
+// @ts-ignore
+import occupiedWhite from "../../images/occupiedWhite.png"
+
+
+/*const emptySlot = "empty";
 const blockedSlot = "blocked";
-const repository = "repo";
+const repository = "repo";*/
 
 const getRandomColor = () => {
   const colors = ["blue", "green", "red","white"];
-  
+
   return colors[Math.floor(Math.random() * colors.length)];
 };
 const getEmptySlot = () => ({ type: "empty", color: getRandomColor() });
-
+const getRepoSlot = () => ({ type: "repo" });
+const convertToBlocked = (slot: { type: string; color: string; }) => {
+  return { ...slot, type: "blocked" };
+};
 const initialGrid = () => [
   [getEmptySlot(), getEmptySlot(), getEmptySlot()],
-  [getEmptySlot(), repository, getEmptySlot()],
+  [getEmptySlot(), getRepoSlot(), getEmptySlot()],
   [getEmptySlot(), getEmptySlot(), getEmptySlot()]
 ];
+
 const colorToCup = {
-  blue: `${process.env.PUBLIC_URL}/blue.png`,
-  green: `${process.env.PUBLIC_URL}/green.png`,
-  red: `${process.env.PUBLIC_URL}/red.png`,
-  white: `${process.env.PUBLIC_URL}/white.png`
+  blue: blue,
+  green: green,
+  red: red,
+  white: white,
 };
 
 const colorToCard = {
-  blue: `${process.env.PUBLIC_URL}/bluecard.png`,
-  green: `${process.env.PUBLIC_URL}/greencard.png`,
-  red: `${process.env.PUBLIC_URL}/redcard.png`,
-
+  blue: bluecard,
+  green: greencard,
+  red: redcard,
 };
 
+const colorToOccupied = {
+  green: occupiedGreen,
+  blue: occupiedBlue,
+  red: occupiedRed,
+  white: occupiedWhite
+};
 interface Card {
   id: number;
   name: string;
@@ -106,16 +143,15 @@ const KittyCards = () => {
               let slotClasses = "game-board-slot";
               let slotContent;
               if (slot.type === "blocked") {
-                slotClasses += " game-board-center";
                 slotContent = <img
-                  src={`${process.env.PUBLIC_URL}/blocked.png`}
+                  src={colorToOccupied[slot.color]}
                   style={{
                     display: "block",
                     width: "80%",
                     height: "auto",
                   }}
-                  alt=""
-                />;
+                  alt=""/>;
+
               } else if (slot.type === "empty") {
                 slotContent = <img
                   src={colorToCup[slot.color]}
@@ -125,9 +161,9 @@ const KittyCards = () => {
                     height: "auto",
                   }}
                   alt=""/>;
-              } else{
+              } else if (slot.type === "repo"){
                 slotContent = <img
-                  src={`${process.env.PUBLIC_URL}/repo.png`}
+                  src={repo}
                   style={{
                     display: "block",
                     width: "80%",
@@ -158,10 +194,10 @@ const KittyCards = () => {
   };
 
   // Function to render the player's profile
-  const renderPlayerProfile = (color, playerName, score) => (
+  const renderPlayerProfile = (playerName, score) => (
     <div className="player-profile">
       <img
-        src={`${process.env.PUBLIC_URL}/avatar.png`}
+        src={avatar}
         style={{
           display: "block",
           width: "40%",
@@ -196,16 +232,30 @@ const KittyCards = () => {
     </div>
   );
   const handleDragStart = (event, card) => {
-    event.dataTransfer.setData("text/plain", card.id);
+    event.dataTransfer.setData("text/plain", card.id.toString());
+    event.currentTarget.style.opacity = "0.5";
   };
+
   const handleCardDrop = (event, rowIndex, columnIndex) => {
-    const cardId = parseInt(event.dataTransfer.getData("text/plain"));
+    event.preventDefault();
+    const cardId = parseInt(event.dataTransfer.getData("text/plain"), 10);
     const cardToPlace = hand.find(card => card.id === cardId);
 
-    if (cardToPlace) {
+    if (cardToPlace && grid[rowIndex][columnIndex].type === "empty") {
+      // 一旦确定格子为空，立即设置为blocked防止重复放置
+      const newGrid = grid.map((row, rIndex) =>
+        rIndex === rowIndex
+          ? row.map((slot, cIndex) => cIndex === columnIndex ? { ...slot, type: "blocked" } : slot)
+          : row
+      );
+      setGrid(newGrid);
       placeCard(rowIndex, columnIndex, cardToPlace);
+      setHand(hand.filter(card => card.id !== cardId)); // 从手牌中移除
+    } else {
+      alert("You can only place a card on an empty slot.");
     }
   };
+
 
   const drawCard = () => {
     const newCardId = Math.max(...hand.map(c => c.id)) + 1; // Get the next ID
@@ -217,26 +267,14 @@ const KittyCards = () => {
 
   const placeCard = (rowIndex: number, columnIndex: number, card = selectedCard) => {
     // Check if the center slot is clicked, if so draw a card
-    if (!card) {
-      alert("Please select a card first.");
-
-      return;
-    }
+    if (!card) return;
     if (rowIndex === 1 && columnIndex === 1) {
       drawCard();
 
       return; // Early return to prevent further actions since it's a special slot
     }
-    // Check if a card is selected
-    if (!selectedCard) {
-      alert("Please select a card first.");
-
-      return;
-    }
-
     // Check if the slot is blocked or already occupied
-    if (grid[rowIndex][columnIndex] === blockedSlot || grid[rowIndex][columnIndex]) {
-      alert("This slot is not available.");
+    if (grid[rowIndex][columnIndex].type === "blocked" || grid[rowIndex][columnIndex]) {
 
       return;
     }
@@ -249,10 +287,8 @@ const KittyCards = () => {
     );
 
     setGrid(newGrid);
-
     // Remove the card from the player's hand
     setHand(hand.filter((card) => card.id !== selectedCard.id));
-
     // Clear the selected card
     setSelectedCard(null);
   };
@@ -301,7 +337,7 @@ const KittyCards = () => {
             </div>
           </div>
 
-          {renderPlayerProfile("blue", "John S", 18)}
+          {renderPlayerProfile("John S", 18)}
         </div>
 
         {/* Center column for the game board */}
@@ -314,7 +350,7 @@ const KittyCards = () => {
         </div>
         {/* Opponent info and controls */}
         <div className="right-column">
-          {renderPlayerProfile("red", "Jane W", 28)}
+          {renderPlayerProfile( "Jane W", 28)}
           <div className="controls">
             <Button className="hint-btn">Hint</Button>
             <Button className="surrender-btn">Surrender</Button>
