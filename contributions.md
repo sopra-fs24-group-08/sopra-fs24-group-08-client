@@ -140,4 +140,17 @@ Luis Schmid
 •⁠  ⁠Updates on tasks in Git
 •⁠  ⁠M3 Reporting
 
+## 28.04-01.05
+
+**Jingxuan Tian**
+
+Done list
+
+- make SSE in server and client for initiated gamestate #82
+- adapt board entity and DTOMapper to convert gamestateDTO #83
+
+Todo List
+
+- merge with other members work
+- sse for updating game operations
 
