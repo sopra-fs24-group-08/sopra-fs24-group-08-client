@@ -74,7 +74,7 @@ function Login() {
       </div>
     </BaseContainer>
   );
-};
+}
 
 
 

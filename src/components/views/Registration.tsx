@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import User from "models/User";
 import {useNavigate} from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Register.scss";
@@ -68,6 +67,6 @@ function Registration() {
       </div>
     </BaseContainer>
   );
-};
+}
 
 export default Registration;

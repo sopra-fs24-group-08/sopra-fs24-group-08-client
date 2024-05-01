@@ -2,7 +2,6 @@
 
 .main {
   &.container {
-    margin-top: 1em;
     min-height: 300px;
     @include center;
     flex-direction: column;

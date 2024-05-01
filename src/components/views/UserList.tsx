@@ -13,7 +13,7 @@ const UserList = () => {
   const navigate = useNavigate();
   const { data, refreshData } = useData();
   const { users } = data;
-  const { currUser,setCurrUser } = useCurrUser();
+  const { currUser} = useCurrUser();
 
   const handleSendFriendRequest = async (user, e) => {
     e.stopPropagation();
