@@ -1,10 +1,14 @@
-import React, { createContext, useContext, useState} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { api, handleError} from "../../helpers/api";
 import PropTypes from "prop-types";
+import { useWebSocket } from './WebSocketProvider';
 
 const UserContext = createContext(null);
+
 //Should have chosen better Name, currUser in context is token , id and currUser in sessionStorage is full object.
 export const UserProvider = ({ children }) => {
+  const { connect, disconnect } = useWebSocket();
+
   const [currUser, setCurrUser] = useState(() => {
     const savedUser = sessionStorage.getItem("currUser");
     if (savedUser) {
@@ -61,6 +65,15 @@ export const UserProvider = ({ children }) => {
       alert(`Logout failed: ${error.message}`);
     }
   };
+
+  useEffect(() => {
+    if (currUser && currUser.token) {
+      connect(currUser.token).catch(console.error);
+    } else {
+      // Disconnect when the user becomes null or on logout
+      disconnect();
+    }
+  }, [currUser, connect,disconnect]);
 
   return (
     <UserContext.Provider value={{ currUser, login, register, logout }}>

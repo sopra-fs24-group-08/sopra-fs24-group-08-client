@@ -63,8 +63,8 @@ const AppRouter = () => {
             <KittyCards />
           </PrivateRoute>
         } />
-*/}
-        <Route path="/*" element={<Navigate to="/login"/>}/>
+*/}     <Route path="/" element={<Navigate to="/login" replace />}/>
+        <Route path={"/*"} element={<Navigate to="/login" replace />}/>
       </Routes>
     </BrowserRouter>
     </DataProvider>
