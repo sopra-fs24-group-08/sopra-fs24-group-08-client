@@ -85,7 +85,11 @@ const [targetLanguage, setTargetLanguage] = useState(''); // Zustand für die Zi
     }
   };
 
-
+  // Function to render the chat box
+  const renderChatBox = () => (
+    <div className="chat-box">
+    </div>
+    );
 const handleSourceLanguageChange = (selectedLanguage: string) => {
     setSourceLanguage(selectedLanguage);
     // Hier könntest du weitere Logik hinzufügen, die bei der Änderung der Quellsprache ausgeführt werden soll
@@ -99,14 +103,6 @@ const handleSourceLanguageChange = (selectedLanguage: string) => {
  const handleTranslateClick = (msgId: number) => {
     translateMessage(chatMessages, setChatMessages, msgId, sourceLanguage, targetLanguage);
   };
-
-  // Function to render the  chat box
-const renderChatBox = () => (
-  <div className="chat-box">
-  <div>
-    </div>
-  </div>
-);
 
 
 
@@ -310,7 +306,7 @@ const renderChatBox = () => (
                             setTargetLanguage={handleTargetLanguageChange}
                              setSourceLanguage = {setSourceLanguage}
                           />
-                        <div className="chat-container">
+<div className="chat-container">
                                         {/* 消息滚动区域 */}
             <div className="message-container">
               {chatMessages.map(message => (
@@ -320,7 +316,7 @@ const renderChatBox = () => (
                   <button onClick={() => handleTranslateClick(message.id)} className="translate-btn">Translate</button>
                 </div>
               ))}
-              {/* 这里是新添加的  div 用于滚动定位 */}
+              {/* 这里是新添加的 div 用于滚动定位 */}
               <div ref={messageEndRef} />
             </div>
             {/* 输入和发送控制区域 */}

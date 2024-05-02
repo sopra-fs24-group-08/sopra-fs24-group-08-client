@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export const LanguageDropdown = ({ languageType, setTargetLanguage, setSourceLanguage }) => {
     const [languages, setLanguages] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [selectedLanguage, setSelectedLanguage] = useState('');
     const languageNames = {
         "af": "Afrikaans",
         "ak": "Akan",
@@ -161,6 +161,8 @@ export const LanguageDropdown = ({ languageType, setTargetLanguage, setSourceLan
 
     const handleLanguageChange = (e) => {
         const selectedLanguage = e.target.value;
+        setSelectedLanguage(selectedLanguage); // Setze die ausgewählte Sprache
+        setSearchTerm(languageNames[selectedLanguage]);
         if (languageType === 'source') {
             setSourceLanguage(selectedLanguage);
         } else if (languageType === 'target') {
@@ -169,26 +171,29 @@ export const LanguageDropdown = ({ languageType, setTargetLanguage, setSourceLan
     };
 
      return (
-            <div>
-                <h3>{languageType === 'source' ? 'Language to translate:' : 'Target Language:'}</h3>
-                <input
-                    type="text"
-                    placeholder="Search language"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                />
-                <select onChange={handleLanguageChange}>
-                    <option value="">To choose...</option> {/* Leere Option */}
-                    {filteredLanguages.map((language) => (
-                        <option key={language.language} value={language.language}>
-                            {language.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-        );
-    };
+            <div style={{ fontFamily: 'Arial', color: 'black' }}>
+                       <h3 style={{ marginBottom: '5px' }}>{languageType === 'source' ? 'Language to translate:' : 'Target Language:'}</h3>
+                        <input
+                            type="text"
+                            placeholder="Search language"
+                            value={searchTerm}
+                            onChange={handleSearch}
+                            style={{ marginBottom: '5px' }}
+                        />
+                <select
+                value={selectedLanguage}
+                onChange={handleLanguageChange} style={{ maxWidth: '18px', marginBottom: '2px' }}>
+                               <option value=""></option> {/* Leere Option */}
+                               {filteredLanguages.map((language) => (
+                                   <option key={language.language} value={language.language}>
+                                       {language.name}
+                                   </option>
 
+                               ))}
+                           </select>
+                       </div>
+  );
+};
 LanguageDropdown.propTypes = {
     languageType: PropTypes.oneOf(['source', 'target']).isRequired,
     setTargetLanguage: PropTypes.func.isRequired,
