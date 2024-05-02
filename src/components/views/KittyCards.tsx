@@ -5,6 +5,8 @@ import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
 
+import { translateMessage } from '../context/ChatContext';
+import { LanguageDropdown } from '../ui/LanguageDropdown';
 const emptySlot = "empty";
 const blockedSlot = "blocked";
 const repository = "repo";
@@ -67,6 +69,9 @@ const KittyCards = () => {
   const [displayVideo, setDisplayVideo] = useState(false);
   const messageEndRef = useRef(null);
 
+const [targetLanguage, setTargetLanguage] = useState(''); // Zustand für die Zielsprache
+  const [sourceLanguage, setSourceLanguage] = useState(''); // Zustand für die Ausgangssprache
+
   // Function to send a chat message
   const sendChatMessage = () => {
     if (chatInput.trim() !== "") {
@@ -83,9 +88,22 @@ const KittyCards = () => {
   // Function to render the chat box
   const renderChatBox = () => (
     <div className="chat-box">
-
     </div>
-  );
+    );
+const handleSourceLanguageChange = (selectedLanguage: string) => {
+    setSourceLanguage(selectedLanguage);
+    // Hier könntest du weitere Logik hinzufügen, die bei der Änderung der Quellsprache ausgeführt werden soll
+  };
+
+  const handleTargetLanguageChange = (selectedLanguage: string) => {
+    setTargetLanguage(selectedLanguage);
+    // Hier könntest du weitere Logik hinzufügen,  die bei der Änderung der Zielsprache ausgeführt werden soll
+  };
+
+ const handleTranslateClick = (msgId: number) => {
+    translateMessage(chatMessages, setChatMessages, msgId, sourceLanguage, targetLanguage);
+  };
+
 
 
   useEffect(() => {
@@ -276,13 +294,26 @@ const KittyCards = () => {
           <button onClick={() => navigate("/tutorial")} className="hint-btn">Tutorial</button>
           {renderChatBox()}
           {/* Player's avatar and score here if needed */}
-          <div className="chat-container">
-            {/* 消息滚动区域 */}
+
+            {/* Render the LanguageDropdown components */}
+                        <LanguageDropdown
+                            languageType="source"
+                            setSourceLanguage={handleSourceLanguageChange}
+                            setTargetLanguage = {setTargetLanguage}
+                          />
+                          <LanguageDropdown
+                            languageType="target"
+                            setTargetLanguage={handleTargetLanguageChange}
+                             setSourceLanguage = {setSourceLanguage}
+                          />
+<div className="chat-container">
+                                        {/* 消息滚动区域 */}
             <div className="message-container">
               {chatMessages.map(message => (
                 <div key={message.id} className={`message ${message.author === "John" ? "self" : ""}`}>
                   <span className="message-author">{message.author}: </span>
                   {message.text}
+                  <button onClick={() => handleTranslateClick(message.id)} className="translate-btn">Translate</button>
                 </div>
               ))}
               {/* 这里是新添加的 div 用于滚动定位 */}
