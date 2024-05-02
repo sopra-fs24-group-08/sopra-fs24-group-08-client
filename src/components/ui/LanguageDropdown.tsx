@@ -170,15 +170,15 @@ export const LanguageDropdown = ({ languageType, setTargetLanguage, setSourceLan
 
      return (
             <div>
-                <h3>{languageType === 'source' ? 'Ausgangssprache:' : 'Zielsprache:'}</h3>
+                <h3>{languageType === 'source' ? 'Language to translate:' : 'Target Language:'}</h3>
                 <input
                     type="text"
-                    placeholder="Sprachen suchen..."
+                    placeholder="Search language"
                     value={searchTerm}
                     onChange={handleSearch}
                 />
                 <select onChange={handleLanguageChange}>
-                    <option value="">Bitte wählen...</option> {/* Leere Option */}
+                    <option value="">To choose...</option> {/* Leere Option */}
                     {filteredLanguages.map((language) => (
                         <option key={language.language} value={language.language}>
                             {language.name}

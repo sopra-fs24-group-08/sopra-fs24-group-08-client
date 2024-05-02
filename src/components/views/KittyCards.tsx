@@ -4,6 +4,7 @@ import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
+
 import { translateMessage } from '../context/ChatContext';
 import { LanguageDropdown } from '../ui/LanguageDropdown';
 const emptySlot = "empty";
@@ -84,7 +85,6 @@ const [targetLanguage, setTargetLanguage] = useState(''); // Zustand für die Zi
     }
   };
 
-  // Function to render the chat box
 
 const handleSourceLanguageChange = (selectedLanguage: string) => {
     setSourceLanguage(selectedLanguage);

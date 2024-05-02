@@ -15,6 +15,7 @@ const Game = ({ user }: { user: User }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [friends, setFriends] = useState<User[]>([]);
   const {status} = useParams();
+  const { serverRequests } = usePolling();
   console.log(localStorage.getItem("token"));
 
   function userProfile (id){
