@@ -104,9 +104,7 @@ const handleSourceLanguageChange = (selectedLanguage: string) => {
 const renderChatBox = () => (
   <div className="chat-box">
   <div>
-      <h1>My Component</h1>
 
-      {/* Other content */}
     </div>
   </div>
 );
