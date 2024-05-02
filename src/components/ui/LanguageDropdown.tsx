@@ -161,7 +161,7 @@ export const LanguageDropdown = ({ languageType, setTargetLanguage, setSourceLan
 
     const handleLanguageChange = (e) => {
         const selectedLanguage = e.target.value;
-        setSelectedLanguage(selectedLanguage); // Setze die ausgewählte Sprache
+        setSelectedLanguage(selectedLanguage); // Setze die a usgewählte Sprache
         setSearchTerm(languageNames[selectedLanguage]);
         if (languageType === 'source') {
             setSourceLanguage(selectedLanguage);

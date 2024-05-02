@@ -243,7 +243,7 @@ const handleSourceLanguageChange = (selectedLanguage: string) => {
     if (rowIndex === 1 && columnIndex === 1) {
       drawCard();
 
-      return; // Early return to prevent further actions since it's a special slot
+      return; //  Early return to prevent further actions since it's a special slot
     }
     // Check if a card is selected
     if (!selectedCard) {
