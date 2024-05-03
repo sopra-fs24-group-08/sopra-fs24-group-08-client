@@ -1,4 +1,4 @@
-import React, { useRef, createContext, ReactNode, useContext, useState } from "react";
+import React, { useRef, createContext, useContext, useState, useEffect } from "react";
 import { isProduction } from "../../helpers/isProduction.js";
 import PropTypes from "prop-types";
 import { StompSubscription, Client } from "@stomp/stompjs";
@@ -8,7 +8,7 @@ export const WebSocketContext = createContext<any>(null);
 export const useWebSocket = () => useContext(WebSocketContext);
 
 interface WebSocketProviderProps {
-  children: ReactNode; // This tells TypeScript that children is a ReactNode
+  children: React.ReactNode;
 }
 
 const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
@@ -18,14 +18,19 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 5;
 
-
   interface StompSubscriptionRequest {
     destination: string,
     sessionId: string,
-    callback: Function
+    callback: Function,
     subscription?: StompSubscription
   }
-  //https://stomp-js.github.io/guide/stompjs/using-stompjs-v5.html copied that,adjust
+
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, []);
+
   const connect = (token: string): Promise<void> => {
     return new Promise((resolve, reject) => {
       if (!token) {
@@ -51,7 +56,7 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
           debug: isProduction() ? () => {} : (str) => console.log(str),
           beforeConnect: isProduction() ? () => {} : () => console.log("Connecting to Broker"),
           onStompError: (frame) => {
-            if (frame.headers.message === 'Unauthorized') {
+            if (frame.headers.message === "Unauthorized") {
               console.error("Unauthorized access - stopping reconnection attempts");
               setRetryCount(maxRetries); // Prevent further attempts
             } else {
@@ -89,9 +94,7 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
     }
   };
 
-  //Docs say .publish but since we always worked with send I changed it to this , so everything that used to be .send should
-  // still work with websocket stuff
-  function send(destination: string, body: any) {
+  const send = (destination: string, body: any) => {
     if (StompClient.current && StompClient.current.active) {
       console.log("Sending to the following Route" , destination, "Body:", body);
       StompClient.current.publish({
@@ -101,23 +104,22 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
     } else {
       console.error("Only Connected Users can send Messages to that destination");
     }
-  }
+  };
 
-  function subscribeUser(userDestination: string, userCallback: Function) {
-    console.log("Subscribe User", userDestination);
+  const subscribeUser = (userDestination: string, userCallback: Function) => {
     if(StompClient.current && StompClient.current.active) {
-      const subscriptionRef = StompClient.current.subscribe(userDestination, userCallback)
+      const subscriptionRef = StompClient.current.subscribe(userDestination, userCallback);
       const subscriptionRequest: StompSubscriptionRequest = {
         destination: userDestination,
         callback: userCallback,
         sessionId: sessionId.current,
         subscription: subscriptionRef
-      }
-      subscriptions.current.set(userDestination, subscriptionRequest)
+      };
+      subscriptions.current.set(userDestination, subscriptionRequest);
     }
-  }
+  };
 
-  function unsubscribeAll() {
+  const unsubscribeAll = () => {
     if (StompClient.current && StompClient.current.active) {
       subscriptions.current.forEach((_, request) => {
         if (request.subscription) {
@@ -126,23 +128,27 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
       });
       subscriptions.current.clear();
     }
-  }
+  };
 
-  function unsubscribeUser(destination: string) {
+  const unsubscribeUser = (destination: string) => {
     if (StompClient.current && StompClient.current.active) {
       const request = subscriptions.current.get(destination);
-      if (request.subscription) {
+      if (request && request.subscription) {
         request.subscription.unsubscribe();
+        subscriptions.current.delete(destination);
       }
-      subscriptions.current.delete(destination);
     }
-  }
+  };
 
-
-  return (<WebSocketContext.Provider value={{ connect, disconnect, send, subscribeUser, unsubscribeUser, unsubscribeAll }}>
+  return (
+    <WebSocketContext.Provider value={{ connect, disconnect, send, subscribeUser, unsubscribeUser, unsubscribeAll }}>
       {children}
     </WebSocketContext.Provider>
   );
+};
+
+WebSocketProvider.propTypes = {
+  children: PropTypes.node.isRequired
 };
 
 export default WebSocketProvider;

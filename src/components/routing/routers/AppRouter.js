@@ -56,7 +56,7 @@ const AppRouter = () => {
           </PrivateRoute>
         } />
 
-        <Route path="/kittycards/:userId/:gameId" element={<PrivateRoute><KittyCards /></PrivateRoute>} />
+        <Route path="/kittycards/:gameId" element={<PrivateRoute><KittyCards /></PrivateRoute>} />
 
         {/*<Route path="/kittycards/:userId/:gameId" element={ //Will need to adapt the guard
           <PrivateRoute validate={(user, location) => matchPathWithParameter(user, location, 2)}>
