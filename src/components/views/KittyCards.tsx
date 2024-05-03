@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
+import { WebSocketContext } from "components/context/WebSocketProvider"
 
 const emptySlot = "empty";
 const blockedSlot = "blocked";
@@ -58,14 +59,20 @@ const KittyCards = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [grid, setGrid] = useState(initialGrid());
   const navigate = useNavigate();
+ // const { send, subscribeUser } = useContext(WebSocketContext);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const messageEndRef = useRef(null);
+
+
   // Add state for managing chat messages
-  const [chatMessages, setChatMessages] = useState([
+ /* const [chatMessages, setChatMessages] = useState([
     { id: 1, text: "Good game!", author: "Jane" },
     { id: 2, text: "Yes it is!", author: "John" }
   ]);
   const [chatInput, setChatInput] = useState("");
   const [displayVideo, setDisplayVideo] = useState(false);
-  const messageEndRef = useRef(null);
+  const messageEndRef = useRef(null);*/
 
   // Function to send a chat message
   const sendChatMessage = () => {
