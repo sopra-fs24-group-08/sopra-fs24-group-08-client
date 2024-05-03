@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
 import { WebSocketContext } from "components/context/WebSocketProvider"
+import { useCurrUser } from "../context/UserContext";
 
 const emptySlot = "empty";
 const blockedSlot = "blocked";
@@ -54,15 +55,20 @@ const initialHand: Card[] = [
 ];
 
 const KittyCards = () => {
-  const [hand, setHand] = useState<Card[]>(initialHand);
+  const location = useLocation();
+  const { currUser } = useCurrUser();
+  const { gameId, isFirst, opponentId } = location.state;
+  //const [hand, setHand] = useState<Card[]>(initialHand);
+  const [hand, setHand] = useState([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [showMessage, setShowMessage] = useState(false);
   const [grid, setGrid] = useState(initialGrid());
   const navigate = useNavigate();
- // const { send, subscribeUser } = useContext(WebSocketContext);
+  const { send, subscribeUser,unsubscribeUser } = useContext(WebSocketContext);
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const messageEndRef = useRef(null);
+  const [coinFlipResult, setCoinFlipResult] = useState(isFirst ? "heads" : "tails");
 
 
   // Add state for managing chat messages
@@ -74,9 +80,37 @@ const KittyCards = () => {
   const [displayVideo, setDisplayVideo] = useState(false);
   const messageEndRef = useRef(null);*/
 
-  // Function to send a chat message
+  useEffect(() => {
+    const gameTopic = `/user/queue/game/${gameId}`;
+    const chatTopic = `/user/queue/chat/${gameId}`;
+
+    subscribeUser(gameTopic, (msg) => {
+      const update = JSON.parse(msg.body);
+      // Update game state based on received message
+    });
+
+    subscribeUser(chatTopic, (msg) => {
+      const message = JSON.parse(msg.body);
+      setChatMessages(prev => [...prev, message]);
+    });
+
+    return () => {
+      unsubscribeUser(gameTopic);
+      unsubscribeUser(chatTopic);
+    };
+  }, [subscribeUser, unsubscribeUser, gameId]);
+
+  // Send chat message
   const sendChatMessage = () => {
     if (chatInput.trim() !== "") {
+      send(`/app/chat/${gameId}`, JSON.stringify({ text: chatInput }));
+      setChatInput("");
+    }
+  };
+
+  // Function to send a chat message
+  /*const sendChatMessage = () => {
+    //if (.trim() !== "") {
       const newMessage = {
         id: chatMessages.length + 1, // Simple ID generation for example
         text: chatInput,
@@ -85,12 +119,30 @@ const KittyCards = () => {
       setChatMessages([...chatMessages, newMessage]);
       setChatInput(""); // Clear input after sending
     }
-  };
+  };*/
 
   // Function to render the chat box
   const renderChatBox = () => (
     <div className="chat-box">
-
+      <div className="message-container">
+        {chatMessages.map((message, index) => (
+          <div key={index} className={`message ${message.authorId === currUser.id ? "self" : ""}`}>
+            <span className="message-author">{message.authorId}: </span>
+            {message.text}
+          </div>
+        ))}
+        <div ref={messageEndRef} />
+      </div>
+      <div className="chat-controls">
+        <input
+          type="text"
+          value={chatInput}
+          onChange={e => setChatInput(e.target.value)}
+          placeholder="Type a message..."
+          className="chat-input"
+        />
+        <button onClick={sendChatMessage} className="chat-send-btn">Send</button>
+      </div>
     </div>
   );
 

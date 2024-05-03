@@ -1,4 +1,4 @@
-import React, { useRef, createContext, ReactNode, useContext } from "react";
+import React, { useRef, createContext, ReactNode, useContext, useState } from "react";
 import { isProduction } from "../../helpers/isProduction.js";
 import PropTypes from "prop-types";
 import { StompSubscription, Client } from "@stomp/stompjs";
@@ -15,6 +15,8 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   const StompClient = useRef<Client | null>(null);
   const subscriptions = useRef<Map<string, StompSubscriptionRequest>>(new Map());
   const sessionId = useRef("");
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 5;
 
 
   interface StompSubscriptionRequest {
@@ -24,39 +26,57 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
     subscription?: StompSubscription
   }
   //https://stomp-js.github.io/guide/stompjs/using-stompjs-v5.html copied that,adjust
-  const connect = ( token: string ): Promise<void> => {
+  const connect = (token: string): Promise<void> => {
     return new Promise((resolve, reject) => {
+      if (!token) {
+        console.error("No token provided for WebSocket connection.");
+        reject("No token provided");
+        return;
+      }
+      if (retryCount >= maxRetries) {
+        console.error("Maximum retry attempts reached, will not attempt to connect again.");
+        reject("Max retries reached");
+        return;
+      }
       sessionId.current = token;
       if (!StompClient.current || !StompClient.current.active) {
-        console.log("Connect called with the following token: " + sessionId.current)
+        console.log("Connect called with the following token: " + sessionId.current);
         StompClient.current = new Client({
-          brokerURL: isProduction()? "wss://sopra-fs24-group-08-server.oa.r.appspot.com/ws":"ws://localhost:8080/ws",
-          heartbeatIncoming: 10000,
-          heartbeatOutgoing: 10000,
-          reconnectDelay: 5000,
+          brokerURL: isProduction()
+            ? `wss://sopra-fs24-group-08-server.oa.r.appspot.com/ws?token=${encodeURIComponent(token)}`
+            : `ws://localhost:8080/ws?token=${encodeURIComponent(token)}`,
+          heartbeatIncoming: 15000,
+          heartbeatOutgoing: 15000,
+          reconnectDelay: 4000,
           debug: isProduction() ? () => {} : (str) => console.log(str),
           beforeConnect: isProduction() ? () => {} : () => console.log("Connecting to Broker"),
           onStompError: (frame) => {
-            `Error encountered at Broker: ${frame}`;
+            if (frame.headers.message === 'Unauthorized') {
+              console.error("Unauthorized access - stopping reconnection attempts");
+              setRetryCount(maxRetries); // Prevent further attempts
+            } else {
+              if (!StompClient.current.connected) {
+                setRetryCount((prev) => prev + 1);
+              }
+            }
           },
-          onWebSocketError: () => {
-            "WebSocket Error";
+          onConnect: () => {
+            setRetryCount(0); // Reset retry counter on successful connection
+            subscriptions.current.forEach((request) => {
+              if (sessionId.current === request.sessionId) {
+                request.subscription = StompClient.current.subscribe(request.destination, request.callback);
+              }
+            });
+            resolve();
+          },
+          onDisconnect: () => {
+            if (retryCount < maxRetries) {
+              setRetryCount((prev) => prev + 1); // Increment retry counter on disconnect if under max retries
+            }
           }
-        })
-        StompClient.current.onConnect = () => {
-          subscriptions.current.forEach((request) => {
-            if (sessionId.current === request.sessionId) {
-              request.subscription = StompClient.current.subscribe(request.destination, request.callback)
-            }
-            else {
-              console.log("Deleting Subscription" + request.destination)
-              subscriptions.current.delete(request.destination)
-            }
-          })
-          resolve()
-        }
+        });
+        StompClient.current.activate();
       }
-      StompClient.current.activate()
     });
   };
 
@@ -65,6 +85,7 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
       unsubscribeAll(); // Unsubscribe from all subscriptions
       StompClient.current.deactivate();
       console.log("WebSocket disconnected.");
+      setRetryCount(0); // Reset retry counter
     }
   };
 
@@ -83,6 +104,7 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   }
 
   function subscribeUser(userDestination: string, userCallback: Function) {
+    console.log("Subscribe User", userDestination);
     if(StompClient.current && StompClient.current.active) {
       const subscriptionRef = StompClient.current.subscribe(userDestination, userCallback)
       const subscriptionRequest: StompSubscriptionRequest = {

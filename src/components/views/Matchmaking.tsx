@@ -1,63 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useCurrUser } from "../context/UserContext";
-import { api, handleError } from "helpers/api";
 import "../../styles/views/Game.scss";
-
-
-
+import {WebSocketContext} from "../context/WebSocketProvider";
 
 const Matchmaking = () => {
+  const { send, subscribeUser, unsubscribeUser } = useContext(WebSocketContext);
+  const [loading, setLoading] = useState(false);
   const { currUser } = useCurrUser();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [ingame, setIngame] = useState(false);
+
+
+  useEffect(() => {
+    const matchmakingTopic = `/topic/matchmaking/${currUser.id}`;
+    subscribeUser(matchmakingTopic, (message) => {
+      const data = JSON.parse(message.body);
+      if (data.matchFound) {
+        setLoading(true);
+
+        navigate(`/kittycards/${data.gameId}`, { state: { gameId: data.gameId, isFirst: data.isFirst, opponentId: data.opponentId } });
+      } else {
+        toast.info("Waiting for an opponent...");
+      }
+    });
+// Automatically try to join the matchmaking queue
+    send(`/app/matchmaking/join/${currUser.id}`, '');
+
+    // Cleanup function to unsubscribe and leave the matchmaking queue on unmount
+    return () => {
+      unsubscribeUser(matchmakingTopic);
+      send(`/app/matchmaking/leave/${currUser.id}`, '');
+    };
+  }, [currUser, navigate, send, subscribeUser, unsubscribeUser]);
+
 
   //Depends on future plan i guess,we need gameId -> to KittyCards view
   // Function to handle queuing process
-  const startQueueing = async () => {
-    setLoading(true);
-    try {
-      const response = await api.put(`/games/queue/${currUser.id}`, {}, {
-        headers: { Authorization: `Bearer ${currUser.token}` }
-      }); //make sure to see first how we will do matchmaking
-      if (response.data.gameId) {
-        // Navigate to the game view if a game is found
-        navigate(`/kittycards/${currUser.id}/${response.data.gameId}`);
-      } else {
-        toast.info("No match found, still waiting...");
-      }
-    } catch (error) {
-      handleError(error);
-      toast.error("Error while trying to find a match.");
-      doQuitQueueing();
-    } finally {
-      setLoading(false);
-    }
+  const doQuitQueueing = () => {
+    setLoading(false);
+    send(`/app/matchmaking/leave/${currUser.id}`, '');
+    navigate("/main");
   };
-
-  const doQuitQueueing = async () => {
-    try {
-      await api.delete(`/games/dequeue/${currUser.id}`, {
-        headers: { Authorization: `Bearer ${currUser.token}` }
-      });
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setLoading(false);
-      navigate("/main")
-    }
-  };
-  useEffect(() => {
-    startQueueing();
-
-    return () => {
-      doQuitQueueing();
-    };
-  }, []);
 
 
   return (
@@ -65,11 +51,11 @@ const Matchmaking = () => {
       <div style={{ padding: "20px", textAlign: "center" }}>
         <h2>Waiting for an opponent...</h2>
         <div className="login button-container">
-          <Button onClick={doQuitQueueing}>Cancel Matchmaking</Button>
+          <Button onClick={doQuitQueueing} disabled={loading}>Cancel Matchmaking</Button>
         </div>
       </div>
     </BaseContainer>
-);
+  );
 };
 
 export default Matchmaking;
