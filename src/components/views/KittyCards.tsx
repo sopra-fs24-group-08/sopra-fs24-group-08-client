@@ -1,11 +1,40 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "../ui/Button";
+import { useNavigate, useLocation } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
-import "../../styles/views/KittyCards.scss";
+import { Button } from "components/ui/Button";
 import Card from "components/ui/Card";
-import { WebSocketContext } from "components/context/WebSocketProvider"
+import { WebSocketContext } from "../context/WebSocketProvider";
 import { useCurrUser } from "../context/UserContext";
+import "../../styles/views/KittyCards.scss";
+import {api,handleError} from "helpers/api"
+import { useData } from '../context/DataContext';
+import { User } from "../../types";
+import PropTypes from 'prop-types';
+
+const languageOptions = {
+  en: 'English',
+  de: 'German',
+  fr: 'French',
+  es: 'Spanish',
+  ru: 'Russian',
+  zh: 'Chinese',
+};
+
+const LanguageSelector = ({ onChange }) => (
+  <select onChange={onChange} className="language-selector">
+    {Object.entries(languageOptions).map(([code, name]) => (
+      <option value={code} key={code}>{name}</option>
+    ))}
+  </select>
+);
+
+LanguageSelector.propTypes = {
+  onChange: PropTypes.func.isRequired
+};
+
+const emptySlot = "empty";
+const blockedSlot = "blocked";
+const repository = "repo";
 
 const getRandomColor = () => {
   const colors = ["blue", "green", "red", "white"];
@@ -16,7 +45,7 @@ const getEmptySlot = () => ({ type: "empty", color: getRandomColor() });
 
 const initialGrid = () => [
   [getEmptySlot(), getEmptySlot(), getEmptySlot()],
-  [getEmptySlot(), "repository", getEmptySlot()],
+  [getEmptySlot(), repository, getEmptySlot()],
   [getEmptySlot(), getEmptySlot(), getEmptySlot()]
 ];
 
@@ -30,22 +59,67 @@ const colorToCup = {
 const colorToCard = {
   blue: `${process.env.PUBLIC_URL}/bluecard.png`,
   green: `${process.env.PUBLIC_URL}/greencard.png`,
-  red: `${process.env.PUBLIC_URL}/redcard.png`
+  red: `${process.env.PUBLIC_URL}/redcard.png`,
 };
 
 const KittyCards = () => {
-  const location = useLocation();
-  const { gameId, isFirst, opponentId } = location.state;
+  const [selectedLanguage, setSelectedLanguage] = useState('en'); // Default to English
   const navigate = useNavigate();
+  const location = useLocation();
+  const { gameId, opponentId } = location.state;
   const { currUser } = useCurrUser();
   const { send, subscribeUser, unsubscribeUser } = useContext(WebSocketContext);
-  const [grid, setGrid] = useState(initialGrid);
   const [hand, setHand] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [grid, setGrid] = useState(initialGrid());
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const messageEndRef = useRef(null);
-  const [coinFlipResult, setCoinFlipResult] = useState(isFirst ? "heads" : "tails");//use to display fake coinflip
+
+  //const { data , refreshData } = useData();
+  //const User = sessionStorage.getItem("currUser");
+  //Better to just get user objects passed once match is getting started instead of using refreshData:
+
+  const translateMessage = async (messageId, targetLang) => {
+    const message = chatMessages.find(msg => msg.id === messageId);
+    if (!message) {
+      console.error("Message not found");
+      return;
+    }
+
+    try {
+      const requestBody = {
+        message: message.text,
+        sourceLang: null
+      };
+
+      const response = await api.post(`/api/translate/${targetLang}`, {
+        body: JSON.stringify(requestBody)
+
+      });
+
+      if (response.ok) {
+        const translatedText = await response.data.translations.translatedText;
+        const updatedMessages = chatMessages.map(msg => {
+          if (msg.id === messageId) {
+            return { ...msg, text: translatedText };
+          }
+          return msg;
+        });
+        setChatMessages(updatedMessages);
+      } else {
+        const errorText = await response.text();
+        console.error("Failed to translate message:", errorText);
+      }
+    } catch (error) {
+      console.error('Translation error:', error);
+    }
+  };
+
+  const handleLanguageChange = (e) => {
+    setSelectedLanguage(e.target.value);
+  };
+
 
   useEffect(() => {
     const gameTopic = `/topic/game/${gameId}`;
@@ -58,82 +132,152 @@ const KittyCards = () => {
 
     subscribeUser(chatTopic, (message) => {
       const chat = JSON.parse(message.body);
-      setChatMessages(prev => [...prev, chat]);
+      console.log("Received message:", chat);
+      setChatMessages(prev => [...prev, {
+        id: chat.id,
+        text: chat.messageContent,
+        senderId: chat.senderId,
+        timestamp: chat.timestamp,
+        senderUsername: chat.senderUsername
+      }]);
     });
 
     return () => {
       unsubscribeUser(gameTopic);
       unsubscribeUser(chatTopic);
     };
-  }, [subscribeUser, unsubscribeUser, gameId, currUser.id]);
+  }, [subscribeUser, unsubscribeUser, gameId]);
 
   const sendChatMessage = () => {
     if (chatInput.trim()) {
-      send(`/app/chat/${gameId}`, JSON.stringify({ message: chatInput, senderId: currUser.id, receiverId: opponentId }));
+      send(`/app/chat/${gameId}`, JSON.stringify({
+        message: chatInput,
+        senderId: currUser.id,
+        receiverId: opponentId
+      }));
       setChatInput("");
     }
   };
 
-  const handleDragStart = (event, card) => {
-    event.dataTransfer.setData("text/plain", card.id);
-  };
+  const renderChatBox = () => (
+    <div className="chat-container">
+      <div className="message-container">
+        {chatMessages.map((msg, index) => (
+          <div key={index} className={`message ${msg.senderId === currUser.id ? "self" : ""}`}>
+            {msg.senderId === currUser.id ? "You" : "Opponent"}: {msg.text}
+            {msg.senderId !== currUser.id && (
+              <button
+                className="translate-btn"
+                onClick={() => translateMessage(msg.id, selectedLanguage)}
+              >
+                Translate
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="chat-controls">
+        <LanguageSelector onChange={handleLanguageChange} />
+        <input
+          type="text"
+          className="chat-input"
+          value={chatInput}
+          onChange={(e) => setChatInput(e.target.value)}
+          placeholder="Type a message..."
+        />
+        <button className="chat-send-btn" onClick={sendChatMessage}>Send</button>
+      </div>
+    </div>
+  );
+
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    scrollToBottom();
+  }, [chatMessages]);
+
+  const renderGameBoard = () => (
+    <div className="game-board">
+      {grid.map((row, rowIndex) => (
+        <div key={rowIndex} className="game-board-row">
+          {row.map((slot, columnIndex) => {
+            let slotClasses = "game-board-slot " + (slot.type === "blocked" ? "blocked-slot" : "");
+            return (
+              <div
+                key={`${rowIndex}-${columnIndex}`}
+                className={slotClasses}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => handleCardDrop(e, rowIndex, columnIndex)}
+              >
+                <img
+                  src={slot.type === "repository" ? `${process.env.PUBLIC_URL}/repo.png` : colorToCup[slot.color]}
+                  style={{ width: "100%", display: "block" }}
+                  alt=""
+                />
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
 
   const handleCardDrop = (event, rowIndex, columnIndex) => {
     const cardId = parseInt(event.dataTransfer.getData("text/plain"));
     const cardToPlace = hand.find(card => card.id === cardId);
     if (cardToPlace && grid[rowIndex][columnIndex].type === "empty") {
-      setGrid(currentGrid => currentGrid.map((row, rIndex) => {
-        return row.map((cell, cIndex) => {
-          if (rIndex === rowIndex && cIndex === columnIndex) {
-            return { ...cell, type: "card", color: cardToPlace.color };
-          }
-          return cell;
-        });
+      const newGrid = grid.map((row, rIndex) => row.map((cell, cIndex) => {
+        if (rIndex === rowIndex && cIndex === columnIndex) {
+          return { ...cell, type: "card", color: cardToPlace.color };
+        }
+        return cell;
       }));
+      setGrid(newGrid);
       setHand(currentHand => currentHand.filter(card => card.id !== cardId));
     }
   };
-
-  const renderGrid = () => {
-    return grid.map((row, rowIndex) => (
-      <div key={rowIndex} className="grid-row">
-        {row.map((cell, colIndex) => (
-          <div
-            key={colIndex}
-            className={`grid-cell ${cell.type}`}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => handleCardDrop(e, rowIndex, colIndex)}
-          >
-            {cell.type === "card" && (
-              <img src={colorToCup[cell.color]} alt="" style={{ width: "100%" }} />
-            )}
-          </div>
-        ))}
-      </div>
-    ));
+  const selectCardFromHand = (card) => {
+    setSelectedCard(card);
   };
 
-  const renderChat = () => {
-    return (
-      <div className="chat-box">
-        {chatMessages.map((msg, index) => (
-          <div key={index} className="chat-message">{msg.senderId === currUser.id ? "You" : "Opponent"}: {msg.text}</div>
-        ))}
-        <div className="chat-input">
-          <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} />
-          <button onClick={sendChatMessage}>Send</button>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <BaseContainer>
-      <h2>Kitty Cards Game</h2>
-      <div>{coinFlipResult === "heads" ? "You won the coin flip!" : "You lost the coin flip!"}</div>
-      {renderGrid()}
-      {renderChat()}
-      <Button onClick={() => navigate("/main")}>Exit Game</Button>
+      <div className="game-layout">
+        <div className="left-column">
+          {renderChatBox()}
+        </div>
+        <div className="center-column">
+          {renderGameBoard()}
+          <div className="hand-of-cards">
+            {hand.map((card) => (
+              <Card
+                key={card.id}
+                id={card.id}
+                name={card.name}
+                points={card.points}
+                color={card.color}
+                src={colorToCard[card.color]}
+                onClick={() => selectCardFromHand(card)}
+                draggable="true"
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", card.id.toString());
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="right-column">
+          <div className="controls">
+            <Button className="hint-btn">Hint</Button>
+            <Button className="surrender-btn">Surrender</Button>
+            <Button onClick={() => navigate("/main")}>Exit Game</Button>
+          </div>
+        </div>
+      </div>
     </BaseContainer>
   );
 };
