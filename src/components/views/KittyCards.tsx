@@ -80,36 +80,33 @@ const KittyCards = () => {
   //const User = sessionStorage.getItem("currUser");
   //Better to just get user objects passed once match is getting started instead of using refreshData:
 
+
   const translateMessage = async (messageId, targetLang) => {
-    const message = chatMessages.find(msg => msg.id === messageId);
-    if (!message) {
+    const messageIndex = chatMessages.findIndex(msg => msg.id === messageId);
+    if (messageIndex === -1) {
       console.error("Message not found");
       return;
     }
 
     try {
-      const requestBody = {
-        message: message.text,
-        sourceLang: null
-      };
-
-      const response = await api.post(`/api/translate/${targetLang}`, {
-        body: JSON.stringify(requestBody)
-
+      const response = await api.get(`/api/translate`, {
+        params: {
+          text: chatMessages[messageIndex].text,
+          targetLang: targetLang
+        }
       });
 
-      if (response.ok) {
-        const translatedText = await response.data.translations.translatedText;
-        const updatedMessages = chatMessages.map(msg => {
-          if (msg.id === messageId) {
-            return { ...msg, text: translatedText };
-          }
-          return msg;
-        });
-        setChatMessages(updatedMessages);
+      if (response.status === 200 && response.data) {
+        const decodedText = decodeURIComponent(response.data);
+        const newMessages = [...chatMessages];
+        newMessages[messageIndex] = {
+          ...newMessages[messageIndex],
+          text: decodedText,  // Use the decoded text
+          isTranslated: true  // Mark as translated
+        };
+        setChatMessages(newMessages);
       } else {
-        const errorText = await response.text();
-        console.error("Failed to translate message:", errorText);
+        console.error("Failed to translate message:", response.statusText);
       }
     } catch (error) {
       console.error('Translation error:', error);
@@ -138,7 +135,8 @@ const KittyCards = () => {
         text: chat.messageContent,
         senderId: chat.senderId,
         timestamp: chat.timestamp,
-        senderUsername: chat.senderUsername
+        senderUsername: chat.senderUsername,
+        isTranslated: false
       }]);
     });
 
@@ -162,14 +160,11 @@ const KittyCards = () => {
   const renderChatBox = () => (
     <div className="chat-container">
       <div className="message-container">
-        {chatMessages.map((msg, index) => (
-          <div key={index} className={`message ${msg.senderId === currUser.id ? "self" : ""}`}>
-            {msg.senderId === currUser.id ? "You" : "Opponent"}: {msg.text}
-            {msg.senderId !== currUser.id && (
-              <button
-                className="translate-btn"
-                onClick={() => translateMessage(msg.id, selectedLanguage)}
-              >
+        {chatMessages.map((msg) => (
+          <div key={msg.id} className={`message ${msg.senderId === currUser.id ? "self" : ""}`}>
+            {msg.senderId === currUser.id ? "You" : msg.senderUsername}: {msg.text}
+            {!msg.isTranslated && msg.senderId !== currUser.id && (
+              <button onClick={() => translateMessage(msg.id, selectedLanguage)}>
                 Translate
               </button>
             )}
