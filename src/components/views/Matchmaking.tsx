@@ -6,7 +6,7 @@ import { Button } from "../ui/Button";
 import { useCurrUser } from "../context/UserContext";
 import { api, handleError } from "helpers/api";
 import "../../styles/views/Game.scss";
-
+import {GameBoard} from "./GameBoard"
 
 
 
@@ -15,6 +15,7 @@ const Matchmaking = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [ingame, setIngame] = useState(false);
+  const [gameId, setGameId] = useState(null);
 
   //Depends on future plan i guess,we need gameId -> to KittyCards view
   // Function to handle queuing process
@@ -26,7 +27,9 @@ const Matchmaking = () => {
       }); //make sure to see first how we will do matchmaking
       if (response.data.gameId) {
         // Navigate to the game view if a game is found
-        navigate(`/kittycards/${currUser.id}/${response.data.gameId}`);
+        // navigate(`/kittycards/${currUser.id}/${response.data.gameId}`);
+        console.log(response.data);
+        setGameId(response.data.gameId);
       } else {
         toast.info("No match found, still waiting...");
       }
@@ -59,17 +62,27 @@ const Matchmaking = () => {
     };
   }, []);
 
+  function renderContent() {
+    if (gameId) {
+      return <GameBoard gameId={gameId} />;
+    }
+    return (
+      <BaseContainer>
+        <div style={{ padding: "20px", textAlign: "center" }}>
+          <h2>Waiting for an opponent...</h2>
+          <div className="login button-container">
+            <Button onClick={doQuitQueueing}>Cancel Matchmaking</Button>
+          </div>
+        </div>
+      </BaseContainer>
+  );
+  }
 
   return (
-    <BaseContainer>
-      <div style={{ padding: "20px", textAlign: "center" }}>
-        <h2>Waiting for an opponent...</h2>
-        <div className="login button-container">
-          <Button onClick={doQuitQueueing}>Cancel Matchmaking</Button>
-        </div>
-      </div>
-    </BaseContainer>
-);
+    <div>
+      {renderContent()}
+    </div>
+  );
 };
 
 export default Matchmaking;
