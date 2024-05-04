@@ -7,37 +7,47 @@ html, body, #root, .game-layout {
 
 .game-layout {
   display: grid;
-  grid-template-rows: 15fr 4fr;
-  grid-template-columns: 2fr 6fr 2fr;
+  grid-template-columns: 1fr 5fr 1fr;
+  grid-template-rows: auto 1fr auto;
   height: 100vh;
   gap: 1rem;
+  padding: 1rem;
 }
 
 .controls {
-  grid-row: 2 / span 1;
   grid-column: 3;
+  grid-row: 3;
+  align-self: end;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: 2rem;
+  gap: 10px;
 }
+
 
 .controls button {
   margin-bottom: 14px;
 }
 
 .chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 28rem;
-  width: 14rem;
-  background-color: #97a0bf;
-  border-radius: 16px;
-  padding: 1rem;
-  overflow-y: auto;
-  border: 2px solid #7f92ec;
-  margin: 1rem auto;
+  grid-column: 3;
+  grid-row: 1;
+  height: auto;
+  max-height: 30vh;
+
+
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+.translate-btn {
+  padding: 2px 5px;
+  font-size: 0.75rem;
+  background-color: lightblue;
+  border-radius: 5px;
+  border: none;
 }
 
 .message-container {
@@ -80,7 +90,7 @@ html, body, #root, .game-layout {
   width: 100%;
 }
 
-.player-profile {
+.player-profile, .opponent-profile {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,9 +98,21 @@ html, body, #root, .game-layout {
   padding: 1rem;
   border: 2px solid #6c757d;
   border-radius: 10px;
-  background-color: #7f92ec;
-  color: black;
-  margin: 1rem auto;
+  background-color: #f0f0f0;
+  margin: 1rem;
+  width: 200px; /* Ensure it has a fixed width */
+}
+
+.player-profile {
+  grid-column: 1; /* First column */
+  grid-row: 3; /* Bottom row */
+  align-self: end; /* Align to the bottom */
+  padding: 1rem;
+}
+
+.opponent-profile {
+  align-self: start;
+  margin-top: 1rem;
 }
 
 .game-board {
@@ -141,16 +163,11 @@ button {
   cursor: pointer;
   transition: background-color 0.3s;
 
-  .translate-btn {
-    padding: 2px 5px;
-    font-size: 0.8rem;
-    margin-left: 10px;
-    background-color: lightblue;
-    border-radius: 5px;
-    border: none;
-  }
+
+
+
 
   &:hover {
-    background-color: #5d5c5c;
+    background-color: #ffffff;
   }
 }

@@ -117,14 +117,34 @@ const KittyCards = () => {
     setSelectedLanguage(e.target.value);
   };
 
+  const sendMove = async (cardId, position, moveType) => {
+    const move = {
+      playerId: currUser.id,
+      cardId: cardId,
+      position: position,
+      moveType: moveType
+    };
+
+    try {
+      await send(`/app/game/${gameId}`, JSON.stringify(move));
+    } catch (error) {
+      console.error('Error sending move:', error);
+      // Optionally handle reconnection or user notification here
+    }
+  };
+
 
   useEffect(() => {
-    const gameTopic = `/topic/game/${gameId}`;
+    const gameTopic = `/topic/game/${gameId}/${currUser.id}`;
     const chatTopic = `/topic/chat/${gameId}`;
 
     subscribeUser(gameTopic, (message) => {
       const update = JSON.parse(message.body);
       console.log("Game Update:", update);
+      //setPlayers(gameUpdate.players);
+   //   setBoard(gameUpdate.board.gridSquares);
+    // setCurrentTurnPlayerId(gameUpdate.currentTurnPlayerId);
+      //setGameStatus(gameUpdate.gameStatus);
     });
 
     subscribeUser(chatTopic, (message) => {
@@ -164,9 +184,9 @@ const KittyCards = () => {
           <div key={msg.id} className={`message ${msg.senderId === currUser.id ? "self" : ""}`}>
             {msg.senderId === currUser.id ? "You" : msg.senderUsername}: {msg.text}
             {!msg.isTranslated && msg.senderId !== currUser.id && (
-              <button onClick={() => translateMessage(msg.id, selectedLanguage)}>
+              <Button onClick={() => translateMessage(msg.id, selectedLanguage)}>
                 Translate
-              </button>
+              </Button>
             )}
           </div>
         ))}
@@ -194,6 +214,68 @@ const KittyCards = () => {
     scrollToBottom();
   }, [chatMessages]);
 
+  const handleDragStart = (event, card) => {
+    event.dataTransfer.setData("text/plain", card.id);
+  };
+  const handleCardDrop = (event, rowIndex, columnIndex) => {
+    const cardId = parseInt(event.dataTransfer.getData("text/plain"));
+    const cardToPlace = hand.find(card => card.id === cardId);
+
+    if (cardToPlace) {
+      placeCard(rowIndex, columnIndex, cardToPlace);
+    }
+  };
+
+  const drawCard = () => {
+    const newCardId = Math.max(...hand.map(c => c.id)) + 1; // Get the next ID
+    const newCard = { id: newCardId, name: `Card ${newCardId}` };
+
+    // Update the hand state to include the new card
+    setHand(hand.concat(newCard));
+  };
+
+  const placeCard = (rowIndex: number, columnIndex: number, card = selectedCard) => {
+    // Check if the center slot is clicked, if so draw a card
+    if (!card) {
+      alert("Please select a card first.");
+
+      return;
+    }
+    if (rowIndex === 1 && columnIndex === 1) {
+      drawCard();
+
+      return; // Early return to prevent further actions since it's a special slot
+    }
+    // Check if a card is selected
+    if (!selectedCard) {
+      alert("Please select a card first.");
+
+      return;
+    }
+
+    // Check if the slot is blocked or already occupied
+    if (grid[rowIndex][columnIndex] === blockedSlot || grid[rowIndex][columnIndex]) {
+      alert("This slot is not available.");
+
+      return;
+    }
+
+    // Create a deep copy of the grid and update the slot with the selected card
+    const newGrid = grid.map((row, rIndex) =>
+      rIndex === rowIndex
+        ? row.map((slot, cIndex) => cIndex === columnIndex ? selectedCard : slot)
+        : row
+    );
+
+    setGrid(newGrid);
+
+    // Remove the card from the player's hand
+    setHand(hand.filter((card) => card.id !== selectedCard.id));
+
+    // Clear the selected card
+    setSelectedCard(null);
+  };
+
   const renderGameBoard = () => (
     <div className="game-board">
       {grid.map((row, rowIndex) => (
@@ -220,29 +302,36 @@ const KittyCards = () => {
     </div>
   );
 
-  const handleCardDrop = (event, rowIndex, columnIndex) => {
-    const cardId = parseInt(event.dataTransfer.getData("text/plain"));
-    const cardToPlace = hand.find(card => card.id === cardId);
-    if (cardToPlace && grid[rowIndex][columnIndex].type === "empty") {
-      const newGrid = grid.map((row, rIndex) => row.map((cell, cIndex) => {
-        if (rIndex === rowIndex && cIndex === columnIndex) {
-          return { ...cell, type: "card", color: cardToPlace.color };
-        }
-        return cell;
-      }));
-      setGrid(newGrid);
-      setHand(currentHand => currentHand.filter(card => card.id !== cardId));
-    }
-  };
   const selectCardFromHand = (card) => {
     setSelectedCard(card);
   };
+  const renderHand = () => (
+    <div className="hand-of-cards">
+      {hand.map((card: typeof Card) => (
+        <Card
+          key={card.id}
+          id={card.id}
+          name={card.name}
+          points={card.points}
+          color={card.color}
+          src={colorToCard[card.color]}
+          onClick={() => selectCardFromHand(card)}
+          draggable="true"
+          onDragStart={(e) => handleDragStart(e, card)}
+        />
+      ))}
+    </div>
+  );
 
 
   return (
     <BaseContainer>
       <div className="game-layout">
         <div className="left-column">
+            <div className="player-profile"> {/* Your profile */}
+              <span>{currUser.username}</span>
+              <img src="USERICONS-ORSO.png" alt="Profile" />
+            </div>
           {renderChatBox()}
         </div>
         <div className="center-column">
@@ -266,6 +355,10 @@ const KittyCards = () => {
           </div>
         </div>
         <div className="right-column">
+          <div className="opponent-profile"> {/* I will just start passing entire user objects that also include icons of opponenent*/}
+            <span>{opponentId}</span>
+            <img src="/OPPONENTICONORSO.png" alt="Opponent" />
+          </div>
           <div className="controls">
             <Button className="hint-btn">Hint</Button>
             <Button className="surrender-btn">Surrender</Button>
