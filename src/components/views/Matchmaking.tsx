@@ -5,7 +5,7 @@ import BaseContainer from "../ui/BaseContainer";
 import { Button } from "../ui/Button";
 import { useCurrUser } from "../context/UserContext";
 import "../../styles/views/Game.scss";
-import {WebSocketContext} from "../context/WebSocketProvider";
+import { WebSocketContext } from "../context/WebSocketProvider";
 
 const Matchmaking = () => {
   const { send, subscribeUser, unsubscribeUser } = useContext(WebSocketContext);
@@ -20,19 +20,20 @@ const Matchmaking = () => {
       const data = JSON.parse(message.body);
       if (data.matchFound) {
         setLoading(true);
-        setIsMatched(true); // Set that a match has been found
+        setIsMatched(true);
         navigate(`/kittycards/${data.gameId}`, { state: { gameId: data.gameId, isFirst: data.isFirst, opponentId: data.opponentId } });
       } else {
         toast.info("Waiting for an opponent...");
       }
     };
-    subscribeUser(matchmakingTopic, handleMessage);
 
-    // Automatically try to join the matchmaking queue
+    // Subscribe to the topic
+    subscribeUser(matchmakingTopic, handleMessage);
+    // Join the matchmaking queue
     send(`/app/matchmaking/join/${currUser.id}`, '');
 
-    // Cleanup function to unsubscribe and leave the matchmaking queue on unmount
     return () => {
+      // Cleanup function to unsubscribe and leave the matchmaking queue
       unsubscribeUser(matchmakingTopic);
       if (!isMatched) {
         send(`/app/matchmaking/leave/${currUser.id}`, '');
@@ -40,7 +41,6 @@ const Matchmaking = () => {
     };
   }, [currUser, navigate, send, subscribeUser, unsubscribeUser, isMatched]);
 
-  // Function to handle quitting the queuing process
   const doQuitQueueing = () => {
     setLoading(false);
     send(`/app/matchmaking/leave/${currUser.id}`, '');
