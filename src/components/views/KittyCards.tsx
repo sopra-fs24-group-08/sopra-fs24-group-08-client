@@ -6,10 +6,10 @@ import Card from "components/ui/Card";
 import { WebSocketContext } from "../context/WebSocketProvider";
 import { useCurrUser } from "../context/UserContext";
 import "../../styles/views/KittyCards.scss";
-import {api,handleError} from "helpers/api"
-import { useData } from '../context/DataContext';
-import { User } from "../../types";
+import { api, handleError } from "helpers/api";
 import PropTypes from 'prop-types';
+
+
 
 const languageOptions = {
   en: 'English',
@@ -44,9 +44,9 @@ const getRandomColor = () => {
 const getEmptySlot = () => ({ type: "empty", color: getRandomColor() });
 
 const initialGrid = () => [
-  [getEmptySlot(), getEmptySlot(), getEmptySlot()],
-  [getEmptySlot(), repository, getEmptySlot()],
-  [getEmptySlot(), getEmptySlot(), getEmptySlot()]
+  [{ type: "empty", cards: [] }, { type: "empty", cards: [] }, { type: "empty", cards: [] }],
+  [{ type: "empty", cards: [] }, { type: "repo", cards: [] }, { type: "empty", cards: [] }],
+  [{ type: "empty", cards: [] }, { type: "empty", cards: [] }, { type: "empty", cards: [] }]
 ];
 
 const colorToCup = {
@@ -72,14 +72,32 @@ const KittyCards = () => {
   const [hand, setHand] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
   const [grid, setGrid] = useState(initialGrid());
+  const [isLoading, setIsLoading] = useState(true);
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const messageEndRef = useRef(null);
+  const storedUser = JSON.parse(sessionStorage.getItem("currUser"))
+  const username = storedUser?.username;
+  const [gameState, setGameState] = useState({
+    playerHand: [],
+    gridSquares: initialGrid(),
+    currentScore: 0,
+    opponentScore: 0,
+    currentPlayerId: null,
+    gameStatus: null,
+    winnerId:null,
+    loserId:null,
+    currentTurnPlayerId: null,
+    cardPileSize: 0
+  });
+
+  //game/start could be avoided by passing entire gamestatedto after matchmaking finish directly but then we have to omit certain featuresm like progress bar
+
+
 
   //const { data , refreshData } = useData();
   //const User = sessionStorage.getItem("currUser");
   //Better to just get user objects passed once match is getting started instead of using refreshData:
-
 
   const translateMessage = async (messageId, targetLang) => {
     const messageIndex = chatMessages.findIndex(msg => msg.id === messageId);
@@ -133,6 +151,69 @@ const KittyCards = () => {
     }
   };
 
+  const updateGameState = (newGameState) => {
+    if (newGameState.gameStatus === "FINISHED") {
+
+      setGrid([]);  // Clears the grid
+      setHand([]);  // Clears the player's hand
+
+      // Redirect to the winner page with appropriate winner info
+      // Assuming the winnerId is available to determine the winner
+      navigate(`/kittycards/${gameId}/result/${username}`);
+      return;  // Stop further execution to prevent state updates after redirect
+
+      // Assuming we reset or clear the game state after navigation
+    }
+    setGrid(prevGrid => {
+      if (!newGameState.gridSquares || !Array.isArray(newGameState.gridSquares)) {
+        console.error("Invalid gridSquares data received:", newGameState.gridSquares);
+        return prevGrid; // Fallback to previous grid if data is invalid
+      }
+      return newGameState.gridSquares.map((updatedSquare, index) => {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        const existingSquare = prevGrid[row][col];
+
+        if (!updatedSquare || typeof updatedSquare !== 'object' || !Array.isArray(updatedSquare.cards)) {
+          console.error("Invalid square data received at position", index, ":", updatedSquare);
+          return existingSquare; // Fallback to existing square if data is incomplete
+        }
+
+        // Handling for the middle center grid (repository)
+        if (row === 1 && col === 1) {
+          return {
+            ...existingSquare,
+            cards: updatedSquare.cards,
+          };
+        }
+
+        // Handling for other grids
+        return {
+          ...existingSquare,
+          type: updatedSquare.cards.length > 0 ? 'occupied' : 'empty',
+          cards: updatedSquare.cards.slice(0, 1), // Take at most one card, assume we always pass init. gamestate
+        };
+      }).reduce((grid, square, idx) => {
+        const row = Math.floor(idx / 3);
+        const col = idx % 3;
+        grid[row][col] = square;
+        return grid;
+      }, [[], [], []]); // Initial empty 2D grid
+    });
+      /*setGameState({
+        playerHand: newGameState.playerHand,
+        gridSquares: newGameState.gridSquares,
+        currentScore: newGameState.currentScore,
+        opponentScore: newGameState.opponentScore,
+        currentPlayerId: newGameState.currentPlayerId,
+        gameStatus: newGameState.gameStatus,
+        winnerId: newGameState.winnerId,
+        loserId: newGameState.loserId,
+        currentTurnPlayerId: newGameState.currentTurnPlayerId,
+        cardPileSize: newGameState.cardPileSize
+      });*/
+    };
+
 
   useEffect(() => {
     const gameTopic = `/topic/game/${gameId}/${currUser.id}`;
@@ -141,10 +222,8 @@ const KittyCards = () => {
     subscribeUser(gameTopic, (message) => {
       const update = JSON.parse(message.body);
       console.log("Game Update:", update);
-      //setPlayers(gameUpdate.players);
-   //   setBoard(gameUpdate.board.gridSquares);
-    // setCurrentTurnPlayerId(gameUpdate.currentTurnPlayerId);
-      //setGameStatus(gameUpdate.gameStatus);
+      console.log("Game State before update",gameState)
+      updateGameState(update);
     });
 
     subscribeUser(chatTopic, (message) => {
@@ -164,7 +243,7 @@ const KittyCards = () => {
       unsubscribeUser(gameTopic);
       unsubscribeUser(chatTopic);
     };
-  }, [subscribeUser, unsubscribeUser, gameId]);
+  }, [subscribeUser, unsubscribeUser, gameId,currUser.id]);
 
   const sendChatMessage = () => {
     if (chatInput.trim()) {
@@ -176,6 +255,22 @@ const KittyCards = () => {
       setChatInput("");
     }
   };
+  //Right now it would just immediately do it upon button press,
+  //would like to first have pop that confirms if the click was intentional or not
+  const handleSurrender= (gameId,playerId) => {
+    sendSurrenderConfirmation(gameId,playerId);
+  }
+
+  function sendSurrenderConfirmation(gameId, playerId) {
+    const surrenderMessage = {
+      playerId: playerId,
+      surrender: true
+    };
+    send(`/app/game/${gameId}/surrender`, JSON.stringify(
+      {surrenderMessage}
+    ));
+  }
+
 
   const renderChatBox = () => (
     <div className="chat-container">
@@ -206,6 +301,7 @@ const KittyCards = () => {
   );
 
 
+
   useEffect(() => {
     const scrollToBottom = () => {
       messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -217,12 +313,29 @@ const KittyCards = () => {
   const handleDragStart = (event, card) => {
     event.dataTransfer.setData("text/plain", card.id);
   };
-  const handleCardDrop = (event, rowIndex, columnIndex) => {
-    const cardId = parseInt(event.dataTransfer.getData("text/plain"));
-    const cardToPlace = hand.find(card => card.id === cardId);
 
-    if (cardToPlace) {
-      placeCard(rowIndex, columnIndex, cardToPlace);
+  const handleCardDrop = (event, rowIndex, columnIndex) => {
+    event.preventDefault();
+    const cardId = parseInt(event.dataTransfer.getData("text/plain"));
+    const droppedCard = hand.find(card => card.id === cardId);
+
+    if (!droppedCard) return;  // Card not found in hand, nothing happens
+
+    // Check if the drop is valid depending on the slot type
+    const targetSlot = grid[rowIndex][columnIndex];
+    if (targetSlot.type === "repo" || targetSlot.type === "empty") {
+      // Allow dropping on the repository or empty slots
+      const newGrid = grid.slice(); // Create a shallow copy of the grid
+      newGrid[rowIndex][columnIndex].cards = [...newGrid[rowIndex][columnIndex].cards, droppedCard];
+
+      // Remove the card from hand
+      const newHand = hand.filter(card => card.id !== cardId);
+
+      setGrid(newGrid);
+      setHand(newHand);
+    } else {
+      console.log("Invalid drop target");
+      // Optionally show user feedback here
     }
   };
 
@@ -276,27 +389,17 @@ const KittyCards = () => {
     setSelectedCard(null);
   };
 
+  const getCardImageUrl = (card) => `${process.env.PUBLIC_URL}/${card.color.toLowerCase()}card.png`;
+
   const renderGameBoard = () => (
     <div className="game-board">
-      {grid.map((row, rowIndex) => (
+      {gameState.gridSquares.map((row, rowIndex) => (
         <div key={rowIndex} className="game-board-row">
-          {row.map((slot, columnIndex) => {
-            let slotClasses = "game-board-slot " + (slot.type === "blocked" ? "blocked-slot" : "");
-            return (
-              <div
-                key={`${rowIndex}-${columnIndex}`}
-                className={slotClasses}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => handleCardDrop(e, rowIndex, columnIndex)}
-              >
-                <img
-                  src={slot.type === "repository" ? `${process.env.PUBLIC_URL}/repo.png` : colorToCup[slot.color]}
-                  style={{ width: "100%", display: "block" }}
-                  alt=""
-                />
-              </div>
-            );
-          })}
+          {row.map((square, columnIndex) => (
+            <div key={columnIndex} className={`game-board-slot ${square.type}`}>
+              {square.card ? <img src={getCardImageUrl(square.card)} alt="Card" /> : "Empty"}
+            </div>
+          ))}
         </div>
       ))}
     </div>
@@ -307,17 +410,16 @@ const KittyCards = () => {
   };
   const renderHand = () => (
     <div className="hand-of-cards">
-      {hand.map((card: typeof Card) => (
-        <Card
-          key={card.id}
-          id={card.id}
-          name={card.name}
-          points={card.points}
-          color={card.color}
-          src={colorToCard[card.color]}
-          onClick={() => selectCardFromHand(card)}
-          draggable="true"
-          onDragStart={(e) => handleDragStart(e, card)}
+      {gameState.playerHand.map((card, index) => (
+        <Card key={index}
+              id={card.id}
+              name={`Card ${index}`}
+              points={card.points}
+              color={card.color}
+              src={colorToCard[card.color]}
+              onClick={() => selectCardFromHand(card)}
+              draggable="true"
+              onDragStart={(e) => handleDragStart(e, card)}
         />
       ))}
     </div>
@@ -328,10 +430,10 @@ const KittyCards = () => {
     <BaseContainer>
       <div className="game-layout">
         <div className="left-column">
-            <div className="player-profile"> {/* Your profile */}
-              <span>{currUser.username}</span>
-              <img src="USERICONS-ORSO.png" alt="Profile" />
-            </div>
+          <div className="player-profile"> {/* Your profile */}
+            <span>{currUser.username}</span>
+            <img src="USERICONS-ORSO.png" alt="Profile" />
+          </div>
           {renderChatBox()}
         </div>
         <div className="center-column">
@@ -361,7 +463,7 @@ const KittyCards = () => {
           </div>
           <div className="controls">
             <Button className="hint-btn">Hint</Button>
-            <Button className="surrender-btn">Surrender</Button>
+            <Button className="surrender-btn" onClick={()=>handleSurrender(gameId,currUser.id)}>Surrender</Button>
             <Button onClick={() => navigate("/main")}>Exit Game</Button>
           </div>
         </div>
@@ -369,5 +471,6 @@ const KittyCards = () => {
     </BaseContainer>
   );
 };
+//TODO MAKE SURE U CHANGE PLAYER INTO USER AGAIN ONCE ANY OF THEM LEAVES THE GAME
 
 export default KittyCards;

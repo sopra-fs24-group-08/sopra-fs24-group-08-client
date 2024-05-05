@@ -14,6 +14,7 @@ import UserList from "../../views/UserList";
 import KittyCards from "../../views/KittyCards";
 import Tutorial from "../../views/Tutorial";
 import UserAchievements from "../../views/UserAchievements";
+import Winner from "../../views/Winner";
 
 
 
@@ -56,9 +57,15 @@ const AppRouter = () => {
           </PrivateRoute>
         } />
 
-        <Route path="/kittycards/:gameId" element={<PrivateRoute><KittyCards /></PrivateRoute>} />
-
-        {/*<Route path="/kittycards/:userId/:gameId" element={ //Will need to adapt the guard
+        <Route
+          path="/kittycards/:gameId"
+          element={<PrivateRoute><KittyCards /></PrivateRoute>}
+        />
+        <Route
+          path="/kittycards/:gameId/result/*"
+          element={<Winner />}
+        />
+        {/*   Improve routing later for KittyCards and Winner Page <Route path="/kittycards/:userId/:gameId" element={ //Will need to adapt the guard
           <PrivateRoute validate={(user, location) => matchPathWithParameter(user, location, 2)}>
             <KittyCards />
           </PrivateRoute>

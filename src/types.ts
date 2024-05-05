@@ -18,3 +18,9 @@ export type User = {
   //if works add banner and properly do the rest.
 
 };
+
+export type Player = {
+  id: number;
+  username: string;
+  currIcon: Icon;
+}
