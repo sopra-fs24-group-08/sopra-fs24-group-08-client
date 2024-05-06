@@ -19,7 +19,7 @@ const Game = ({ user }: { user: User }) => {
   function userProfile (id){
     let push_to = "/users/" + String(id);
     navigate(push_to);
-  };
+  }
   /*function myProfile (){
     const myId = localStorage.getItem("id");
     let push_to = "/users/" + myId;

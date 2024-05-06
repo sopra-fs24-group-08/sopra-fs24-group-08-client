@@ -1,0 +1,33 @@
+
+.game-board {
+  width: 95%;
+  aspect-ratio: 1;
+  display: grid;
+  margin-left: 1rem;
+  margin-bottom: 0rem ;
+  margin-top: 2rem ;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+}
+.game-board-slot {
+  background-color: #fff;
+  border: 1px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  border-radius: 12px;
+
+  &.blocked-slot {
+    background-color: #d3d3d3; // Blocked slot color
+    cursor: not-allowed;
+  }
+
+  &.active-slot {
+    cursor: pointer;
+  }
+}
