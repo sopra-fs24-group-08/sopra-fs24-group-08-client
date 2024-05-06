@@ -15,6 +15,7 @@ import KittyCards from "../../views/KittyCards";
 import Tutorial from "../../views/Tutorial";
 import UserAchievements from "../../views/UserAchievements";
 import Winner from "../../views/Winner";
+import { GameProvider } from "../../context/GameContext";
 
 
 
@@ -27,6 +28,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/login" element={<Login />}/>
         <Route path="/registration" element={<Registration />} />
+        <GameProvider>
         <Route path="/main" element={<PrivateRoute><Main /></PrivateRoute>} />
         <Route path="/tutorial" element={<PrivateRoute><Tutorial/></PrivateRoute>} />
 
@@ -55,8 +57,8 @@ const AppRouter = () => {
           <PrivateRoute validate={(user, location) => matchPathWithParameter(user, location, 3)}>
             <Matchmaking />
           </PrivateRoute>
-        } />
 
+        } />
         <Route
           path="/kittycards/:gameId"
           element={<PrivateRoute><KittyCards /></PrivateRoute>}
@@ -70,7 +72,10 @@ const AppRouter = () => {
             <KittyCards />
           </PrivateRoute>
         } />
-*/}     <Route path="/" element={<Navigate to="/login" replace />}/>
+
+*/}
+      </GameProvider>
+      <Route path="/" element={<Navigate to="/login" replace />}/>
         <Route path={"/*"} element={<Navigate to="/login" replace />}/>
       </Routes>
     </BrowserRouter>

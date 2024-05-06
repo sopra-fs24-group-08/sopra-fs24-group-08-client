@@ -5,6 +5,8 @@ import { Button } from "components/ui/Button";
 import Card from "components/ui/Card";
 import { WebSocketContext } from "../context/WebSocketProvider";
 import { useCurrUser } from "../context/UserContext";
+import GameContext from "../context/GameContext";
+
 import "../../styles/views/KittyCards.scss";
 import { api, handleError } from "helpers/api";
 import PropTypes from 'prop-types';
@@ -79,6 +81,7 @@ const KittyCards = () => {
   const storedUser = JSON.parse(sessionStorage.getItem("currUser"))
   const username = storedUser?.username;
   const [gameState, setGameState] = useState({
+    gameId : null ,
     playerHand: [],
     gridSquares: initialGrid(),
     currentScore: 0,
@@ -200,6 +203,7 @@ const KittyCards = () => {
         return grid;
       }, [[], [], []]); // Initial empty 2D grid
     });
+  };
       /*setGameState({
         playerHand: newGameState.playerHand,
         gridSquares: newGameState.gridSquares,
@@ -212,7 +216,7 @@ const KittyCards = () => {
         currentTurnPlayerId: newGameState.currentTurnPlayerId,
         cardPileSize: newGameState.cardPileSize
       });*/
-    };
+
 
 
   useEffect(() => {
