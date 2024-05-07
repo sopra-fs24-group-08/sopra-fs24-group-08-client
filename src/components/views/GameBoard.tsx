@@ -44,6 +44,7 @@ export const GameBoard = ({gameId}) => {
 
   function renderContent() {
     if (gameState) {
+      console.log("I want to render kitty cards");
       return <KittyCards gameState={gameState} />;
       // return <KittyCards />;
     }

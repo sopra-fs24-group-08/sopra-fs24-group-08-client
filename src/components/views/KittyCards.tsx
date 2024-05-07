@@ -6,23 +6,55 @@ import "../../styles/views/KittyCards.scss";
 import Card from "components/ui/Card";
 import { useCurrUser } from "../context/UserContext";
 import { api, handleError } from "helpers/api";
+// @ts-ignore
+import repo from "../../images/repo.png";
+// @ts-ignore
+import avatar from "../../images/avatar.png";
+// @ts-ignore
+import blue from "../../images/blue.png"
+// @ts-ignore
+import bluecard from "../../images/bluecard.png"
+// @ts-ignore
+import red from "../../images/red.png"
+// @ts-ignore
+import redcard from "../../images/redcard.png"
+// @ts-ignore
+import green from "../../images/green.png"
+// @ts-ignore
+import greencard from "../../images/greencard.png"
+// @ts-ignore
+import white from "../../images/white.png"
+// @ts-ignore
+import occupiedBlue from "../../images/occupiedBlue.png"
+// @ts-ignore
+import occupiedRed from "../../images/occupiedRed.png"
+// @ts-ignore
+import occupiedGreen from "../../images/occupiedGreen.png"
+// @ts-ignore
+import occupiedWhite from "../../images/occupiedWhite.png"
 
 const emptySlot = "empty";
 const blockedSlot = "blocked";
 const repository = "repo";
 
 const colorToCup = {
-  blue: `${process.env.PUBLIC_URL}/blue.png`,
-  green: `${process.env.PUBLIC_URL}/green.png`,
-  red: `${process.env.PUBLIC_URL}/red.png`,
-  white: `${process.env.PUBLIC_URL}/white.png`
+  blue: blue,
+  green: green,
+  red: red,
+  white: white,
 };
 
 const colorToCard = {
-  blue: `${process.env.PUBLIC_URL}/bluecard.png`,
-  green: `${process.env.PUBLIC_URL}/greencard.png`,
-  red: `${process.env.PUBLIC_URL}/redcard.png`,
+  blue: bluecard,
+  green: greencard,
+  red: redcard,
+};
 
+const colorToOccupied = {
+  green: occupiedGreen,
+  blue: occupiedBlue,
+  red: occupiedRed,
+  white: occupiedWhite
 };
 
 interface Card {
@@ -52,7 +84,6 @@ const setBoardGrid = (gridSquence, setGrid) => {
 export const KittyCards = (gameState) => {
   const { currUser } = useCurrUser();
   const [hand, setHand] = useState<Card[]>(null);
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [showMessage, setShowMessage] = useState(false);
   const [grid, setGrid] = useState(null);
   const [playerId, setPlayerId] = useState(null);
@@ -74,13 +105,13 @@ export const KittyCards = (gameState) => {
     setHand(player.cards);
     const opponent = gameState.gameState.players.find(player => player.id !== currUser.id);
     setPlayerId(player.id);
-    setUserName(player.id);
+    setUserName(player.playerName);
     setOpponentName(opponent.id);
     setUserScore(player.score);
     setOpponentScore(opponent.score);
     setWinnerId(gameState.gameState.winnerId)
     
-  }, []);
+  }, [gameState]);
 
   const renderGameBoard = () => {
     if (grid !== null){
@@ -94,7 +125,7 @@ export const KittyCards = (gameState) => {
                 if (slot.type === "blocked") {
                   slotClasses += " game-board-center";
                   slotContent = <img
-                    src={`${process.env.PUBLIC_URL}/blocked.png`}
+                    src={colorToOccupied[slot.color]}
                     style={{
                       display: "block",
                       width: "80%",
@@ -113,7 +144,7 @@ export const KittyCards = (gameState) => {
                     alt=""/>;
                 } else{
                   slotContent = <img
-                    src={`${process.env.PUBLIC_URL}/repo.png`}
+                    src={repo}
                     style={{
                       display: "block",
                       width: "80%",
@@ -126,6 +157,7 @@ export const KittyCards = (gameState) => {
                   <div
                     key={`${rowIndex}-${columnIndex}`}
                     className={slotClasses}
+                    onClick = {() => drawCard(rowIndex, columnIndex)}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={(e) => handleCardDrop(e, rowIndex, columnIndex)}
                   >
@@ -158,7 +190,6 @@ export const KittyCards = (gameState) => {
               points={card.points}
               color={card.color}
               src={colorToCard[card.color]}
-              onClick={() => selectCardFromHand(card)}
               draggable="true"
               onDragStart={(e) => handleDragStart(e, card)}
             />
@@ -192,80 +223,65 @@ export const KittyCards = (gameState) => {
     </div>
   );
 
-  const selectCardFromHand = (card: Card) => {
-    setSelectedCard(card);
-  };
-
   const handleDragStart = (event, card) => {
     console.log("you drag a card");
     event.dataTransfer.setData("text/plain", card.id.toString());
     event.currentTarget.style.opacity = "0.5";
   };
 
-  const handleCardDrop = (event, rowIndex, columnIndex) => {
+  const handleCardDrop = async(event, rowIndex, columnIndex) => {
     event.preventDefault();
     const cardId = parseInt(event.dataTransfer.getData("text/plain"), 10);
     const cardToPlace = hand.find(card => card.id === cardId);
-    console.log(cardId);
-    console.log(grid[rowIndex][columnIndex].type);
 
-    if (cardToPlace && grid[rowIndex][columnIndex].type === "empty") {
-      // 一旦确定格子为空，立即设置为blocked防止重复放置
-      const newGrid = grid.map((row, rIndex) =>
-        rIndex === rowIndex
-          ? row.map((slot, cIndex) => cIndex === columnIndex ? { ...slot, type: "blocked" } : slot)
-          : row
-      );
-      setGrid(newGrid);
-      placeCard(rowIndex, columnIndex, cardToPlace);
-      setHand(hand.filter(card => card.id !== cardId)); // 从手牌中移除
-    } else {
+    if (!cardToPlace){
+      alert("You have to choose a card to place!");
+      return;
+    }
+
+    if (grid[rowIndex][columnIndex].type !== "empty"){
       alert("You can only place a card on an empty slot.");
-    }
-  };
-
-  const drawCard = () => {
-    const newCardId = Math.max(...hand.map(c => c.id)) + 1; // Get the next ID
-    const newCard = { id: newCardId, name: `Card ${newCardId}` };
-
-    // Update the hand state to include the new card
-    setHand(hand.concat(newCard));
-  };
-
-  const placeCard = async(rowIndex: number, columnIndex: number, card = selectedCard) => {
-    // Check if the center slot is clicked, if so draw a card
-    console.log("now you drop a card.")
-    if (!card) {
-      alert("Please select a card first.");
       return;
     }
-    if (rowIndex === 1 && columnIndex === 1) {
-      drawCard();
-      return; // Early return to prevent further actions since it's a special slot
-    }
-    // Check if a card is selected
-    if (!selectedCard) {
-      alert("Please select a card first.");
+
+    if (rowIndex === 1 && columnIndex === 1){
+      alert("You can't place a card to the central pile.")
+      event.dataTransfer.setData("text/plain", null);
       return;
     }
-    // Check if the slot is blocked or already occupied
-    if (grid[rowIndex][columnIndex] === blockedSlot || grid[rowIndex][columnIndex]) {
-      alert("This slot is not available.");
-      return;
+
+    if (gameState.gameState.currentTurnPlayerId !== currUser.id){
+      alert("It's not your turn, please wait.")
     }
-    // Remove the card from the player's hand
-    // setHand(hand.filter((card) => card.id !== selectedCard.id));
+
     try{
       let moveType = "PLACE";
-      let cardId = card.id;
+      let cardId = cardToPlace.id;
       let position = indexMap[rowIndex][columnIndex];
       const response = await api.post(`/games/${gameId}/users/${currUser.id}/move`, {playerId, cardId, position, moveType});
       console.log("you make a move.")
     }catch (error) {
       handleError(error);
     } 
-    // Clear the selected card
-    setSelectedCard(null);
+
+    
+  };
+
+  const drawCard = async(rowIndex, columnIndex) => {
+    if (gameState.gameState.currentTurnPlayerId !== currUser.id){
+      alert("It's not your turn, please wait.")
+    }
+
+    if (rowIndex === 1 && columnIndex === 1){
+      try{
+        let moveType = "DRAW";
+        const response = await api.post(`/games/${gameId}/users/${currUser.id}/move`, {playerId, moveType});
+        console.log("you draw a card.")
+      }catch (error) {
+        handleError(error);
+      } 
+    }
+
   };
 
   const doExit = async() => {
@@ -275,6 +291,7 @@ export const KittyCards = (gameState) => {
     
   };
 
+
   function renderContent() {
     if (winnerId) {
       // return <KittyCards gameState={gameState} />;
@@ -282,6 +299,7 @@ export const KittyCards = (gameState) => {
         <BaseContainer>
           <div style={{ padding: "20px", textAlign: "center" }}>
             <h2>{winnerId} wins the game!</h2>
+            <Button className="exit-btn" onClick={()=>navigate("/main")}>Back to Main</Button>
           </div>
         </BaseContainer>
       );
