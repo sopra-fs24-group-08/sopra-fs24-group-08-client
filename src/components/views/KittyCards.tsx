@@ -109,6 +109,10 @@ const KittyCards = () => {
     setSelectedLanguage(e.target.value);
   };
 
+
+
+
+
   const sendMove = async (cardId, position, moveType) => {
     const move = {
       playerId: currUser.id,

@@ -1,6 +1,8 @@
 import React, { createContext, useState, useCallback } from "react";
 import PropTypes from 'prop-types';
 
+
+
 const GameContext = createContext({
   grid: [],
   hand: [],
@@ -39,6 +41,7 @@ export const GameProvider = ({ children }) => {
     setCurrentTurnPlayerId(null);
     setCardPileSize(0);
   }, []);
+
 
   const handleCardDrop = useCallback((cardId, squareId) => {
     const cardIndex = hand.findIndex(card => card.id === cardId);
