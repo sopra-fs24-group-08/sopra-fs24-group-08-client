@@ -229,11 +229,23 @@ Done List
 Todo List
 - write more tests of userservice and pass them
 - help merge refactoring and merge-main branches
+
+
 **Yiyang Chen**
 
 Done list
+- Tests for UserController(20 tests passed,2 failed) #90
+  Currently two tests do not pass:
+  1. when creating a user, a 400 error should be returned when registering without entering a password or without entering a username;
+  2. a 400 error should be returned if the input is empty when logging on.
+- Find a good avatar creation API and figure out how to implement it #87
+  https://cat-avatars.vercel.app/
 
 Todo List
+- Improve the implementation of the user controller for the problems shown in the test.
+- Test chatbox service after merging others‘ work
+- Implement avatar creation API after merging others' work
+- help merge refactoring and merge-main branches
 
 
 **David Tanner**
