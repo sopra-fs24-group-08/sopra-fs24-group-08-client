@@ -6,10 +6,10 @@ html, body, #root, .game-layout {
 }
 .game-layout {
   display: grid;
-  grid-template-rows: 15fr 4fr;
-  grid-template-columns: 2fr 6fr 2fr; /* 页面分成左2，中6，右2 */
+  grid-template-rows: auto 1fr; /* Adjust row sizing to fit content more naturally */
+  grid-template-columns: 1fr 2.5fr 1fr; /* Adjust column sizing for a more balanced layout */
+  gap: 1rem; /* Maintain or adjust gap */
   height: 100vh;
-  gap: 1rem; // Adjust the gap to your liking
 }
 
 /* 上部分，右侧按钮 */
@@ -35,34 +35,34 @@ html, body, #root, .game-layout {
   flex-direction: column; /* 垂直排列子元素 */
   height: 28rem;
   width: 14rem;
-  background-color: #fafafc;
+  background-color: #d390cb;
   border-radius: 16px;
   padding: 1rem;
   overflow-y: auto; /* 出现滚动条 */
   border: 2px solid #7f92ec;
   grid-template-rows: 14fr; /* 使用 fr 单位设置高度 */
-  margin-top: 1rem;
-  margin-bottom: 9rem;
+  margin-top: 2rem;
+  margin-bottom: 5rem;
 
   .message-container {
+    overflow: visible;
     flex-grow: 1;
-    overflow-y: auto; /* 允许消息溢出时滚动 */
-    margin-bottom: 0rem;
+    margin-bottom: auto;
   }
 
   .message {
+    position: relative; /* Needed to position the translate button absolutely within the container */
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     border-radius: 12px;
-    box-shadow: 0px 0px 1px #ccc;
-    border: 2px solid #c1c2c7;
-    height: auto;
-    max-width: 90%; /* 消息气泡的最大宽度为聊天框的 90% */
-    word-wrap: break-word; /* 自动换行长单词或 URL */
+    border: 2px solid #1b6161;
+    background: #e9e9e9; /* Example background color */
+    word-wrap: break-word;
+
 
 
     &.self {
-      background-color: #bdd2ff;
+      background-color: rgba(0, 179, 211, 0.63);
       border-radius: 12px;
     }
 
@@ -88,8 +88,22 @@ html, body, #root, .game-layout {
   }
 
   // 对手消息
+
+  .translate-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+  }
+
+  .translate-btn img {
+    width: 30px;
+    height: auto;
+  }
+
   .message {
-    background: #e9e9e9;
+    background: rgba(0, 68, 211, 0.6);
     margin-bottom: 5px;
     padding: 5px;
     border-radius: 10px;

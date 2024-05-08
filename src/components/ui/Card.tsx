@@ -22,18 +22,23 @@ const Card: React.FC<CardProps> = ({
                                      onClick,
                                      draggable,
                                      onDragStart,
-                                     onDragEnd
+                                     onDragEnd,
                                    }) => {
   return (
     <div
+      key={id}
       className="card"
       onClick={onClick}
-      style={{ backgroundColor: color, cursor: draggable ? 'grab' : 'pointer' }}
+      style={{ backgroundColor: color, cursor: draggable ? "grab" : "pointer" }}
       draggable={draggable}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
     >
-      <img src={src} alt={`${name} card`} style={{ width: "100%", height: "auto" }} />
+      <img src={src} style={{
+        display: "block",
+        width: "225%",
+        height: "auto",
+      }} alt={`${name} card`} />
       <div className="points">{points}</div>
     </div>
   );

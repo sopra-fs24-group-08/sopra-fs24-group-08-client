@@ -7,7 +7,6 @@ import { React, useEffect, useState } from "react";
 import Refresh from "../ui/Refresh";
 import { useCurrUser} from "../context/UserContext";
 
-
 const UserProfileEdit = () => {
   const navigate = useNavigate();
   const {id} = useParams();
@@ -35,8 +34,6 @@ const UserProfileEdit = () => {
     setPassword(event.target.value);
   };
 
-
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -59,6 +56,7 @@ const UserProfileEdit = () => {
 
     }
   }
+
   return (
     <BaseContainer className="edit container">
       <form onSubmit={handleSubmit} className="edit form">

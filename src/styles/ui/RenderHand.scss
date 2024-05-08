@@ -1,9 +1,10 @@
+@import "../theme";
 .hand-of-cards {
   margin-left: 1rem;
   display: flex;
   justify-content: left; /* 从左侧开始排列 */
   align-items: center;
-  width: 100%; /* 使用百分比宽度填满指定列 */
+  width:100%; /* 使用百分比宽度填满指定列 */
   height: 10rem;
   box-sizing: border-box;
   background-color: rgba(255, 255, 255, 0.9);

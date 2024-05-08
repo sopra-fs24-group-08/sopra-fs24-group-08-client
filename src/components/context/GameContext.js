@@ -1,6 +1,8 @@
-import React, { createContext, useState, useCallback } from "react";
-import PropTypes from 'prop-types';
-
+import React, { createContext, useState, useCallback, useContext } from "react";
+import PropTypes from "prop-types";
+import { useCurrUser } from "./UserContext";
+import { useWebSocket } from "./WebSocketProvider";
+import { useParams } from "react-router-dom";
 
 
 const GameContext = createContext({
@@ -11,19 +13,33 @@ const GameContext = createContext({
   gameStatus: "STARTING",
   currentTurnPlayerId: null,
   cardPileSize: 0,
-  setGrid: () => {},
-  setHand: () => {},
-  setCurrentScore: () => {},
-  setOpponentScore: () => {},
-  setGameStatus: () => {},
-  setCurrentTurnPlayerId: () => {},
-  setCardPileSize: () => {},
-  resetGame: () => {},
-  handleCardDrop: () => {},
-  updateGameState: () => {}
+  setGrid: () => {
+  },
+  setHand: () => {
+  },
+  setCurrentScore: () => {
+  },
+  setOpponentScore: () => {
+  },
+  setGameStatus: () => {
+  },
+  setCurrentTurnPlayerId: () => {
+  },
+  setCardPileSize: () => {
+  },
+  resetGame: () => {
+  },
+  handleCardDrop: () => {
+  },
+  updateGameState: () => {
+  },
 });
 
 export const GameProvider = ({ children }) => {
+
+  const { currUser } = useCurrUser();
+  const { send } = useWebSocket();
+  const { gameId } = useParams();
   const [grid, setGrid] = useState([]);
   const [hand, setHand] = useState([]);
   const [currentScore, setCurrentScore] = useState(0);
@@ -43,17 +59,94 @@ export const GameProvider = ({ children }) => {
   }, []);
 
 
-  const handleCardDrop = useCallback((cardId, squareId) => {
-    const cardIndex = hand.findIndex(card => card.id === cardId);
+  const drawCardMove = useCallback(async (squareId) => {
+    // Ensure it's the user's turn
+    if (currentTurnPlayerId !== currUser.id) {
+      alert("It's not your turn.");
+      return;
+    }
+
+    // Check if the square is the middle one
+    if (squareId !== 4) {
+      alert("You can only draw from the middle card pile.");
+      return;
+    }
+
+    // Check if there are cards left to draw
+    if (cardPileSize === 0) {
+      alert("No cards left to draw.");
+      return;
+    }
+
+    const move = {
+      playerId: currUser.id,
+      cardId: "",
+      position: squareId,
+      moveType: "DRAW",
+    };
+
+    try {
+      // Send draw card move to server
+      await send(`/app/game/${gameId}/move`, JSON.stringify(move));
+      console.log("Draw card move sent to server:", move);
+    } catch (error) {
+      console.error("Error sending draw card move:", error);
+      alert("Failed to draw a card. Please try again.");
+    }
+  }, [cardPileSize, currentTurnPlayerId, send, gameId, currUser.id]);
+
+
+  const handleCardDrop = useCallback(async (event, squareId) => {
+    console.log(squareId, "DDLDLDL");
+    event.preventDefault();
+    const cardId = parseInt(event.dataTransfer.getData("text/plain"), 10);
+    const cardToPlace = hand.find(card => card.id === cardId);
+
+    if (!cardToPlace || currentTurnPlayerId !== currUser.id) {
+      alert("Invalid move or not your turn.");
+      return;
+    }
+    const validsqrIdx = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const squareIndex = grid.findIndex(square => square.id === squareId);
-    if (cardIndex >= 0 && squareIndex >= 0 && !grid[squareIndex].occupied) {
+    console.log(squareIndex, "DOSOODS");
+    if (0 > squareIndex || squareIndex === 4) { // Check for valid square and not the center pile
+      alert("Invalid move.");
+      return;
+    }
+
+
+    if (grid[squareIndex].occupied) {
+      alert("This slot is already occupied.");
+      return;
+    }
+
+    const move = {
+      playerId: currUser.id,
+      cardId: cardId,
+      position: squareIndex,
+      moveType: "PLACE",
+    };
+
+    try {
+      // Send move to server
+      console.log("move", move);
+      await send(`/app/game/${gameId}/move`, JSON.stringify(move));
+      console.log("Move sent to server:", move);
+
+      // Update local state assuming the move is valid and accepted
       const newGrid = [...grid];
-      newGrid[squareIndex] = {...newGrid[squareIndex], occupied: true, cards: [hand[cardIndex]]};
-      const newHand = hand.filter((_, index) => index !== cardIndex);
+      newGrid[squareIndex] = { ...newGrid[squareIndex], occupied: true, cards: [cardToPlace] };
+      const newHand = hand.filter(card => card.id !== cardId);
+
       setGrid(newGrid);
       setHand(newHand);
+      console.log("Hand", newHand);
+      console.log("Grid", newGrid);
+    } catch (error) {
+      console.error("Error sending move:", error);
+      alert("Failed to send move. Please try again.");
     }
-  }, [grid, hand]);
+  }, [grid, hand, send, gameId, currUser.id, currentTurnPlayerId]);
 
   const updateGameState = useCallback((newGameState) => {
     setGrid(newGameState.gridSquares || []);
@@ -75,7 +168,8 @@ export const GameProvider = ({ children }) => {
       currentTurnPlayerId, setCurrentTurnPlayerId,
       cardPileSize, setCardPileSize,
       resetGame, handleCardDrop,
-      updateGameState
+      drawCardMove,
+      updateGameState,
     }}>
       {children}
     </GameContext.Provider>
@@ -83,7 +177,7 @@ export const GameProvider = ({ children }) => {
 };
 
 GameProvider.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };
 
 export default GameContext;

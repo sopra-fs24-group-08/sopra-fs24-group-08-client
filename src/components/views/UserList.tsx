@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "../ui/BaseContainer";
 import Player from "../ui/Player";
-import { useData } from '../context/DataContext';
+import { useData } from "../context/DataContext";
 import { Button } from "components/ui/Button";
 import { useCurrUser } from "../context/UserContext";
 import { api, handleError } from "helpers/api";
@@ -34,6 +34,7 @@ const UserList = () => {
     }
   };
   // Need to still add button removal if user already friend
+
   return (
     <BaseContainer className="userlist container">
       <h2>Users Overview</h2>

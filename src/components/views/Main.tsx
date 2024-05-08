@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import BaseContainer from "../ui/BaseContainer";
 import Header from "./Header";
 import { Button } from "../ui/Button";
-import { useData } from '../context/DataContext';
+import { useData } from "../context/DataContext";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/Main.scss";
 
@@ -17,6 +17,7 @@ function Main() {
   // Helper function to determine if data needs refreshing
   const needsRefresh = (lastFetched) => {
     const now = new Date().getTime();
+
     return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour, set it to whatever later
     // or to event for example new friend toast.
   };
@@ -33,10 +34,10 @@ function Main() {
     }
   }, [refreshData, usersLastFetched, friendsLastFetched, currUser?.token]);
 
-  const doLogout=() =>{
-    logout()
-    navigate("/login")
-  }
+  const doLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
 
   const buttons = [
@@ -48,24 +49,25 @@ function Main() {
     { label: "Logout", onClick: () => doLogout() },
   ];
 
-  const fakejoin = () =>{
+  const fakejoin = () => {
     const gameId = 10;
-    navigate(`/kittycards/${currUser.id}/${gameId}`)
-  }
+    navigate(`/kittycards/${currUser.id}/${gameId}`);
+  };
+
   return (
     <BaseContainer>
       <Header height="50" />
       <div className="main container">
 
-          <div className="main button-container">
-            {buttons.map((button, index) => (
-              <Button key={index} onClick={button.onClick}>{button.label}</Button>
-            ))}
-            <Button onClick={fakejoin} >FAKE MATCH MOCK</Button>
-          </div>
+        <div className="main button-container">
+          {buttons.map((button, index) => (
+            <Button key={index} onClick={button.onClick}>{button.label}</Button>
+          ))}
+          <Button onClick={fakejoin}>FAKE MATCH MOCK</Button>
+        </div>
       </div>
     </BaseContainer>
-);
+  );
 }
 
 

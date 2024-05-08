@@ -4,16 +4,16 @@ import PropTypes from "prop-types";
 const Player = ({ user }) => {
   const getStatusStyle = (status) => {
     switch (status) {
-    case 'ONLINE':
-      return { color: '#28a745' }; // Green
-    case 'OFFLINE':
-      return { color: '#ff4757' }; // Red
-    case 'PLAYING':
-      return { color: '#3498db' }; // Blue
-    case 'QUEUING':
-      return { color: '#f1c40f' }; // Yellow
+    case "ONLINE":
+      return { color: "#28a745" }; // Green
+    case "OFFLINE":
+      return { color: "#ff4757" }; // Red
+    case "PLAYING":
+      return { color: "#3498db" }; // Blue
+    case "QUEUING":
+      return { color: "#f1c40f" }; // Yellow
     default:
-      return { color: '#95a5a6' }; // Grey for undefined, we can adapt this later since using switch is "smelly code"
+      return { color: "#95a5a6" }; // Grey for undefined, we can adapt this later since using switch is "smelly code"
     }
   };
 

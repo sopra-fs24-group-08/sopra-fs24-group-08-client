@@ -1,7 +1,7 @@
 import { useCurrUser } from "../../context/UserContext";
 import { Navigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import React from 'react';
+import React from "react";
 
 const PrivateRoute = ({ children, validate }) => {
   const { currUser } = useCurrUser();

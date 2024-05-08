@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const UserAchievements = () => {
   const location = useLocation();
-  const { achievements, username } = location.state || { achievements: [], username: '' };
+  const { achievements, username } = location.state || { achievements: [], username: "" };
   const navigate = useNavigate();
 
   return (

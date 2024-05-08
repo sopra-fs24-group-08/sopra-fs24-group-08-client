@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { api, handleError } from 'helpers/api';
-import { Spinner } from 'components/ui/Spinner';
-import { Button } from 'components/ui/Button';
-import BaseContainer from 'components/ui/BaseContainer';
-import { User } from 'types';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { api, handleError } from "helpers/api";
+import { Spinner } from "components/ui/Spinner";
+import { Button } from "components/ui/Button";
+import BaseContainer from "components/ui/BaseContainer";
+import { User } from "types";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/UserProfile.scss";
 
@@ -18,14 +18,16 @@ const UserProfile = () => {
 
   useEffect(() => {
     const url = currUser.id === id ? `/users/${currUser.id}/${currUser.id}` : `/users/${currUser.id}/${id}`;
+
     async function fetchProfileData() {
       try {
-        const response = await api.get(url,{ headers: { Authorization: `Bearer ${currUser.token}`}
-    });
+        const response = await api.get(url, {
+          headers: { Authorization: `Bearer ${currUser.token}` },
+        });
         setUser(response.data);
         setIsLoading(false);
-        console.log(response.data)
-        console.log(user)
+        console.log(response.data);
+        console.log(user);
       } catch (error) {
         console.error(`Failed to fetch user data: ${handleError(error)}`);
         setIsLoading(false);
@@ -49,14 +51,19 @@ const UserProfile = () => {
         {user.achievements && (
           <div>
             <h3>Achievements</h3>
-            <Button onClick={() => navigate(`/profiles/${id}/achievements`, { state: { achievements: user.achievements, username: user.username } })}>
+            <Button onClick={() => navigate(`/profiles/${id}/achievements`, {
+              state: {
+                achievements: user.achievements,
+                username: user.username,
+              },
+            })}>
               See Achievements
             </Button>
           </div>
         )}
         <div className="userprofile button-container">
           {currUser.id === user.id && <Button onClick={() => navigate(`/profiles/${id}/edit`)}>Edit</Button>}
-          <Button style={{ width: '80%' }} onClick={() => navigate(-1)}>Back</Button>
+          <Button style={{ width: "80%" }} onClick={() => navigate(-1)}>Back</Button>
         </div>
       </div>
       {user.currIcon && (

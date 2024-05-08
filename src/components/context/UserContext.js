@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api, handleError} from "../../helpers/api";
+import { api, handleError } from "../../helpers/api";
 import PropTypes from "prop-types";
-import { useWebSocket } from './WebSocketProvider';
+import { useWebSocket } from "./WebSocketProvider";
 
 const UserContext = createContext(null);
 
@@ -55,7 +55,7 @@ export const UserProvider = ({ children }) => {
     try {
       // Attempt to call the API to log out
       await api.put(`/users/${currUser.id}/logout`, null, {
-        headers: { Authorization: `Bearer ${currUser.token}` }
+        headers: { Authorization: `Bearer ${currUser.token}` },
       });
       console.log("Logout successful");
       sessionStorage.clear(); // Clear all session storage, including tokens
@@ -84,7 +84,7 @@ export const UserProvider = ({ children }) => {
 };
 
 UserProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export const useCurrUser = () => useContext(UserContext);

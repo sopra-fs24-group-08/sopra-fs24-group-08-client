@@ -21,25 +21,32 @@ const Matchmaking = () => {
       if (data.matchFound) {
         setLoading(true);
         matchedRef.current = true;
-        navigate(`/kittycards/${data.gameId}`, { state: { gameId: data.gameId, isFirst: data.isFirst, opponentId: data.opponentId,opponentName: data.opponentName } });
+        navigate(`/kittycards/${data.gameId}`, {
+          state: {
+            gameId: data.gameId,
+            isFirst: data.isFirst,
+            opponentId: data.opponentId,
+            opponentName: data.opponentName,
+          },
+        });
       } else {
         toast.info("Waiting for an opponent...");
       }
     });
-// Automatically try to join the matchmaking queue
-    send(`/app/matchmaking/join/${currUser.id}`, '');
+    send(`/app/matchmaking/join/${currUser.id}`, "");
 
     // Cleanup function to unsubscribe and leave the matchmaking queue on unmount
+
     return () => {
       unsubscribeUser(matchmakingTopic);
-      if(!matchedRef.current&& !loading)
-      send(`/app/matchmaking/leave/${currUser.id}`, '');
+      if (!matchedRef.current && !loading)
+        send(`/app/matchmaking/leave/${currUser.id}`, "");
     };
   }, [currUser, navigate, send, subscribeUser, unsubscribeUser]);
   const doQuitQueueing = () => {
     setLoading(false);
     matchedRef.current = false;  // Reset the ref if the user manually cancels matchmaking
-    send(`/app/matchmaking/leave/${currUser.id}`, '');
+    send(`/app/matchmaking/leave/${currUser.id}`, "");
     navigate("/main");
   };
 
