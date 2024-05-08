@@ -24,3 +24,4 @@ export type Player = {
   username: string;
   currIcon: Icon;
 }
+
