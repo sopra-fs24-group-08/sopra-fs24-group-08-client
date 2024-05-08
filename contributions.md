@@ -205,3 +205,51 @@ Todo List:
 - Review Task list and update what is done and what has to be done on Git
 ->   Work on open tasks
 - Finalize Translation Service after getting feedback from the Group.
+
+
+## 02.05-09.05
+
+**Jingxuan Tian**
+
+Done list
+- Edit the backend and frontend for game session and merge with refactored code. #89
+- Figured out how to make an external database. #88
+
+Todo List
+- Write test for game service.
+- Test the code, update the tutorial video
+
+
+**Zixian Pang**
+
+Done List
+
+Todo List
+
+**Yiyang Chen**
+
+Done list
+
+Todo List
+
+
+**David Tanner**
+
+Done List:
+Implemented the Progress Bar but we have decided in the end to not use it, since getting into a game takes 1 second max. 
+Did the business logic for the surrender mechanic in the backend, had adapted the frontend so that it works properly in e3cc69f and prior code. 
+Fully implemented WS, added better error handling and exceptions to allow easier debugging.Added some WS and GameService tests. 
+Client: #42 #43 Finished. Refactored KittyCards so that not every single component is shoved into the same tsx file :  7cd9251.
+
+Todo List:
+Will have to adapt surr feature and double check that everything works as planned now with our newly adapted merge-main/refactoring, won’t take long.
+Continue with creating tests.
+
+
+**Luis Schmid**
+
+Done List:
+
+
+Todo List:
+
