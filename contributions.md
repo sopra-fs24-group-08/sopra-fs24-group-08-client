@@ -158,9 +158,9 @@ Todo List
 
 Done List
 
-- creation of winner page
-- images path fixed
-- drag effect
+- creation of winner page #39 (forgot to include all hashtags in the commit)
+- images path fixed (from M3 presentation)
+- drag effect #40
 - ocuupied-cup images
 
 Todo List
@@ -223,9 +223,12 @@ Todo List
 **Zixian Pang**
 
 Done List
+- help merge codes in frontend in regard to last week's work #40
+- write some tests of userservice but some not passed yet #75
 
 Todo List
-
+- write more tests of userservice and pass them
+- help merge refactoring and merge-main branches
 **Yiyang Chen**
 
 Done list
