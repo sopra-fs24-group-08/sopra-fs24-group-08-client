@@ -234,11 +234,11 @@ Todo List
 **Yiyang Chen**
 
 Done list
-- Tests for UserController(20 tests passed,2 failed) #90
-  Currently two tests do not pass:
+- Tests for UserController(20 tests passed,2 failed) 
+  Currently two tests do not pass  #90
   1. when creating a user, a 400 error should be returned when registering without entering a password or without entering a username;
   2. a 400 error should be returned if the input is empty when logging on.
-- Find a good avatar creation API and figure out how to implement it #87
+- Find a good avatar creation API and figure out how to implement it  #87
   https://cat-avatars.vercel.app/
 
 Todo List
