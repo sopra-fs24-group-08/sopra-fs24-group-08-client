@@ -5,7 +5,6 @@ import { useWebSocket } from "./WebSocketProvider";
 
 const UserContext = createContext(null);
 
-//Should have chosen better Name, currUser in context is token , id and currUser in sessionStorage is full object.
 export const UserProvider = ({ children }) => {
   const { connect, disconnect } = useWebSocket();
 
