@@ -99,7 +99,6 @@ Criterion 2: If it’s not the opponent’s turn, then the user can’t do this 
 
 - Implementaion of deciding if first turn or second and distribution of 3/2 cards accordingly. #02
 - Criteroin 3: If a user does not choose an option after 15 seconds,then the app will randomly decide who goes first. #24
-- Design/Mockup for the Game board.
 - Criterion 3: Once the user put the card, the action can’t reverse, the scores should be updated. #20
   -> Rollback disabling mechanism
 
@@ -125,11 +124,12 @@ David Tanner
 
 Yiyang Chen
 
-•⁠  ⁠Implementaion of deciding if first turn or second and distribution of 3/2 cards accordingly. #02
-•⁠  ⁠Criteroin 3: If a user does not choose an option after 15 seconds,then the app will randomly decide who goes first. #24
-•⁠  ⁠Design/Mockup for the Game board.
-•⁠  ⁠Criterion 3: Once the user put the card, the action can’t reverse, the scores should be updated. #20
-  -> Rollback disabling mechanism
+•⁠  ⁠Design/Mockup for the Game board #84
+Further Adjustments：
+•⁠  Responsive Design: Implemented responsive layout to ensure consistent viewing across different browsers by removing fixed positioning.
+•⁠  Fixed Chat Box Height: Set a fixed height for the chat box to maintain a consistent interface size.
+•⁠  Scrollable Chat History: Added a scrollbar to the chat window when the number of messages exceeds the viewable area.
+•⁠  Auto-scroll to Latest Message*: Implemented automatic scrolling to the newest message upon sending, ensuring the latest conversation is always visible.
 
 Jingxuan Tian
 •⁠  matching function for backend and frontend
@@ -140,4 +140,138 @@ Luis Schmid
 •⁠  ⁠Updates on tasks in Git
 •⁠  ⁠M3 Reporting
 
+## 28.04-01.05
 
+**Jingxuan Tian**
+
+Done list
+
+- make SSE in server and client for initiated gamestate #82
+- adapt board entity and DTOMapper to convert gamestateDTO #83
+
+Todo List
+
+- merge with other members' work
+- sse for updating game operations
+
+**Zixian Pang**
+
+Done List
+
+- creation of winner page #39 (forgot to include all hashtags in the commit)
+- images path fixed (from M3 presentation)
+- drag effect #40
+- ocuupied-cup images
+
+Todo List
+
+- merge with other members' work
+- update css files
+
+  **Yiyang Chen**
+
+Done list
+
+- Chatbox Controller & Service #79
+- Tests for Chatbox Controller & Service #80
+
+Todo List
+
+- merge with other members' work
+- link chatbox service to client and test
+
+
+**David Tanner**
+
+Done List:
+- Did some heavy changes to the client, so that it matches up better with what we had defined in M2 #36
+- Some minor changes to make server #78 more suitable to refactored client #36
+- Styling Changes to the all Views besides KittyCards, solely starting up open for changes #38
+- Using some of my code from commit 83092a1 to make #37 happen.
+
+Todo List:
+
+- Tests for some of my methods #85
+- Work loading progress feedback #8
+
+  **Luis Schmid**
+
+Done List:
+- Implementation of Chat Translation on Client #10
+- Translation Service Tests #81
+
+Todo List:
+
+- Review Task list and update what is done and what has to be done on Git
+->   Work on open tasks
+- Finalize Translation Service after getting feedback from the Group.
+
+
+## 02.05-09.05
+
+**Jingxuan Tian**
+
+Done list
+- Edit the backend and frontend for game session and merge with refactored code. #89
+- Figured out how to make an external database. #88
+
+Todo List
+- Write test for game service.
+- Test the code, update the tutorial video
+
+
+**Zixian Pang**
+
+Done List
+- help merge codes in frontend in regard to last week's work #40
+- write some tests of userservice but some not passed yet #75
+
+Todo List
+- write more tests of userservice and pass them
+- help merge refactoring and merge-main branches
+
+
+**Yiyang Chen**
+
+Done list
+- Tests for UserController(20 tests passed,2 failed) 
+  Currently two tests do not pass  #90
+  1. when creating a user, a 400 error should be returned when registering without entering a password or without entering a username;
+  2. a 400 error should be returned if the input is empty when logging on.
+- Find a good avatar creation API and figure out how to implement it  #87
+  https://cat-avatars.vercel.app/
+
+Todo List
+- Improve the implementation of the user controller for the problems shown in the test.
+- Test chatbox service after merging others‘ work
+- Implement avatar creation API after merging others' work
+- help merge refactoring and merge-main branches
+
+
+**David Tanner**
+
+Done List:
+Implemented the Progress Bar but we have decided in the end to not use it, since getting into a game takes 1 second max. 
+Did the business logic for the surrender mechanic in the backend, had adapted the frontend so that it works properly in e3cc69f and prior code. 
+Fully implemented WS, added better error handling and exceptions to allow easier debugging.Added some WS and GameService tests. 
+Client: #42 #43 Finished. Refactored KittyCards so that not every single component is shoved into the same tsx file :  7cd9251.
+
+Todo List:
+Will have to adapt surr feature and double check that everything works as planned now with our newly adapted merge-main/refactoring, won’t take long.
+Continue with creating tests.
+
+
+**Luis Schmid**
+
+Done List:
+- Merge of Translation feature into Main branch
+- Passwort hiding in the client for registration and change of passwort
+- Reviewed and updated Task List
+- Contributions during M4 Feedback for the other group.
+  
+Todo List:
+- Play the game to assess for Bugs
+- Write tests to reach coverage
+- Implementation of secret API Key for transalation feature
+- Start implementation of Spectator Mode
+- Refactoring and code enhancements following SonarLint propositons
