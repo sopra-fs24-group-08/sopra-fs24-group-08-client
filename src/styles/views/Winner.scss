@@ -1,5 +1,11 @@
 @import "../theme";
 
+/* The '&' is a shorthand for the containing element,
+  so for example a '&.user-list' inside .game will compile to
+  .game.user-list
+
+  for more information visit https://sass-lang.com/guide
+ */
 
 .winner {
   &.container {
