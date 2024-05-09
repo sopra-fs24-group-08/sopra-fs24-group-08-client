@@ -273,3 +273,4 @@ Todo List:
 - Play the game to assess for Bugs
 - Write tests to reach coverage
 - Implementation of secret API Key for transalation feature
+- Refactoring and code enhancements following SonarLint propositons
