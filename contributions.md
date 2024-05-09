@@ -264,7 +264,11 @@ Continue with creating tests.
 **Luis Schmid**
 
 Done List:
-
-
+- Merge of Translation feature into Main branch
+- Passwort hiding in the client for registration and change of passwort
+- Reviewed and updated Task List
+- Contributions during M4 Feedback for the other group.
 Todo List:
-
+- Play the game to assess for Bugs
+- Write tests to reach coverage
+- Implementation of secret API Key for transalation feature
