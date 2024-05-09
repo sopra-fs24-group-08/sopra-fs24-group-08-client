@@ -55,6 +55,7 @@ const EditProfile = () => {
           className="editProfile input"
           placeholder="Enter new password"
           value={password}
+          type ="password"
           onChange={e => setPassword(e.target.value)}
           required
         />
