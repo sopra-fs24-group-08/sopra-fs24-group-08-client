@@ -7,7 +7,7 @@ const PrivateRoute = ({ children, validate }) => {
   const { currUser } = useCurrUser();
   const location = useLocation();
 
-  const isValid = currUser && validate ? validate(currUser, location) : true;
+  const isValid = currUser.token && currUser.id &&  (validate ? validate(currUser, location) : true);
 
   return isValid ? children : <Navigate to="/login" />;
 };
