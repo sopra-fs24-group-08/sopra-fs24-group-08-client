@@ -8,7 +8,7 @@ import GameContext from "../context/GameContext";
 import RenderHand from "components/ui/RenderHand";
 import RenderBoard from "components/ui/RenderBoard";
 import "styles/views/KittyCards.scss";
-import { api, handleError } from "helpers/api";
+import { api } from "helpers/api";
 import PropTypes from "prop-types";
 import translateIcon from "../../images/Translate_Icon.png";
 import Modal from "helpers/Modal";
