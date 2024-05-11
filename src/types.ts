@@ -25,3 +25,11 @@ export type Player = {
   currIcon: Icon;
 }
 
+export type Result = {
+  gameId: number;
+  winnerId : number;
+  winnerUsername: string;
+  loserId: number;
+  loserUsername: string;
+}
+

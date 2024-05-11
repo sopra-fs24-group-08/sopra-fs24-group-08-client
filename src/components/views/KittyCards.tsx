@@ -48,16 +48,16 @@ const KittyCards = () => {
   const messageEndRef = useRef(null);
   const storedUser = JSON.parse(sessionStorage.getItem("currUser"));
   const username = storedUser?.username;
-  const [showConfirmModal, setShowSurrenderModal] = useState(false);
-  const [showSurrenderModal, setShowSurrenderConfirm] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
   const {
     grid,
     hand,
     currentScore,
     opponentScore,
-    resetGame,
     handleCardDrop,
     updateGameState,
+    resetGame
   } = useContext(GameContext);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -106,12 +106,17 @@ const KittyCards = () => {
     subscribeUser(gameTopic, (message) => {
       const update = JSON.parse(message.body);
       console.log("Game Update:", update);
+      if (update.gameStatus === "FINISHED") {
+        // Enforce properly cleanup and navigation
+        setTimeout(() => {
+          unsubscribeUser(gameTopic);
+          unsubscribeUser(chatTopic);
+          resetGame();
+          navigate(`/kittycards/${gameId}/result`);
+        }, 100); // Delay to ensure all final messages are processed
+      }
       updateGameState(update);
       setIsLoading(false);
-      if (update.gameStatus === "FINISHED") {
-        navigate(`/kittycards/${gameId}/result/${username}`);
-        resetGame();
-      }
     });
 
     subscribeUser(chatTopic, (message) => {
@@ -135,7 +140,7 @@ const KittyCards = () => {
       unsubscribeUser(gameTopic);
       unsubscribeUser(chatTopic);
     };
-  }, [gameId, currUser.id, navigate, subscribeUser, unsubscribeUser, updateGameState, resetGame]);
+  }, [gameId, currUser.id, navigate, subscribeUser, unsubscribeUser, updateGameState]);
 
   useEffect(() => {
     const messageEnd = messageEndRef.current;
@@ -159,28 +164,25 @@ const KittyCards = () => {
     }
   };
 
-  function sendSurrenderConfirmation(gameId, playerId) {
-    const surrenderMessage = {
-      playerId: playerId,
-      surrender: true,
-    };
-    send(`/app/game/${gameId}/surrender`, JSON.stringify(
-      { surrenderMessage },
-    ));
+  function sendSurrenderConfirmation(gameId) {
+    console.log("Sending Surrender confirmation:", gameId, currUser.id);
+    send(`/app/game/${gameId}/surrender`,   JSON.stringify({
+        playerId:currUser.id,
+        surrender:true,
+      }) );
   }
 
   const handleSurrenderClick = () => {
-    setShowSurrenderModal(true); // Open the modal
+    setShowConfirmModal(true); // Open the modal
   };
 
   const handleCloseModal = () => {
-    setShowSurrenderModal(false); // Close the modal
+    setShowConfirmModal(false); // Close the modal
   };
 
   const confirmSurrender = () => {
-    // Implement what happens when surrender is confirmed
-    sendSurrenderConfirmation(gameId, currUser.id);
-    setShowSurrenderModal(false); // Close modal after action
+    sendSurrenderConfirmation(gameId);
+    setShowConfirmModal(false); // Close modal after action
   };
 
 
@@ -234,6 +236,20 @@ const KittyCards = () => {
     </div>
   );
 
+  const renderControls = () => (
+    <div className="controls">
+      <Button className="hint-btn">Hint</Button>
+      <Button className="surrender-btn" onClick={handleSurrenderClick}>Surrender</Button>
+      {showConfirmModal && (
+        <Modal isOpen={showConfirmModal} onClose={handleCloseModal}>
+          <p>Are you sure you want to surrender?</p>
+          <button onClick={confirmSurrender}>Yes</button>
+          <button onClick={handleCloseModal}>No</button>
+        </Modal>
+      )}
+    </div>
+  );
+
   return (
     <BaseContainer>
       <div className="game-layout">
@@ -248,13 +264,7 @@ const KittyCards = () => {
         <div className="right-column">
           {renderPlayerProfile(opponentName, opponentScore)}
           <div className="controls">
-            <Button className="hint-btn">Hint</Button>
-            <Button className="surrender-btn" onClick={handleSurrenderClick}>Surrender</Button>
-            <Modal isOpen={showSurrenderModal} onClose={handleCloseModal}>
-              <p>Are you sure you want to surrender?</p>
-              <button onClick={confirmSurrender}>Yes</button>
-              <button onClick={handleCloseModal}>No</button>
-            </Modal>
+            {renderControls()}
           </div>
         </div>
       </div>
