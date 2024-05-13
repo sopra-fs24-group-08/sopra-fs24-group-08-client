@@ -43,37 +43,43 @@ const RenderBoard = () => {
       return white; // Default for no color specified
     }
 
-    const colorKey = slot.occupied ? `occupied${slot.color.charAt(0).toUpperCase()}${slot.color.slice(1).toLowerCase()}` : slot.color.toLowerCase();
+    const colorKey = slot.occupied ? `occupied${slot.color.charAt(0).toUpperCase()}${slot.color.slice(1).toLowerCase()}`:
+      slot.color.toLowerCase();
 
     return imageMap[colorKey] || white; // Fallback to white if no match found
   };
 
   return (
+
     <div className="game-board">
       {grid.map((square) => (
-        <div key={square.id} className="game-board-slot"
-             onDragOver={(e) => e.preventDefault()}
-             onDrop={(e) => handleCardDrop(e, square.id)}
-             onClick={() => {
-               // Make only the middle square clickable for drawing a card
-               if (cardPileSize > 0 && findMiddleIndex(square.id) === square.id) {
-                 console.log(square.id, square);
-                 drawCardMove(4);
-               }
-             }}
-             style={{
-               cursor: (findMiddleIndex(square.id) === square.id && cardPileSize > 0) ? "pointer" : "default",
-             }}>
-          <img src={getImageSrc(square)} alt={`${square.color || "Empty"} square`} style={{
-            display: "block",
-            width: "100%",
-            height: "100%",
-          }} />
+        <div
+          key={square.id}
+          className="game-board-slot"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => handleCardDrop(e, square.id)}
+          onClick={() => {
+            if (cardPileSize > 0 && findMiddleIndex(square.id) === square.id) {
+              console.log(square.id, square);
+              drawCardMove(4);
+            }
+          }}
+          style={{ cursor: (findMiddleIndex(square.id) === square.id && cardPileSize > 0) ? "pointer" : "default" }}
+        >
+          <img
+            src={getImageSrc(square)}
+            alt={`${square.color || "Empty"} square`}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "100%",
+            }}
+          />
         </div>
       ))}
     </div>
   );
-};
+}
 
 
 export default RenderBoard;

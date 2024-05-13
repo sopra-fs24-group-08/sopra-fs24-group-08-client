@@ -13,37 +13,37 @@ interface CardProps {
   draggable: boolean;
 }
 
-const Card: React.FC<CardProps> =
-  ({
-     id,
-     name,
-     points,
-     color,
-     src,
-     onClick,
-     draggable,
-     onDragStart,
-     onDragEnd,
-   }) => {
+const Card: React.FC<CardProps> = (
+  {
+    id,
+    name,
+    points,
+    color,
+    src,
+    onClick,
+    draggable,
+    onDragStart,
+    onDragEnd,
+  }) => {
 
-    return (
-      <div
-        key={id}
-        className="card"
-        onClick={onClick}
-        style={{ backgroundColor: color, cursor: draggable ? "grab" : "pointer" }}
-        draggable={draggable}
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-      >
-        <img src={src} style={{
-          display: "block",
-          width: "225%",
-          height: "auto",
-        }} alt={`${name} card`} />
-        <div className="points">{points}</div>
-      </div>
-    );
-  };
+  return (
+    <div
+      key={id}
+      className="card"
+      onClick={onClick}
+      style={{ backgroundColor: color, cursor: draggable ? "grab" : "pointer" }}
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
+      <img src={src} style={{
+        display: "block",
+        width: "225%",
+        height: "auto",
+      }} alt={`${name} card`} />
+      <div className="points">{points}</div>
+    </div>
+  );
+};
 
 export default Card;

@@ -216,12 +216,13 @@ const KittyCards = () => {
   );
 
   const renderPlayerProfile = (playerName, score) => (
-    <div className="player-profile"
-         style={{
-           display: "block",
-           width: "80%",
-           height: "auto",
-         }}>
+    <div
+      className="player-profile"
+      style={{
+        display: "block",
+        width: "80%",
+        height: "auto",
+      }}>
       <img
         src={"iconTEMPLATE"}
         style={{
