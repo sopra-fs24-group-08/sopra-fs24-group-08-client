@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { api, handleError } from "../../helpers/api";
+import { api } from "../../helpers/api";
 import { useCurrUser} from "./UserContext";
 import PropTypes from "prop-types";
 
