@@ -12,8 +12,10 @@ export const UserProvider = ({ children }) => {
     const savedUser = sessionStorage.getItem("currUser");
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser);
+
       return { id: parsedUser.id, token: parsedUser.token };
     }
+
     return { id: null, token: null };
   });
 
@@ -30,6 +32,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error("Login failed:", error.message);
       alert(`Login failed: ${error.message}`);
+
       return false; // Indicate complete failure
     }
   };
@@ -46,6 +49,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error("Registration failed:", error.message);
       alert(`Registration failed: ${error.message}`);
+
       return false;
     }
   };

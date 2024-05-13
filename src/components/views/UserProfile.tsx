@@ -8,7 +8,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import { User } from "types";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/UserProfile.scss";
-import { fetchCatAvatar } from '../../helpers/avatarAPI';
+import { fetchCatAvatar } from "../../helpers/avatarAPI";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -16,8 +16,8 @@ const UserProfile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { currUser } = useCurrUser();
-  const [iconName, setIconName] = useState('Default Icon'); // Initialized to the user's current icon name
-  const [avatarUrl, setAvatarUrl] = useState('');  // New state to store avatar URLs
+  const [iconName, setIconName] = useState("Default Icon"); // Initialized to the user's current icon name
+  const [avatarUrl, setAvatarUrl] = useState("");  // New state to store avatar URLs
 
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const UserProfile = () => {
           headers: { Authorization: `Bearer ${currUser.token}` },
         });
         setUser(response.data);
-        setAvatarUrl(response.data.currIcon ? response.data.currIcon.imageUrl : '/images/DefaultAvatar.png');  // 使用 API 返回的头像或默认头像
+        setAvatarUrl(response.data.currIcon ? response.data.currIcon.imageUrl : "/images/DefaultAvatar.png");  // 使用 API 返回的头像或默认头像
         setIsLoading(false);
         console.log(response.data);
         console.log(user);
@@ -46,6 +46,7 @@ const UserProfile = () => {
         console.error(`Failed to fetch avatar: ${error}`);
       }
     }
+
     fetchProfileData();
   }, [id, currUser.token]);
 
@@ -57,18 +58,17 @@ const UserProfile = () => {
   const handleSaveAvatar = async () => {
     try {
       const headers = {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
 
       };
       // Send the string directly as part of the request body
       await api.put(`/users/${id}/updateIcon`, JSON.stringify(avatarUrl), { headers });
-      alert('Avatar saved successfully!');
+      alert("Avatar saved successfully!");
     } catch (error) {
-      console.error('Failed to save avatar:', error);
-      alert('Failed to save avatar.');
+      console.error("Failed to save avatar:", error);
+      alert("Failed to save avatar.");
     }
   };
-
 
 
   if (isLoading) return <Spinner />;
@@ -106,8 +106,8 @@ const UserProfile = () => {
           <div>
             Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
           </div>
-          <Button style={{ height: "10%", width: "55%" }}onClick={handleAvatarChange}>Change Avatar</Button>
-          <Button style={{ height: "10%", width: "45%" }}onClick={handleSaveAvatar}>Save Avatar</Button>
+          <Button style={{ height: "10%", width: "55%" }} onClick={handleAvatarChange}>Change Avatar</Button>
+          <Button style={{ height: "10%", width: "45%" }} onClick={handleSaveAvatar}>Save Avatar</Button>
         </div>
       )}
     </BaseContainer>

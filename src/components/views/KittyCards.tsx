@@ -70,7 +70,7 @@ const KittyCards = () => {
     }
 
     try {
-      const response = await api.get(`/api/translate`, {
+      const response = await api.get("/api/translate", {
         params: {
           text: chatMessages[messageIndex].text,
           targetLang: targetLang,
@@ -167,9 +167,9 @@ const KittyCards = () => {
   function sendSurrenderConfirmation(gameId) {
     console.log("Sending Surrender confirmation:", gameId, currUser.id);
     send(`/app/game/${gameId}/surrender`,   JSON.stringify({
-        playerId:currUser.id,
-        surrender:true,
-      }) );
+      playerId:currUser.id,
+      surrender:true,
+    }) );
   }
 
   const handleSurrenderClick = () => {
@@ -189,7 +189,7 @@ const KittyCards = () => {
   const renderChatBox = () => (
     <div className="chat-container">
       <div className="message-container" style={{ maxHeight: "500px", overflowY: "auto" }}>
-        {chatMessages.map((msg, index) => (
+        {chatMessages.map((msg) => (
           <div key={msg.id} className={`message ${msg.senderId === currUser.id ? "self" : ""}`}>
             {msg.senderId === currUser.id ? "You" : msg.senderUsername}: {msg.text}
             {!msg.isTranslated && msg.senderId !== currUser.id && (

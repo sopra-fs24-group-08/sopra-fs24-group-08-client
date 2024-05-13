@@ -36,11 +36,13 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
       if (!token) {
         console.error("No token provided for WebSocket connection.");
         reject("No token provided");
+
         return;
       }
       if (retryCount >= maxRetries) {
         console.error("Maximum retry attempts reached, will not attempt to connect again.");
         reject("Max retries reached");
+
         return;
       }
       sessionId.current = token;

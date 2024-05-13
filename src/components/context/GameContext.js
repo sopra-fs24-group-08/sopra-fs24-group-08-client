@@ -1,4 +1,4 @@
-import React, { createContext, useState, useCallback, useContext } from "react";
+import React, { createContext, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { useCurrUser } from "./UserContext";
 import { useWebSocket } from "./WebSocketProvider";
@@ -63,18 +63,21 @@ export const GameProvider = ({ children }) => {
     // Ensure it's the user's turn
     if (currentTurnPlayerId !== currUser.id) {
       alert("It's not your turn.");
+
       return;
     }
 
     // Check if the square is the middle one
     if (squareId !== 4) {
       alert("You can only draw from the middle card pile.");
+
       return;
     }
 
     // Check if there are cards left to draw
     if (cardPileSize === 0) {
       alert("No cards left to draw.");
+
       return;
     }
 
@@ -104,19 +107,22 @@ export const GameProvider = ({ children }) => {
 
     if (!cardToPlace || currentTurnPlayerId !== currUser.id) {
       alert("Invalid move or not your turn.");
+
       return;
     }
-    const validsqrIdx = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    //const validsqrIdx = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     const squareIndex = grid.findIndex(square => square.id === squareId);
     console.log(squareIndex, "DOSOODS");
     if (0 > squareIndex || squareIndex === 4) { // Check for valid square and not the center pile
       alert("Invalid move.");
+
       return;
     }
 
 
     if (grid[squareIndex].occupied) {
       alert("This slot is already occupied.");
+
       return;
     }
 
@@ -159,6 +165,7 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   return (
+
     <GameContext.Provider value={{
       grid, setGrid,
       hand, setHand,

@@ -2,7 +2,6 @@ import React from "react";
 import AppRouter from "./components/routing/routers/AppRouter";
 import {UserProvider} from "./components/context/UserContext";
 import  WebSocketProvider from "./components/context/WebSocketProvider";
-import { BrowserRouter } from "react-router-dom";
 /**
  * Happy coding!
  * React Template by Lucas Pelloni
@@ -12,9 +11,9 @@ import { BrowserRouter } from "react-router-dom";
 const App = () => {
   return (
     <WebSocketProvider>
-    <UserProvider>
-      <AppRouter />
-    </UserProvider>
+      <UserProvider>
+        <AppRouter />
+      </UserProvider>
     </WebSocketProvider>
   );
 };
