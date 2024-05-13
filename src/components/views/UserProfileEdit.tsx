@@ -4,6 +4,7 @@ import {Button} from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfileEdit.scss";
 import { React, useEffect, useState } from "react";
+import { fetchRandomAvatar } from '../../helpers/avatarAPI';
 import Refresh from "../ui/Refresh";
 import { useCurrUser} from "../context/UserContext";
 
@@ -16,6 +17,7 @@ const UserProfileEdit = () => {
   const [password, setPassword] = useState<string>("");
 
   const {currUser,logout} = useCurrUser();
+
 
   useEffect(() => {
     !currUserString && logout();
@@ -79,7 +81,7 @@ const UserProfileEdit = () => {
 
     </BaseContainer>
   );
-};
+  };
 
 
-export default UserProfileEdit;
+  export default UserProfileEdit;

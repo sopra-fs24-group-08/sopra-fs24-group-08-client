@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api, handleError } from "helpers/api";
+
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import { User } from "types";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/UserProfile.scss";
+import { fetchCatAvatar } from '../../helpers/avatarAPI';
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ const UserProfile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { currUser } = useCurrUser();
+  const [iconName, setIconName] = useState('Default Icon'); // 初始化为用户当前的图标名称
+  const [avatarUrl, setAvatarUrl] = useState('');  // 新状态来存储头像 URL
 
 
   useEffect(() => {
@@ -25,6 +29,7 @@ const UserProfile = () => {
           headers: { Authorization: `Bearer ${currUser.token}` },
         });
         setUser(response.data);
+        setAvatarUrl(response.data.currIcon ? response.data.currIcon.imageUrl : '/images/DefaultAvatar.png');  // 使用 API 返回的头像或默认头像
         setIsLoading(false);
         console.log(response.data);
         console.log(user);
@@ -32,10 +37,35 @@ const UserProfile = () => {
         console.error(`Failed to fetch user data: ${handleError(error)}`);
         setIsLoading(false);
       }
+
+      try {
+        const response = await api.get(`/users/${currUser.id}`);
+        setUser(response.data);
+        setAvatarUrl(response.data.avatarUrl); // 使用从后端获取的头像 URL
+      } catch (error) {
+        console.error(`Failed to fetch avatar: ${error}`);
+      }
     }
 
     fetchProfileData();
   }, [id]);
+
+  const handleAvatarChange = async () => {
+    const newAvatarUrl = await fetchCatAvatar(iconName); // 请求新头像
+    setAvatarUrl(newAvatarUrl);
+  };
+
+  const handleSaveAvatar = async () => {
+    try {
+      // 假设 avatarUrl 是用户当前选择的头像 URL
+      await api.put(`/users/${id}/updateIcon`, { avatarUrl });
+      alert('Avatar saved successfully!');
+    } catch (error) {
+      console.error('Failed to save avatar:', error);
+      alert('Failed to save avatar.');
+    }
+  };
+
 
   if (isLoading) return <Spinner />;
   if (!user) return <div>No user data found.</div>;
@@ -68,8 +98,12 @@ const UserProfile = () => {
       </div>
       {user.currIcon && (
         <div>
-          <img src={user.currIcon.imageUrl} alt={`${user.username}'s icon`} />
-          <div>Icon Name: {user.currIcon.name}</div>
+          <img src={avatarUrl} alt={`${user.username}'s icon`} style={{ width: 100, height: 100 }} />
+          <div>
+            Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
+          </div>
+          <Button style={{ height: "10%", width: "55%" }}onClick={handleAvatarChange}>Change Avatar</Button>
+          <Button style={{ height: "10%", width: "45%" }}onClick={handleSaveAvatar}>Save Avatar</Button>
         </div>
       )}
     </BaseContainer>

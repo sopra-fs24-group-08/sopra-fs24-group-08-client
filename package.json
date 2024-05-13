@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@stomp/stompjs": "^7.0.0",
-    "sockjs-client": "^1.6.1",
     "axios": "^1.6.7",
     "eslint-config-react-app": "^7.0.1",
     "net": "^1.0.2",
@@ -16,12 +15,14 @@
     "react-toastify": "^10.0.5",
     "react-youtube": "^10.1.0",
     "serve": "^14.2.1",
+    "sockjs-client": "^1.6.1",
     "typescript": "^3.2.1"
   },
   "scripts": {
     "dev": "react-scripts start",
     "start": "serve -s build",
     "build": "react-scripts build",
+    "build:prod": "cross-env NODE_ENV=production npm run build",
     "gcp-build": "",
     "eject": "react-scripts eject",
     "test": "react-scripts test --env=jsdom"
@@ -45,6 +46,7 @@
   ],
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "cross-env": "^7.0.3",
     "sass": "^1.70.0"
   }
 }
