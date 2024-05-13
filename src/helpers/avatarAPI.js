@@ -8,8 +8,8 @@ async function fetchCatAvatar(name) {
 
   const response = await fetch(`${baseUrl}?name=${name}`);
   if (response.ok) {
-    const blob = await response.blob(); // 获取二进制图像数据
-    return URL.createObjectURL(blob); // 创建一个临时的 URL 来访问下载的图像
+    const blob = await response.blob(); // Get binary image data
+    return URL.createObjectURL(blob); // Create a temporary URL to access the downloaded image
   } else {
     throw new Error('Failed to load image');
   }

@@ -16,12 +16,12 @@ const UserProfile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { currUser } = useCurrUser();
-  const [iconName, setIconName] = useState('Default Icon'); // 初始化为用户当前的图标名称
-  const [avatarUrl, setAvatarUrl] = useState('');  // 新状态来存储头像 URL
+  const [iconName, setIconName] = useState('Default Icon'); // Initialized to the user's current icon name
+  const [avatarUrl, setAvatarUrl] = useState('');  // New state to store avatar URLs
 
 
   useEffect(() => {
-    const url = currUser.id === id ? `/users/${currUser.id}/${currUser.id}` : `/users/${currUser.id}/${id}`;
+    const url = `/users/${id}`;
 
     async function fetchProfileData() {
       try {
@@ -41,30 +41,34 @@ const UserProfile = () => {
       try {
         const response = await api.get(`/users/${currUser.id}`);
         setUser(response.data);
-        setAvatarUrl(response.data.avatarUrl); // 使用从后端获取的头像 URL
+        setAvatarUrl(response.data.avatarUrl); // Use an avatar URL retrieved from the backend
       } catch (error) {
         console.error(`Failed to fetch avatar: ${error}`);
       }
     }
-
     fetchProfileData();
-  }, [id]);
+  }, [id, currUser.token]);
 
   const handleAvatarChange = async () => {
-    const newAvatarUrl = await fetchCatAvatar(iconName); // 请求新头像
+    const newAvatarUrl = await fetchCatAvatar(iconName); // Request new avatar
     setAvatarUrl(newAvatarUrl);
   };
 
   const handleSaveAvatar = async () => {
     try {
-      // 假设 avatarUrl 是用户当前选择的头像 URL
-      await api.put(`/users/${id}/updateIcon`, { avatarUrl });
+      const headers = {
+        'Content-Type': 'application/json',
+
+      };
+      // Send the string directly as part of the request body
+      await api.put(`/users/${id}/updateIcon`, JSON.stringify(avatarUrl), { headers });
       alert('Avatar saved successfully!');
     } catch (error) {
       console.error('Failed to save avatar:', error);
       alert('Failed to save avatar.');
     }
   };
+
 
 
   if (isLoading) return <Spinner />;
