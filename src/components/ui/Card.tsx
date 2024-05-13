@@ -14,7 +14,8 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> =
-  ({ id,
+  ({
+     id,
      name,
      points,
      color,

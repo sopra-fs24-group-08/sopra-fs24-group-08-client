@@ -9,6 +9,7 @@ async function fetchCatAvatar(name) {
   const response = await fetch(`${baseUrl}?name=${name}`);
   if (response.ok) {
     const blob = await response.blob(); // Get binary image data
+
     return URL.createObjectURL(blob); // Create a temporary URL to access the downloaded image
   } else {
     throw new Error("Failed to load image");
