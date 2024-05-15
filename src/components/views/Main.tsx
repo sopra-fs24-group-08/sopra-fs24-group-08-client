@@ -17,6 +17,7 @@ function Main() {
   // Helper function to determine if data needs refreshing
   const needsRefresh = (lastFetched) => {
     const now = new Date().getTime();
+    
     return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour
   };
 
