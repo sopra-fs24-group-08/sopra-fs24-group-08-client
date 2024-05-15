@@ -17,9 +17,7 @@ function Main() {
   // Helper function to determine if data needs refreshing
   const needsRefresh = (lastFetched) => {
     const now = new Date().getTime();
-
-    return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour, set it to whatever later
-    // or to event for example new friend toast.
+    return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour
   };
 
   useEffect(() => {
@@ -39,7 +37,6 @@ function Main() {
     navigate("/login");
   };
 
-
   const buttons = [
     { label: "Start", onClick: () => navigate(`/matchmaking/queue/${currUser.id}`) },
     { label: "Friends", onClick: () => navigate(`/friendlist/${currUser.id}`) },
@@ -58,17 +55,19 @@ function Main() {
     <BaseContainer>
       <Header height="50" />
       <div className="main container">
-
         <div className="main button-container">
           {buttons.map((button, index) => (
-            <Button key={index} onClick={button.onClick}>{button.label}</Button>
+            <Button key={index} onClick={button.onClick} className="full-width">
+              {button.label}
+            </Button>
           ))}
-          <Button onClick={fakejoin}>FAKE MATCH MOCK</Button>
+          <Button onClick={fakejoin} className="full-width">
+            FAKE MATCH MOCK
+          </Button>
         </div>
       </div>
     </BaseContainer>
   );
 }
-
 
 export default Main;

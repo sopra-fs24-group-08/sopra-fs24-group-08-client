@@ -5,6 +5,7 @@ import "styles/views/Register.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import { useCurrUser } from "../context/UserContext";
 import PropTypes from "prop-types";
+import Header from "./Header";
 
 
 const FormField = (props) => {
@@ -42,6 +43,7 @@ function Registration() {
 
   return (
     <BaseContainer>
+      <Header height="50" />
       <div className="login container">
         <div className="login form">
           <FormField

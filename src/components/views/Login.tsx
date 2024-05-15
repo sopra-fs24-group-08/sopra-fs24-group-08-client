@@ -5,6 +5,7 @@ import "styles/views/Login.scss";
 import { Button } from "../ui/Button";
 import BaseContainer from "../ui/BaseContainer";
 import PropTypes from "prop-types";
+import Header from "./Header";
 
 const FormField = (props) => {
   return (
@@ -43,6 +44,7 @@ function Login() {
 
   return (
     <BaseContainer>
+      <Header height="50" />
       <div className="login container">
         <div className="login form">
           <FormField
@@ -58,13 +60,13 @@ function Login() {
           <div className="login button-container">
             <Button
               disabled={!username || !password}
-              width="100%"
+              width="50%"
               onClick={() => doLogin()}
             >
               Login
             </Button>
             <Button
-              width="100"
+              width="120"
               onClick={() => handleRegister()}
             >
               Create a new account
