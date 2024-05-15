@@ -275,3 +275,15 @@ Todo List:
 - Implementation of secret API Key for transalation feature
 - Start implementation of Spectator Mode
 - Refactoring and code enhancements following SonarLint propositons
+
+## 10.05-16.05
+
+**Zixian Pang**
+
+Done List
+- heading and button looking fixed #48
+- integration of userservice tests #76
+
+Todo List
+- test bugs
+- integration of client looking bugs
