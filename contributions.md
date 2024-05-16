@@ -278,7 +278,17 @@ Todo List:
 
 ## 10.05-16.05
 
-**Zixian Pang**
+*Jingxuan Tian*
+Done List
+- Finish BoardService tests including 12 unit tests and 1 integration test #93, commit with e49f0f3
+- help with deploying the code to app engine, basically make the database work properly, with commit 2c5980a
+
+Todo List
+- adjust friend request to fit for the webSocket
+- work on tests
+- update tutorial video once frondend get polished
+
+*Zixian Pang*
 
 Done List
 - heading and button looking fixed #48
@@ -287,3 +297,34 @@ Done List
 Todo List
 - test bugs
 - integration of client looking bugs
+
+*Yiyang Chen*
+Done list
+- All tests for UserController have passed #90 closed
+- ⁠Link Avatar - API to User Profile #87
+
+Todo List
+- Trying to figure out how to save the avatar to h2
+- ⁠work on tests
+
+
+**David Tanner**
+
+Done List:
+- Implemented surrender feature, improved existing code by better separation of the GameService methods, EndGame checks now run through Event-Listeners. #91 server.
+- Created all the Tests for my Controller files #85 and any possible way how to test Websocket I could think of. Adjusted some Game Entities to ensure better cleanup , added more custom exceptions.
+- Cleaned up some branches, merged newest code into main and helped with app engine deployment. c2f6d25
+- Minor changes to server source code to fix sonar complaints. #94
+
+Todo List:
+- Finish Service/Repo Tests #85
+- Implement stable rejoin/timeout feature. 
+- Add more creative achievements, banners.
+
+**Luis Schmid**
+
+Done List:
+
+
+Todo List:
+
