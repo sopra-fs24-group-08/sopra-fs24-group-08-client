@@ -16,6 +16,7 @@ import Tutorial from "../../views/Tutorial";
 import UserAchievements from "../../views/UserAchievements";
 import Winner from "../../views/Winner";
 import { GameProvider } from "../../context/GameContext";
+import GlobalGameListener from "../../../helpers/GlobalGameListener";
 
 
 //use PrivateRoute validate to check if paths always match up with currUser.id whenever it's needed
@@ -23,7 +24,8 @@ const AppRouter = () => {
   return (
     <DataProvider>
       <BrowserRouter>
-        <Routes>
+        <GlobalGameListener/>
+         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/main" element={<PrivateRoute><Main /></PrivateRoute>} />

@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { useWebSocket } from "./WebSocketProvider";
 import Modal from "helpers/Modal";
+import { useData }  from "./DataContext";
 
 const FriendContext = createContext(null);
 
@@ -34,7 +35,6 @@ export const FriendProvider = ({ children }) => {
   const resultMessage = (data, currUser) => {
     if (data.requestType === "FRIENDADDING"){
       if (data.senderId === currUser.id){
-        refreshData("friends")
         return `${data.receiverName} ${data.status} your friend request.`
 
       }
@@ -87,9 +87,8 @@ export const FriendProvider = ({ children }) => {
   const acceptRequest = async (data, currUser) => {
     data.status = "ACCEPTED";
     send(`/app/friend/result/${currUser.id}`, JSON.stringify(data));
-    // if (data.requestType === "GAMEINVITATION"){
-
-    // }
+    //if (data.requestType === "GAMEINVITATION"){
+    //}
   }
 
   const declineRequest = async (data, currUser) => {
