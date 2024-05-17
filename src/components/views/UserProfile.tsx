@@ -37,15 +37,7 @@ const UserProfile = () => {
         console.error(`Failed to fetch user data: ${handleError(error)}`);
         setIsLoading(false);
       }
-
-      try {
-        const response = await api.get(`/users/${currUser.id}`);
-        setUser(response.data);
-        setAvatarUrl(response.data.avatarUrl); // Use an avatar URL retrieved from the backend
-      } catch (error) {
-        console.error(`Failed to fetch avatar: ${error}`);
-      }
-    }
+    }//Why exactly calling twice? bug during merge?
 
     fetchProfileData();
   }, [id, currUser.token]);

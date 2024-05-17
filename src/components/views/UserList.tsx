@@ -5,7 +5,6 @@ import Player from "../ui/Player";
 import { useData } from "../context/DataContext";
 import { Button } from "components/ui/Button";
 import { useCurrUser } from "../context/UserContext";
-import { api, handleError } from "helpers/api";
 import {useFriend} from "../context/FriendContext";
 import "../../styles/views/UserList.scss";
 
@@ -17,29 +16,15 @@ const UserList = () => {
   const { currUser} = useCurrUser();
   const {sendFriendRequest} = useFriend();
 
-  // const handleSendFriendRequest = async (user, e) => {
-  //   e.stopPropagation();
-  //   //const url = `/users/${currUser.id}/friends/add`; path we would actually use
-  //   const url = `/users/${currUser.id}/friends/testadd`;
-  //   try {
-  //     const response = await api.post(url, { id: user.id, username: user.username }, {
-  //       headers: { Authorization: `Bearer ${currUser.token}` }
-  //     });
-  //     alert("Friend request sent!");
-  //     if (response.data){
-  //       refreshData();
-  //     }
-  //     //Might use this later for a special response regarding friends accepted/declined
-  //   } catch (error) {
-  //     console.error("Failed to send friend request:", handleError(error));
-  //     alert("Failed to send friend request");
-  //   }
-  // };
   const handleSendFriendRequest = (user, e) => {
     e.stopPropagation();
     sendFriendRequest(user.id, currUser);
   }
-  // Need to still add button removal if user already friend
+
+  const isAlreadyFriend = (userId) => {
+
+    return data.friends.some(friend => friend.id === userId);
+  };
 
   return (
     <BaseContainer className="userlist container">
@@ -50,7 +35,7 @@ const UserList = () => {
           <li key={user.id} className="user-item">
             <div className="user-info" onClick={() => navigate(`/profiles/${user.id}`)}>
               <Player user={user} />
-              {currUser.id !== user.id && (
+              {currUser.id !== user.id && !isAlreadyFriend(user.id) && (
                 <Button className="friend-request-btn" onClick={(e) => handleSendFriendRequest(user, e)}>
                   Send Friend Request
                 </Button>
@@ -60,7 +45,7 @@ const UserList = () => {
         )) : <p>No users to display.</p>}
       </ul>
       <div className="actions">
-        <button className="refresh-btn" onClick={refreshData}></button>
+        <Button className="refresh-btn" onClick={() => refreshData()}></Button>
         <Button className="back-btn" onClick={() => navigate(-1)}>Back</Button>
       </div>
     </BaseContainer>

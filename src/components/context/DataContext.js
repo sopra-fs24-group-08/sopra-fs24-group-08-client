@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { api } from "../../helpers/api";
 import { useCurrUser } from "./UserContext";
 import PropTypes from "prop-types";
@@ -14,27 +14,38 @@ export const DataProvider = ({ children }) => {
     usersLastFetched: null,
     friendsLastFetched: null,
     friendRequestsLastFetched: null
-
   });
 
-  const refreshData = useCallback(async () => {
+  const refreshData = useCallback(async (type) => {
+    const headers = { Authorization: `Bearer ${currUser.token}` };
+    const now = new Date().toISOString();
     try {
-      console.log("refreshingData " + currUser.id);
-      const headers = { Authorization: `Bearer ${currUser.token}` };
-      const usersResponse = await api.get("/users", { headers });
-      const friendsResponse = await api.get(`/users/${currUser.id}/friends`, { headers });
-      const friendRequestsResponse = await api.get(`/users/${currUser.id}/requests`, { headers });
-      const now = new Date().toISOString();
-      setData({
-        users: usersResponse.data,
-        friends: friendsResponse.data,
-        friendRequests: friendRequestsResponse.data,
-        usersLastFetched: now,
-        friendsLastFetched: now,
-        friendRequestsLastFetched: now
-      });
+      if (!type || type === "users") {
+        const usersResponse = await api.get("/users", { headers });
+        setData(prevData => ({
+          ...prevData,
+          users: usersResponse.data,
+          usersLastFetched: now
+        }));
+      }
+      if (!type || type === "friends") {
+        const friendsResponse = await api.get(`/users/${currUser.id}/friends`, { headers });
+        setData(prevData => ({
+          ...prevData,
+          friends: friendsResponse.data,
+          friendsLastFetched: now
+        }));
+      }
+      if (!type || type === 'friendRequests') {
+        const friendRequestsResponse = await api.get(`/users/${currUser.id}/requests`, { headers });
+        setData(prevData => ({
+          ...prevData,
+          friendRequests: friendRequestsResponse.data,
+          friendRequestsLastFetched: now
+        }));
+      }
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error("Failed to fetch data:", error);
     }
   }, [currUser]);
 

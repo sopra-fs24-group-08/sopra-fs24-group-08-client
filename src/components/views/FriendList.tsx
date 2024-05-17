@@ -27,7 +27,7 @@ const FriendList = () => {
         headers: { Authorization: `Bearer ${currUser.token}` },
         params: { FriendId: friendId }
       });
-      refreshData();
+      refreshData("friends");
     } catch (error) {
       handleError(error);
     }
@@ -53,7 +53,7 @@ const FriendList = () => {
       <p className="friendlist paragraph">List of your current friends.</p>
       {content}
       <div className="actions">
-        <Button className="refresh-btn" onClick={refreshData}></Button>
+        <Button className="refresh-btn" onClick={() => refreshData()}></Button>
         <Button className="back-btn" onClick={() => navigate(-1)}>Back</Button>
         <Mailbox />
       </div>

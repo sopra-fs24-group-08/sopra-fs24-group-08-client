@@ -11,6 +11,7 @@ export const FriendProvider = ({ children }) => {
   const [modalContent, setModalContent] = useState({});
 
   const friendSubscribe = (currUser)=>{
+
     const friendTopic = `/topic/queue/${currUser.id}/notifications`;
     subscribeUser(friendTopic, (message) => {
       const data = JSON.parse(message.body);
@@ -33,7 +34,9 @@ export const FriendProvider = ({ children }) => {
   const resultMessage = (data, currUser) => {
     if (data.requestType === "FRIENDADDING"){
       if (data.senderId === currUser.id){
+        refreshData("friends")
         return `${data.receiverName} ${data.status} your friend request.`
+
       }
       else{
         return `you ${data.status} ${data.receiverName}'s friend request.`

@@ -7,38 +7,34 @@ import { useData } from "../context/DataContext";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/Main.scss";
 
-
 function Main() {
   const { logout, currUser } = useCurrUser();
   const navigate = useNavigate();
   const { data, refreshData } = useData();
-  const { usersLastFetched, friendsLastFetched ,friendRequestsLastFetched} = data;
+  const { usersLastFetched, friendsLastFetched, friendRequestsLastFetched } = data;
 
   // Helper function to determine if data needs refreshing
   const needsRefresh = (lastFetched) => {
     const now = new Date().getTime();
-
-    return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour, set it to whatever later
-    // or to event for example new friend toast.
+    return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // Refresh every 1 hour
   };
 
   useEffect(() => {
     const fetchDataIfNeeded = async () => {
       if (needsRefresh(usersLastFetched) || needsRefresh(friendsLastFetched) || needsRefresh(friendRequestsLastFetched)) {
-        await refreshData();
+        await refreshData();  // Call without type to refresh all data
       }
     };
 
     if (currUser?.token) {
       fetchDataIfNeeded();
     }
-  }, [refreshData, usersLastFetched, friendsLastFetched,friendRequestsLastFetched, currUser?.token]);
+  }, [refreshData, usersLastFetched, friendsLastFetched, friendRequestsLastFetched, currUser?.token]);
 
   const doLogout = () => {
     logout();
     navigate("/login");
   };
-
 
   const buttons = [
     { label: "Start", onClick: () => navigate(`/matchmaking/queue/${currUser.id}`) },
@@ -53,7 +49,6 @@ function Main() {
     <BaseContainer>
       <Header height="50" />
       <div className="main container">
-
         <div className="main button-container">
           {buttons.map((button, index) => (
             <Button key={index} onClick={button.onClick}>{button.label}</Button>
@@ -63,6 +58,5 @@ function Main() {
     </BaseContainer>
   );
 }
-
 
 export default Main;
