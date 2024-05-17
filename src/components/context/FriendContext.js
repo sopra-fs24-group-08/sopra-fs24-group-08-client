@@ -111,7 +111,7 @@ export const FriendProvider = ({ children }) => {
   }
 
   return (
-    <FriendContext.Provider value={{ friendSubscribe, sendFriendRequest, sendGameInvitation }}>
+    <FriendContext.Provider value={{ friendSubscribe, sendFriendRequest, sendGameInvitation, acceptRequest,declineRequest }}>
       {children}
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         {modalContent.data && <NotifyRequest data={modalContent.data} currUser={modalContent.currUser} />}

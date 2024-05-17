@@ -12,18 +12,19 @@ function Main() {
   const { logout, currUser } = useCurrUser();
   const navigate = useNavigate();
   const { data, refreshData } = useData();
-  const { usersLastFetched, friendsLastFetched } = data;
+  const { usersLastFetched, friendsLastFetched ,friendRequestsLastFetched} = data;
 
   // Helper function to determine if data needs refreshing
   const needsRefresh = (lastFetched) => {
     const now = new Date().getTime();
-    
-    return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour
+
+    return !lastFetched || (now - new Date(lastFetched).getTime()) > 3600000; // 1 hour, set it to whatever later
+    // or to event for example new friend toast.
   };
 
   useEffect(() => {
     const fetchDataIfNeeded = async () => {
-      if (needsRefresh(usersLastFetched) || needsRefresh(friendsLastFetched)) {
+      if (needsRefresh(usersLastFetched) || needsRefresh(friendsLastFetched) || needsRefresh(friendRequestsLastFetched)) {
         await refreshData();
       }
     };
@@ -31,12 +32,13 @@ function Main() {
     if (currUser?.token) {
       fetchDataIfNeeded();
     }
-  }, [refreshData, usersLastFetched, friendsLastFetched, currUser?.token]);
+  }, [refreshData, usersLastFetched, friendsLastFetched,friendRequestsLastFetched, currUser?.token]);
 
   const doLogout = () => {
     logout();
     navigate("/login");
   };
+
 
   const buttons = [
     { label: "Start", onClick: () => navigate(`/matchmaking/queue/${currUser.id}`) },
@@ -47,28 +49,20 @@ function Main() {
     { label: "Logout", onClick: () => doLogout() },
   ];
 
-  const fakejoin = () => {
-    const gameId = 10;
-    navigate(`/kittycards/${currUser.id}/${gameId}`);
-  };
-
   return (
     <BaseContainer>
       <Header height="50" />
       <div className="main container">
+
         <div className="main button-container">
           {buttons.map((button, index) => (
-            <Button key={index} onClick={button.onClick} className="full-width">
-              {button.label}
-            </Button>
+            <Button key={index} onClick={button.onClick}>{button.label}</Button>
           ))}
-          <Button onClick={fakejoin} className="full-width">
-            FAKE MATCH MOCK
-          </Button>
         </div>
       </div>
     </BaseContainer>
   );
 }
+
 
 export default Main;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import Player from "../ui/Player";
@@ -13,22 +13,11 @@ import {useFriend} from "../context/FriendContext";
 const FriendList = () => {
   const navigate = useNavigate();
   const { data, refreshData } = useData();
-  const { friends } = data;
+  const { friends, friendRequests } = data;
   const { currUser } = useCurrUser();
   const {sendGameInvitation} = useFriend();
 
   const doInvite = async (friendId) => {
-    const requestType = "GAMEINVITATION";
-
-    // try {
-    //   const requestBody = JSON.stringify({ receiverId: friendId, requestType });
-    //   await api.post(`/game/invite/${currUser.id}`, requestBody, {
-    //     headers: { Authorization: `Bearer ${currUser.token}` }
-    //   });
-    //   alert("Invitation sent!");
-    // } catch (error) {
-    //   handleError(error);
-    // }
     sendGameInvitation(friendId, currUser);
   };
 
