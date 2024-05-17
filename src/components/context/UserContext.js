@@ -2,11 +2,13 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { api, handleError } from "../../helpers/api";
 import PropTypes from "prop-types";
 import { useWebSocket } from "./WebSocketProvider";
+import {useFriend} from "./FriendContext"
 
 const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
   const { connect, disconnect } = useWebSocket();
+  const {friendSubscribe} = useFriend();
 
   const [currUser, setCurrUser] = useState(() => {
     const savedUser = sessionStorage.getItem("currUser");
@@ -69,10 +71,12 @@ export const UserProvider = ({ children }) => {
       console.error(`Logout failed: ${error.message}`);
     }
   };
+
   useEffect(() => {
     // Only attempt to connect if there's a valid token
     if (currUser && currUser.token) {
-      connect(currUser.token).catch(console.error);
+      connect(currUser.token).then(() => friendSubscribe(currUser)).catch(console.error);
+      // subscribe after connection established
     } else {
       // Ensure to disconnect if no valid user is authenticated
       disconnect();

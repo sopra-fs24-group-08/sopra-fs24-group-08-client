@@ -6,6 +6,7 @@ import { useData } from "../context/DataContext";
 import { Button } from "components/ui/Button";
 import { useCurrUser } from "../context/UserContext";
 import { api, handleError } from "helpers/api";
+import {useFriend} from "../context/FriendContext";
 import "../../styles/views/UserList.scss";
 
 
@@ -14,25 +15,30 @@ const UserList = () => {
   const { data, refreshData } = useData();
   const { users } = data;
   const { currUser} = useCurrUser();
+  const {sendFriendRequest} = useFriend();
 
-  const handleSendFriendRequest = async (user, e) => {
+  // const handleSendFriendRequest = async (user, e) => {
+  //   e.stopPropagation();
+  //   //const url = `/users/${currUser.id}/friends/add`; path we would actually use
+  //   const url = `/users/${currUser.id}/friends/testadd`;
+  //   try {
+  //     const response = await api.post(url, { id: user.id, username: user.username }, {
+  //       headers: { Authorization: `Bearer ${currUser.token}` }
+  //     });
+  //     alert("Friend request sent!");
+  //     if (response.data){
+  //       refreshData();
+  //     }
+  //     //Might use this later for a special response regarding friends accepted/declined
+  //   } catch (error) {
+  //     console.error("Failed to send friend request:", handleError(error));
+  //     alert("Failed to send friend request");
+  //   }
+  // };
+  const handleSendFriendRequest = (user, e) => {
     e.stopPropagation();
-    //const url = `/users/${currUser.id}/friends/add`; path we would actually use
-    const url = `/users/${currUser.id}/friends/testadd`;
-    try {
-      const response = await api.post(url, { id: user.id, username: user.username }, {
-        headers: { Authorization: `Bearer ${currUser.token}` }
-      });
-      alert("Friend request sent!");
-      if (response.data){
-        refreshData();
-      }
-      //Might use this later for a special response regarding friends accepted/declined
-    } catch (error) {
-      console.error("Failed to send friend request:", handleError(error));
-      alert("Failed to send friend request");
-    }
-  };
+    sendFriendRequest(user.id, currUser);
+  }
   // Need to still add button removal if user already friend
 
   return (
