@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { useWebSocket } from "./WebSocketProvider";
 import Modal from "helpers/Modal";
+import { api, handleError } from "helpers/api";
 import { useData }  from "./DataContext";
 
 const FriendContext = createContext(null);
@@ -10,6 +11,7 @@ export const FriendProvider = ({ children }) => {
   const { send, subscribeUser, unsubscribeUser } = useWebSocket();
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({});
+  const [isAccepted, setIsAccepted] = useState(false);
 
   const friendSubscribe = (currUser)=>{
 
@@ -86,9 +88,8 @@ export const FriendProvider = ({ children }) => {
   
   const acceptRequest = async (data, currUser) => {
     data.status = "ACCEPTED";
+    setIsAccepted(true);
     send(`/app/friend/result/${currUser.id}`, JSON.stringify(data));
-    //if (data.requestType === "GAMEINVITATION"){
-    //}
   }
 
   const declineRequest = async (data, currUser) => {
@@ -113,7 +114,7 @@ export const FriendProvider = ({ children }) => {
   }
 
   return (
-    <FriendContext.Provider value={{ friendSubscribe, sendFriendRequest, sendGameInvitation, acceptRequest,declineRequest }}>
+    <FriendContext.Provider value={{ friendSubscribe, sendFriendRequest, sendGameInvitation, acceptRequest,declineRequest, isAccepted }}>
       {children}
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         {modalContent.data && <NotifyRequest data={modalContent.data} currUser={modalContent.currUser} />}

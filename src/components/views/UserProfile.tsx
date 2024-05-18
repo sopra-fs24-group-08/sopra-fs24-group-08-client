@@ -21,7 +21,8 @@ const UserProfile = () => {
 
 
   useEffect(() => {
-    const url = `/users/${id}`;
+    // const url = `/users/${id}`;
+    const url = currUser.id === id ? `/users/${currUser.id}/${currUser.id}` : `/users/${currUser.id}/${id}`;
 
     async function fetchProfileData() {
       try {
