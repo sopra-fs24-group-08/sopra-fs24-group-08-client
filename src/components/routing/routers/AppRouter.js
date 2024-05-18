@@ -25,7 +25,7 @@ const AppRouter = () => {
     <DataProvider>
       <BrowserRouter>
         <GlobalGameListener/>
-         <Routes>
+        <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/main" element={<PrivateRoute><Main /></PrivateRoute>} />

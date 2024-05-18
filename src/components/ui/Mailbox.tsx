@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useData } from '../context/DataContext';
-import { useFriend } from '../context/FriendContext';
-import Modal from 'helpers/Modal';
+import React, { useState, useEffect } from "react";
+import { useData } from "../context/DataContext";
+import { useFriend } from "../context/FriendContext";
+import Modal from "helpers/Modal";
 import { useCurrUser } from "../context/UserContext";
 
 const Mailbox = () => {

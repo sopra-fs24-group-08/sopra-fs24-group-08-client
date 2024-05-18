@@ -36,7 +36,7 @@ export const DataProvider = ({ children }) => {
           friendsLastFetched: now
         }));
       }
-      if (!type || type === 'friendRequests') {
+      if (!type || type === "friendRequests") {
         const friendRequestsResponse = await api.get(`/users/${currUser.id}/requests`, { headers });
         setData(prevData => ({
           ...prevData,
