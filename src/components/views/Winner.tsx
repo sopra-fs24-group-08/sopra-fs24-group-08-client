@@ -54,7 +54,10 @@ const Winner = () => {
     return (
       <BaseContainer className="winner container">
         <p>Failed retrieving game result.</p>
-        <Button onClick={quitNow}>Return to Home</Button>
+        <div className="login button-container">
+          <Button onClick={()=>{window.location.reload();}}>Refresh</Button>
+          <Button onClick={quitNow}>Return to Home</Button>
+        </div>
       </BaseContainer>
     );
   }

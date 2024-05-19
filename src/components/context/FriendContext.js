@@ -68,12 +68,14 @@ export const FriendProvider = ({ children }) => {
       return (
         <div>
           <p>{requestMessage(data.requestType, data.senderName)}</p>
-          <button onClick={() => { acceptRequest(data, currUser); setModalOpen(false); }}>
-            Accept
-          </button>
-          <button onClick={() => { declineRequest(data, currUser); setModalOpen(false); }}>
-            Decline
-          </button>
+          <div className="login button-container">
+            <button onClick={() => { acceptRequest(data, currUser); setModalOpen(false); }}>
+              Accept
+            </button>
+            <button onClick={() => { declineRequest(data, currUser); setModalOpen(false); }}>
+              Decline
+            </button>
+          </div>
         </div>
       );
     }
