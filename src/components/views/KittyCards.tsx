@@ -240,8 +240,7 @@ const KittyCards = () => {
 
   const renderControls = () => (
     <div className="controls">
-      <Button className="hint-btn">Hint</Button>
-      <Button className="surrender-btn" onClick={handleSurrenderClick}>Surrender</Button>
+      <Button className="full-width" onClick={handleSurrenderClick}>Surrender</Button>
       {showConfirmModal && (
         <Modal isOpen={showConfirmModal} onClose={handleCloseModal}>
           <p>Are you sure you want to surrender?</p>
