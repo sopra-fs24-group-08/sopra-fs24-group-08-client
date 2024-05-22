@@ -9,6 +9,7 @@ import { User } from "types";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/UserProfile.scss";
 import { fetchCatAvatar } from "../../helpers/avatarAPI";
+import defaultAvatar from '../../images/OGIcon.jpg';
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -19,9 +20,7 @@ const UserProfile = () => {
   const [iconName, setIconName] = useState("Default Icon"); // Initialized to the user's current icon name
   const [avatarUrl, setAvatarUrl] = useState("");  // New state to store avatar URLs
 
-
   useEffect(() => {
-    // const url = `/users/${id}`;
     const url = currUser.id === id ? `/users/${currUser.id}/${currUser.id}` : `/users/${currUser.id}/${id}`;
 
     async function fetchProfileData() {
@@ -29,13 +28,21 @@ const UserProfile = () => {
         const response = await api.get(url, {
           headers: { Authorization: `Bearer ${currUser.token}` },
         });
-        setUser(response.data);
-        setAvatarUrl(response.data.currIcon ? response.data.currIcon.imageUrl : "/images/DefaultAvatar.png");  // 使用 API 返回的头像或默认头像
+        const newAvatarUrl = response.data.avatarUrl || defaultAvatar;
+        setUser(prevUser => ({
+          ...prevUser,
+          ...response.data,
+          avatarUrl: newAvatarUrl // Make sure to also update the internal avatarUrl attribute
+        }));
+        setAvatarUrl(newAvatarUrl); // Update external avatarUrl status
         setIsLoading(false);
-        console.log(response.data);
-        console.log(user);
       } catch (error) {
-        console.error(`Failed to fetch user data: ${handleError(error)}`);
+        console.error("Failed to fetch user data:", error);
+        setAvatarUrl(defaultAvatar); // Use default avatar in case of error
+        setUser(prevUser => ({
+          ...prevUser,
+          avatarUrl: defaultAvatar // Ensure that the avatarUrl of the user's state is updated in case of an error
+        }));
         setIsLoading(false);
       }
     }//Why exactly calling twice? bug during merge?
@@ -48,6 +55,12 @@ const UserProfile = () => {
       const newAvatarUrl = await fetchCatAvatar(iconName); // Replace 'iconName' with actual variable if needed
       console.log("Fetched new avatar URL:", newAvatarUrl); // Print the fetched URL
       setAvatarUrl(newAvatarUrl);
+      // Update avatarUrl in user state
+      setUser(prevUser => ({
+        ...prevUser,
+        avatarUrl: newAvatarUrl
+      }));
+
     } catch (error) {
       console.error("Failed to fetch new avatar:", error);
       alert("Failed to fetch new avatar.");
@@ -101,23 +114,17 @@ const UserProfile = () => {
             })}>
               See Achievements
             </Button>
-          </div>
-        )}
+          </div>        )}
         <div className="userprofile button-container">
           {currUser.id === user.id && <Button onClick={() => navigate(`/profiles/${id}/edit`)}>Edit</Button>}
           <Button style={{ width: "80%" }} onClick={() => navigate(-1)}>Back</Button>
-        </div>
-      </div>
-      {user.currIcon && (
-        <div>
-          <img src={avatarUrl} alt={`${user.username}'s icon`} style={{ width: 100, height: 100 }} />
-          <div>
-            Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
-          </div>
-          <Button style={{ height: "10%", width: "55%" }} onClick={handleAvatarChange}>Change Avatar</Button>
-          <Button style={{ height: "10%", width: "45%" }} onClick={handleSaveAvatar}>Save Avatar</Button>
-        </div>
-      )}
+        </div>      </div>      {user.currIcon && (
+      <div>
+        <img src={user.avatarUrl} alt={`${user.username}'s icon`} style={{ width: 100, height: 100 }} />
+        <div>            Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
+        </div>          <Button style={{ height: "10%", width: "55%" }} onClick={handleAvatarChange}>Change Avatar</Button>
+        <Button style={{ height: "10%", width: "45%" }} onClick={handleSaveAvatar}>Save Avatar</Button>
+      </div>      )}
     </BaseContainer>
   );
 };
