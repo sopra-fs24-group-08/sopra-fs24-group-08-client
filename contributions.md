@@ -328,3 +328,52 @@ Done List:
 
 Todo List:
 
+## 10.05-16.05
+
+*Jingxuan Tian*
+Done List
+
+
+Todo List
+- adjust friend request to fit for the webSocket
+- work on tests
+- update tutorial video once frondend get polished
+
+*Zixian Pang*
+
+Done List
+
+- write all repository related tests #101
+- prepare README file
+- small looking bug fixed
+  
+Todo List
+
+- write more tests to reach the coverage 
+- fix looking bugs once found
+- finalize writing including screenshots once icon bug fixed
+  
+
+
+*Yiyang Chen*
+Done list
+
+
+Todo List
+
+
+
+**David Tanner**
+
+Done List:
+
+
+Todo List:
+
+
+**Luis Schmid**
+
+Done List:
+
+
+Todo List:
