@@ -32,7 +32,7 @@ const UserProfile = () => {
         setUser(prevUser => ({
           ...prevUser,
           ...response.data,
-          avatarUrl: newAvatarUrl // Make sure to also update the internal avatarUrl attribute
+          avatarUrl: newAvatarUrl 
         }));
         setAvatarUrl(newAvatarUrl); // Update external avatarUrl status
         setIsLoading(false);
@@ -41,7 +41,7 @@ const UserProfile = () => {
         setAvatarUrl(defaultAvatar); // Use default avatar in case of error
         setUser(prevUser => ({
           ...prevUser,
-          avatarUrl: defaultAvatar // Ensure that the avatarUrl of the user's state is updated in case of an error
+          avatarUrl: defaultAvatar
         }));
         setIsLoading(false);
       }
@@ -52,7 +52,7 @@ const UserProfile = () => {
 
   const handleAvatarChange = async () => {
     try {
-      const newAvatarUrl = await fetchCatAvatar(iconName); // Replace 'iconName' with actual variable if needed
+      const newAvatarUrl = await fetchCatAvatar(iconName);
       console.log("Fetched new avatar URL:", newAvatarUrl); // Print the fetched URL
       setAvatarUrl(newAvatarUrl);
       // Update avatarUrl in user state
