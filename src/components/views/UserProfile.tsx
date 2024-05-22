@@ -11,6 +11,7 @@ import "styles/views/UserProfile.scss";
 import { fetchCatAvatar } from "../../helpers/avatarAPI";
 import defaultAvatar from '../../images/OGIcon.jpg';
 
+
 const UserProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -92,6 +93,7 @@ const UserProfile = () => {
   };
 
 
+
   if (isLoading) return <Spinner />;
   if (!user) return <div>No user data found.</div>;
 
@@ -114,17 +116,23 @@ const UserProfile = () => {
             })}>
               See Achievements
             </Button>
-          </div>        )}
+          </div>
+        )}
         <div className="userprofile button-container">
           {currUser.id === user.id && <Button onClick={() => navigate(`/profiles/${id}/edit`)}>Edit</Button>}
           <Button style={{ width: "80%" }} onClick={() => navigate(-1)}>Back</Button>
-        </div>      </div>      {user.currIcon && (
+        </div>
+      </div>
+      {user.currIcon && (
       <div>
         <img src={user.avatarUrl} alt={`${user.username}'s icon`} style={{ width: 100, height: 100 }} />
-        <div>            Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
-        </div>          <Button style={{ height: "10%", width: "55%" }} onClick={handleAvatarChange}>Change Avatar</Button>
+        <div>
+          Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
+        </div>
+        <Button style={{ height: "10%", width: "55%" }} onClick={handleAvatarChange}>Change Avatar</Button>
         <Button style={{ height: "10%", width: "45%" }} onClick={handleSaveAvatar}>Save Avatar</Button>
-      </div>      )}
+      </div>
+      )}
     </BaseContainer>
   );
 };
