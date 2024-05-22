@@ -44,18 +44,33 @@ const UserProfile = () => {
   }, [id, currUser.token]);
 
   const handleAvatarChange = async () => {
-    const newAvatarUrl = await fetchCatAvatar(iconName); // Request new avatar
-    setAvatarUrl(newAvatarUrl);
+    try {
+      const newAvatarUrl = await fetchCatAvatar(iconName); // Replace 'iconName' with actual variable if needed
+      console.log("Fetched new avatar URL:", newAvatarUrl); // Print the fetched URL
+      setAvatarUrl(newAvatarUrl);
+    } catch (error) {
+      console.error("Failed to fetch new avatar:", error);
+      alert("Failed to fetch new avatar.");
+    }
   };
+
 
   const handleSaveAvatar = async () => {
     try {
-      const headers = {
-        "Content-Type": "application/json",
-
+      const payload = {
+        imageUrl: avatarUrl,
       };
-      // Send the string directly as part of the request body
-      await api.put(`/users/${id}/updateIcon`, JSON.stringify(avatarUrl), { headers });
+
+      console.log("Sending payload to server:", payload);  // Print the payload before sending
+      console.log(`URL being sent to: /users/${id}/updateIcon`); // Display the target URL of the request
+
+      await api.put(`/users/${id}/updateIcon`, JSON.stringify(payload), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Payload sent successfully"); // Confirmation that the request was sent successfully
       alert("Avatar saved successfully!");
     } catch (error) {
       console.error("Failed to save avatar:", error);
