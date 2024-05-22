@@ -113,7 +113,8 @@ const KittyCards = () => {
           unsubscribeUser(chatTopic);
           resetGame();
           navigate(`/kittycards/${gameId}/result`);
-        }, 200); // Delay to ensure all final messages are processed
+        }, 200);
+        // Delay to ensure all final messages are processed
       }
       updateGameState(update);
       setIsLoading(false);

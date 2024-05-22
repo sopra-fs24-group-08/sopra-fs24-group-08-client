@@ -52,7 +52,7 @@ function Main() {
       <div className="main container">
         <div className="main button-container">
           {buttons.map((button, index) => (
-            <Button key={index} onClick={button.onClick}>{button.label}</Button>
+            <Button key={index} onClick={button.onClick} className="full-width">{button.label}</Button>
           ))}
         </div>
       </div>
