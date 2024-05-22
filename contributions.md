@@ -301,11 +301,11 @@ Todo List
 *Yiyang Chen*
 Done list
 - All tests for UserController have passed #90 closed
-- ⁠Link Avatar - API to User Profile #87
+- Link Avatar - API to User Profile #87
 
 Todo List
 - Trying to figure out how to save the avatar to h2
-- ⁠work on tests
+- work on tests
 
 
 **David Tanner**
@@ -328,52 +328,56 @@ Done List:
 
 Todo List:
 
-## 10.05-16.05
+## 17.05-23.05
 
-*Jingxuan Tian*
+**Jingxuan Tian**
+
 Done List
+- Adapt friend and game invitation function
+- test for friend service and controller
+- fix translate bug
 
 
 Todo List
-- adjust friend request to fit for the webSocket
-- work on tests
-- update tutorial video once frondend get polished
+- fix bug
+- update tutorial video
 
-*Zixian Pang*
+
+**Zixian Pang**
 
 Done List
-
 - write all repository related tests #101
 - prepare README file
 - small looking bug fixed
   
 Todo List
-
 - write more tests to reach the coverage 
 - fix looking bugs once found
 - finalize writing including screenshots once icon bug fixed
   
 
+**Yiyang Chen**
 
-*Yiyang Chen*
 Done list
-
+- Link avatar generation API to user's incons #87 closed
+- Tests for AvatarController
 
 Todo List
-
-
+- link avatar to gameboard
+- highlight player’s hand cards box if it’s his/her turn
+- optimize the logic after editing file and click’back’
+- Create Slides
 
 **David Tanner**
 
 Done List:
-
-
-Todo List:
-
-
-**Luis Schmid**
-
-Done List:
-
+- Created ControllerTests/adjusted some of my existing Tests to  around 85/90%+ coverage: Game,GameSocket,Matchmaking. #85
+- Created ServiceTests: ChatService,GameCleanUp,MatchmakingService,PlayerQueueService,GameEventService(util),GameService(ProperIntegrationTests missing)
+- Adjusted specific websocket / general util classes for Tests + EvenListener
+- Adjusted the way Mailbox interacts with FriendRequests + enhanced the  Feature of inviting a friend to game: *Client* : e42ab12 -> 6768e5a, *Server* : d8c3aea -> f0578a4
 
 Todo List:
+- Define good enough GameServiceIntegrationTests
+- Help fixing remaining bugs
+- Create Slides
+
