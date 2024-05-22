@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api, handleError } from "helpers/api";
+import { api } from "helpers/api";
 
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
@@ -9,7 +9,7 @@ import { User } from "types";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/UserProfile.scss";
 import { fetchCatAvatar } from "../../helpers/avatarAPI";
-import defaultAvatar from '../../images/OGIcon.jpg';
+import defaultAvatar from "../../images/OGIcon.jpg";
 
 
 const UserProfile = () => {
@@ -33,7 +33,7 @@ const UserProfile = () => {
         setUser(prevUser => ({
           ...prevUser,
           ...response.data,
-          avatarUrl: newAvatarUrl 
+          avatarUrl: newAvatarUrl,
         }));
         setAvatarUrl(newAvatarUrl); // Update external avatarUrl status
         setIsLoading(false);
@@ -42,7 +42,7 @@ const UserProfile = () => {
         setAvatarUrl(defaultAvatar); // Use default avatar in case of error
         setUser(prevUser => ({
           ...prevUser,
-          avatarUrl: defaultAvatar
+          avatarUrl: defaultAvatar,
         }));
         setIsLoading(false);
       }
@@ -59,7 +59,7 @@ const UserProfile = () => {
       // Update avatarUrl in user state
       setUser(prevUser => ({
         ...prevUser,
-        avatarUrl: newAvatarUrl
+        avatarUrl: newAvatarUrl,
       }));
 
     } catch (error) {
@@ -93,7 +93,6 @@ const UserProfile = () => {
   };
 
 
-
   if (isLoading) return <Spinner />;
   if (!user) return <div>No user data found.</div>;
 
@@ -124,14 +123,14 @@ const UserProfile = () => {
         </div>
       </div>
       {user.currIcon && (
-      <div>
-        <img src={user.avatarUrl} alt={`${user.username}'s icon`} style={{ width: 100, height: 100 }} />
         <div>
-          Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
+          <img src={user.avatarUrl} alt={`${user.username}'s icon`} style={{ width: 100, height: 100 }} />
+          <div>
+            Icon Name: <input type="text" value={iconName} onChange={e => setIconName(e.target.value)} />
+          </div>
+          <Button style={{ height: "10%", width: "55%" }} onClick={handleAvatarChange}>Change Avatar</Button>
+          <Button style={{ height: "10%", width: "45%" }} onClick={handleSaveAvatar}>Save Avatar</Button>
         </div>
-        <Button style={{ height: "10%", width: "55%" }} onClick={handleAvatarChange}>Change Avatar</Button>
-        <Button style={{ height: "10%", width: "45%" }} onClick={handleSaveAvatar}>Save Avatar</Button>
-      </div>
       )}
     </BaseContainer>
   );
