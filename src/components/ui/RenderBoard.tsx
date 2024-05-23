@@ -24,6 +24,7 @@ const RenderBoard = () => {
     occupiedRed: occupiedRed,
     occupiedWhite: occupiedWhite,
   };
+  const middleIndex = grid[4].id;
 
   // Function to determine the middle index based on any sequence of nine
   const findMiddleIndex = (id) => {
@@ -33,7 +34,7 @@ const RenderBoard = () => {
   };//Make simpler, store somewhere
 
   const getImageSrc = (slot) => {
-    const middleIndex = findMiddleIndex(slot.id);
+    // const middleIndex = findMiddleIndex(slot.id);
     if (slot.id === middleIndex) {
 
       return repo;  // Card pile in the middle
@@ -59,12 +60,12 @@ const RenderBoard = () => {
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => handleCardDrop(e, square.id)}
           onClick={() => {
-            if (cardPileSize > 0 && findMiddleIndex(square.id) === square.id) {
+            if (cardPileSize > 0 && middleIndex === square.id) {
               console.log(square.id, square);
               drawCardMove(4);
             }
           }}
-          style={{ cursor: (findMiddleIndex(square.id) === square.id && cardPileSize > 0) ? "pointer" : "default" }}
+          style={{ cursor: (middleIndex === square.id && cardPileSize > 0) ? "pointer" : "default" }}
         >
           <img
             src={getImageSrc(square)}
