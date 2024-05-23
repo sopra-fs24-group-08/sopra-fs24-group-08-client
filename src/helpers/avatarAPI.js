@@ -3,7 +3,7 @@
 async function fetchCatAvatar(name) {
   // Determine the URL to use based on the environment
   const baseUrl = process.env.NODE_ENV === "production"
-    ? "https://sopra-fs24-group-08-client.appspot.com/api/proxy/cat-avatar" // Production Environment URL
+    ? "https://sopra-fs24-group-08-client.oa.r.appspot.com/api/proxy/cat-avatar" // Production Environment URL
     : "http://localhost:8080/api/proxy/cat-avatar"; // Development Environment URL
 
   const response = await fetch(`${baseUrl}?name=${name}`);
