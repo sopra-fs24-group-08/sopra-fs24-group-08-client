@@ -10,7 +10,14 @@ html, body, #root, .game-layout {
   grid-template-columns: 1fr 2.5fr 1fr; /* Adjust column sizing for a more balanced layout */
   gap: 1rem; /* Maintain or adjust gap */
   height: 100vh;
+  padding-top: 2rem;
 }
+.right-column {
+  grid-column: 3; 
+  grid-row: 1 / span 2;
+  margin-top: 20px;
+}
+
 
 /* 上部分，右侧按钮 */
 .controls {
@@ -20,11 +27,9 @@ html, body, #root, .game-layout {
   flex-direction: column;
   justify-content: flex-start; /* 按钮从上往下排列 */
   align-items: center; /* 按钮居中对齐 */
-
-  margin-top: 2rem;
 }
 .controls button:first-child {
-  margin-bottom: 300px;
+  margin-top: 300px;
 }.controls button:nth-child(2) {
    margin-bottom: 14px;
  }
@@ -33,7 +38,7 @@ html, body, #root, .game-layout {
 .chat-container {
   display: flex; /* 使用 flexbox 布局 */
   flex-direction: column; /* 垂直排列子元素 */
-  height: 28rem;
+  height: 30rem;
   width: 14rem;
   background-color: #d390cb;
   border-radius: 16px;

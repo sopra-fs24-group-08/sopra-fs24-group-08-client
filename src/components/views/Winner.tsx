@@ -63,7 +63,7 @@ const Winner = () => {
   }
 
   return (
-    <div>
+    <div className="content">
       <h1>Game Results</h1>
       {result.winnerId === currUser.id && (
         <div>
