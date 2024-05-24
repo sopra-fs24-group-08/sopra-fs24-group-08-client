@@ -1,9 +1,8 @@
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState, useCallback, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useCurrUser } from "./UserContext";
 import { useWebSocket } from "./WebSocketProvider";
 import { useParams } from "react-router-dom";
-
 
 const GameContext = createContext({
   grid: [],
@@ -36,17 +35,31 @@ const GameContext = createContext({
 });
 
 export const GameProvider = ({ children }) => {
-
-  const { currUser } = useCurrUser();
-  const { send } = useWebSocket();
   const { gameId } = useParams();
-  const [grid, setGrid] = useState([]);
-  const [hand, setHand] = useState([]);
-  const [currentScore, setCurrentScore] = useState(0);
-  const [opponentScore, setOpponentScore] = useState(0);
-  const [gameStatus, setGameStatus] = useState("STARTING");
-  const [currentTurnPlayerId, setCurrentTurnPlayerId] = useState(null);
-  const [cardPileSize, setCardPileSize] = useState(0);
+  const { send } = useWebSocket();
+  const { currUser } = useCurrUser();
+
+  const memoizedGameState = useMemo(() => {
+    const savedGameState = sessionStorage.getItem(`gameState-${gameId}`);
+    return savedGameState ? JSON.parse(savedGameState) : {
+      grid: [],
+      hand: [],
+      currentScore: 0,
+      opponentScore: 0,
+      gameStatus: "STARTING",
+      currentTurnPlayerId: null,
+      cardPileSize: 0,
+    };
+  }, [gameId]);
+
+  // State initialization using memoized value
+  const [grid, setGrid] = useState(memoizedGameState.grid);
+  const [hand, setHand] = useState(memoizedGameState.hand);
+  const [currentScore, setCurrentScore] = useState(memoizedGameState.currentScore);
+  const [opponentScore, setOpponentScore] = useState(memoizedGameState.opponentScore);
+  const [gameStatus, setGameStatus] = useState(memoizedGameState.gameStatus);
+  const [currentTurnPlayerId, setCurrentTurnPlayerId] = useState(memoizedGameState.currentTurnPlayerId);
+  const [cardPileSize, setCardPileSize] = useState(memoizedGameState.cardPileSize);
 
   const resetGame = useCallback(() => {
     setGrid([]);
@@ -59,6 +72,8 @@ export const GameProvider = ({ children }) => {
   }, []);
 
 
+  // Update local state assuming the move is valid and accepted
+
   const drawCardMove = useCallback(async (squareId) => {
     // Ensure it's the user's turn
     if (currentTurnPlayerId !== currUser.id) {
@@ -66,7 +81,6 @@ export const GameProvider = ({ children }) => {
 
       return;
     }
-
     // Check if the square is the middle one
     if (squareId !== 4) {
       alert("You can only draw from the middle card pile.");
@@ -97,7 +111,6 @@ export const GameProvider = ({ children }) => {
       alert("Failed to draw a card. Please try again.");
     }
   }, [cardPileSize, currentTurnPlayerId, send, gameId, currUser.id]);
-
 
   const handleCardDrop = useCallback(async (event, squareId) => {
     console.log(squareId, "DDLDLDL");
@@ -138,8 +151,6 @@ export const GameProvider = ({ children }) => {
       console.log("move", move);
       await send(`/app/game/${gameId}/move`, JSON.stringify(move));
       console.log("Move sent to server:", move);
-
-      // Update local state assuming the move is valid and accepted
       const newGrid = [...grid];
       newGrid[squareIndex] = { ...newGrid[squareIndex], occupied: true, cards: [cardToPlace] };
       const newHand = hand.filter(card => card.id !== cardId);
@@ -154,6 +165,7 @@ export const GameProvider = ({ children }) => {
     }
   }, [grid, hand, send, gameId, currUser.id, currentTurnPlayerId]);
 
+  // Step 1: Modifying updateGameState to save to sessionStorage
   const updateGameState = useCallback((newGameState) => {
     setGrid(newGameState.gridSquares || []);
     setHand(newGameState.playerHand || []);
@@ -162,10 +174,19 @@ export const GameProvider = ({ children }) => {
     setGameStatus(newGameState.gameStatus);
     setCurrentTurnPlayerId(newGameState.currentTurnPlayerId);
     setCardPileSize(newGameState.cardPileSize);
-  }, []);
+
+    // Store game state in sessionStorage
+    sessionStorage.setItem(`gameState-${gameId}`, JSON.stringify(newGameState));
+  }, [gameId]);
+
+  useEffect(() => {
+    return () => {
+      // Cleanup game state from sessionStorage on component unmount
+      sessionStorage.removeItem(`gameState-${gameId}`);
+    };
+  }, [gameId]);
 
   return (
-
     <GameContext.Provider value={{
       grid, setGrid,
       hand, setHand,
@@ -174,8 +195,7 @@ export const GameProvider = ({ children }) => {
       gameStatus, setGameStatus,
       currentTurnPlayerId, setCurrentTurnPlayerId,
       cardPileSize, setCardPileSize,
-      resetGame, handleCardDrop,
-      drawCardMove,
+      resetGame, handleCardDrop, drawCardMove,
       updateGameState,
     }}>
       {children}

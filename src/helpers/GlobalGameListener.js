@@ -7,7 +7,7 @@ import { useFriend } from "../components/context/FriendContext";
 
 const GlobalGameListener = () => {
   const navigate = useNavigate();
-  const { connect, subscribeUser, unsubscribeUser } = useWebSocket();
+  const { subscribeUser, unsubscribeUser } = useWebSocket();
   const { currUser } = useCurrUser();
   const {isAccepted} = useFriend();
 
@@ -28,9 +28,7 @@ const GlobalGameListener = () => {
       }
     };
     //"/topic/"+inviterId+"/game-notifications"
-    console.log("subscribe: "+ `/topic/${currUser.id}/game-notifications`)
     subscribeUser(`/topic/${currUser.id}/game-notifications`, handleGameInvitation);
-    
     return () => {
       unsubscribeUser(`/topic/${currUser.id}/game-notifications`);
     };

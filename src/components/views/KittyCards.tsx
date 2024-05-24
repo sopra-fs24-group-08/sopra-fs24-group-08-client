@@ -36,112 +36,79 @@ LanguageSelector.propTypes = {
 };
 
 
+
+
 const KittyCards = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState("en"); // Default to English
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const navigate = useNavigate();
   const location = useLocation();
   const { gameId, opponentId, opponentName } = location.state;
   const { currUser } = useCurrUser();
-  const { send, subscribeUser, unsubscribeUser } = useWebSocket();
+  const { send, subscribeUser, unsubscribeUser ,isConnected} = useWebSocket();
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const messageEndRef = useRef(null);
   const storedUser = JSON.parse(sessionStorage.getItem("currUser"));
   const username = storedUser?.username;
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-
   const {
-    grid,
-    hand,
-    currentScore,
-    opponentScore,
-    handleCardDrop,
-    updateGameState,
-    resetGame
+    grid, hand, currentScore, opponentScore, handleCardDrop, updateGameState, resetGame
   } = useContext(GameContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const translateMessage = async (messageId, targetLang) => {
-    const messageIndex = chatMessages.findIndex(msg => msg.id === messageId);
-    if (messageIndex === -1) {
-      console.error("Message not found");
+  useEffect(() => {
+    const storedGameState = sessionStorage.getItem(`gameState-${gameId}`);
+    if (storedGameState) {
+      const gameState = JSON.parse(storedGameState);
+      updateGameState(gameState);
+      setIsLoading(false);
+    } else {
+      api.post(`/game/${gameId}/${currUser.id}/start`)
+        .then(() => {
+          sessionStorage.setItem(`gameStarted-${gameId}`, 'true');
 
-      return;
+          setIsLoading(true);
+        })
+        .catch(error => console.error("Error starting game:", error));
     }
-
-    try {
-      const response = await api.get("/api/translate", {
-        params: {
-          text: chatMessages[messageIndex].text,
-          targetLang: targetLang,
-        },
-      });
-
-      if (response.status === 200 && response.data) {
-        const decodedText = decodeURIComponent(response.data);
-        const newMessages = [...chatMessages];
-        newMessages[messageIndex] = {
-          ...newMessages[messageIndex],
-          text: decodedText,  // Use the decoded text
-          isTranslated: true,  // Mark as translated
-        };
-        setChatMessages(newMessages);
-      } else {
-        console.error("Failed to translate message:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Translation error:", error);
-    }
-  };
-
-  const handleLanguageChange = (e) => {
-    setSelectedLanguage(e.target.value);
-  };
-
+  }, [navigate]);
 
   useEffect(() => {
     const gameTopic = `/topic/game/${gameId}/${currUser.id}`;
     const chatTopic = `/topic/chat/${gameId}`;
+      subscribeUser(gameTopic, (message) => {
+        const update = JSON.parse(message.body);
+        console.log("Game Update:", update);
+        if (update.gameStatus === "FINISHED") {
+          setTimeout(() => {
+            unsubscribeUser(gameTopic);
+            unsubscribeUser(chatTopic);
+            resetGame();
+            navigate(`/kittycards/${gameId}/result`);
+          }, 200);
+        }
+        updateGameState(update);
+        setIsLoading(false);
+      });
 
-    subscribeUser(gameTopic, (message) => {
-      const update = JSON.parse(message.body);
-      console.log("Game Update:", update);
-      if (update.gameStatus === "FINISHED") {
-        // Enforce properly cleanup and navigation
-        setTimeout(() => {
-          unsubscribeUser(gameTopic);
-          unsubscribeUser(chatTopic);
-          resetGame();
-          navigate(`/kittycards/${gameId}/result`);
-        }, 200);
-        // Delay to ensure all final messages are processed
-      }
-      updateGameState(update);
-      setIsLoading(false);
-    });
-
-    subscribeUser(chatTopic, (message) => {
-      const chat = JSON.parse(message.body);
-
-      console.log("Received message:", chat);
-      setChatMessages(prev => [...prev, {
-        id: chat.id,
-        text: chat.messageContent,
-        senderId: chat.senderId,
-        timestamp: chat.timestamp,
-        senderUsername: chat.senderUsername,
-        isTranslated: false,
-      }]);
-    });
-
-    api.post(`/game/${gameId}/${currUser.id}/start`)
-      .catch(error => console.error("Error starting game:", error));
-
+      subscribeUser(chatTopic, (message) => {
+        const chat = JSON.parse(message.body);
+        console.log("Received message:", chat);
+        setChatMessages(prev => [...prev, {
+          id: chat.id,
+          text: chat.messageContent,
+          senderId: chat.senderId,
+          timestamp: chat.timestamp,
+          senderUsername: chat.senderUsername,
+          isTranslated: false,
+        }]);
+      });
     return () => {
       unsubscribeUser(gameTopic);
       unsubscribeUser(chatTopic);
     };
-  }, [gameId, currUser.id, navigate, subscribeUser, unsubscribeUser, updateGameState]);
+  }, [gameId, currUser.id, navigate, subscribeUser, unsubscribeUser, updateGameState, isConnected]);
+
 
   useEffect(() => {
     const messageEnd = messageEndRef.current;
@@ -184,6 +151,44 @@ const KittyCards = () => {
   const confirmSurrender = () => {
     sendSurrenderConfirmation(gameId);
     setShowConfirmModal(false); // Close modal after action
+  };
+
+
+  const translateMessage = async (messageId, targetLang) => {
+    const messageIndex = chatMessages.findIndex(msg => msg.id === messageId);
+    if (messageIndex === -1) {
+      console.error("Message not found");
+
+      return;
+    }
+
+    try {
+      const response = await api.get("/api/translate", {
+        params: {
+          text: chatMessages[messageIndex].text,
+          targetLang: targetLang,
+        },
+      });
+
+      if (response.status === 200 && response.data) {
+        const decodedText = decodeURIComponent(response.data);
+        const newMessages = [...chatMessages];
+        newMessages[messageIndex] = {
+          ...newMessages[messageIndex],
+          text: decodedText,  // Use the decoded text
+          isTranslated: true,  // Mark as translated
+        };
+        setChatMessages(newMessages);
+      } else {
+        console.error("Failed to translate message:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Translation error:", error);
+    }
+  };
+
+  const handleLanguageChange = (e) => {
+    setSelectedLanguage(e.target.value);
   };
 
 
