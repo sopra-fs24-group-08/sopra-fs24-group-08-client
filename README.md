@@ -21,6 +21,7 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
 - KittyCards
 This is the game page, once upon a successful matching or an accepted invitation the user will jump to here.
 https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/KittyCards.tsx
+![1716563826134](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/62a4b54d-26a5-4dbd-9635-cdccef3ab24c)
 
 
 ### 
