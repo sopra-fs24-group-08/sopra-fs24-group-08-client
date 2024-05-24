@@ -1,4 +1,4 @@
-/* CSS重置，以确保在不同的浏览器中行为一致 */
+
 html, body, #root, .game-layout {
   height: 100%;
   margin: 0;
@@ -6,9 +6,9 @@ html, body, #root, .game-layout {
 }
 .game-layout {
   display: grid;
-  grid-template-rows: auto 1fr; /* Adjust row sizing to fit content more naturally */
-  grid-template-columns: 1fr 2.5fr 1fr; /* Adjust column sizing for a more balanced layout */
-  gap: 1rem; /* Maintain or adjust gap */
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 2.5fr 1fr;
+  gap: 1rem;
   height: 100vh;
   padding-top: 2rem;
 }
@@ -27,33 +27,38 @@ html, body, #root, .game-layout {
 }
 
 
-/* 上部分，右侧按钮 */
 .controls {
   grid-row: 2 / span 1;
   grid-column: 3;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 按钮从上往下排列 */
-  align-items: center; /* 按钮居中对齐 */
+  justify-content: flex-start;
+  align-items: center;
 }
 .controls button:first-child {
-  margin-top: 300px;
-}.controls button:nth-child(2) {
-   margin-bottom: 14px;
- }
-
+  display: flex;
+  align-items: center;
+  margin-top: 480px;
+  background-color: #5582e1;
+  border: 2px solid #6f7c83;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
 
 .chat-container {
-  display: flex; /* 使用 flexbox 布局 */
-  flex-direction: column; /* 垂直排列子元素 */
+  display: flex;
+  flex-direction: column;
   height: 30rem;
   width: 14rem;
   background-color: #d390cb;
   border-radius: 16px;
   padding: 1rem;
-  overflow-y: auto; /* 出现滚动条 */
+  overflow-y: auto;
   border: 2px solid #7f92ec;
-  grid-template-rows: 14fr; /* 使用 fr 单位设置高度 */
+  grid-template-rows: 14fr;
   margin-top: 2rem;
   margin-bottom: 5rem;
 
@@ -64,12 +69,12 @@ html, body, #root, .game-layout {
   }
 
   .message {
-    position: relative; /* Needed to position the translate button absolutely within the container */
+    position: relative;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     border-radius: 12px;
     border: 2px solid #1b6161;
-    background: #e9e9e9; /* Example background color */
+    background: #e9e9e9;
     word-wrap: break-word;
 
 
@@ -87,21 +92,20 @@ html, body, #root, .game-layout {
   .chat-controls {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* 将子元素垂直对齐到底部 */
-    margin-top: 1rem; /* 调整间距 */
+    align-items: flex-end;
+    margin-top: 1rem;
 
     .chat-input {
-      width: 100%; /* 输入框占据全部宽度 */
-      margin-bottom: 0.5rem; /* 输入框和按钮之间的间隔 */
+      width: 100%;
+      margin-bottom: 0.5rem;
     }
 
     .chat-send-btn {
-      width: 100%; /* 按钮占据全部宽度 */
+      width: 100%;
     }
   }
 
-  // 对手消息
-
+  // opponent
   .translate-btn {
     background: none;
     border: none;
@@ -120,12 +124,12 @@ html, body, #root, .game-layout {
     margin-bottom: 5px;
     padding: 5px;
     border-radius: 10px;
-    align-self: flex-start; /* 靠左对齐 */
-    margin-right: auto; /* 进一步确保对齐到左边 */
+    align-self: flex-start;
+    margin-right: auto;
   }
 
   input[type="text"] {
-    width: calc(100% - 20px); // Subtract padding from the total width
+    width: calc(100% - 20px);
     padding: 5px;
     margin-top: 5px;
   }
@@ -134,20 +138,20 @@ html, body, #root, .game-layout {
 .player-profile {
   grid-row: 2;
   grid-column: 1;
-  border: 2px solid #6c757d; /* 灰色边框 */
-  padding: 1rem; /* 内边距 */
-  border-radius: 10px; /* 圆角 */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 可选的轻微阴影效果 */
-  text-align: center; /* 文本居中 */
-  background-color: #7f92ec; /* 背景颜色 */
-  width: auto; /* 宽度，根据需要调整 */
-  margin: 1rem auto; /* 垂直方向的间距和水平居中 */
-  display: flex; /* 采用flex布局 */
-  flex-direction: column; /* 子元素垂直排列 */
-  align-items: center; /* 子元素水平居中 */
-  justify-content: center; /* 子元素垂直居中 */
+  border: 2px solid #6c757d;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #7f92ec;
+  width: auto;
+  margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   align-self: start;
   color: black;
+
 
 
   .player-avatar {
@@ -166,12 +170,13 @@ html, body, #root, .game-layout {
   }
 
   .player-name {
-    order: -1; /* 将名字放在头像上方 */
-    margin-bottom: 0.5rem; /* 名字与头像之间的间隔 */
+    order: -1;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
   }
 
   .player-score {
-    font-weight: bold;
+    font-weight: bolder;
   }
 }
 
@@ -181,9 +186,9 @@ html, body, #root, .game-layout {
   border: 1px solid blue;
   padding: 15px;
   cursor: pointer;
-  width: 80px; /* 卡牌宽度 */
-  height: 100px; /* 卡牌高度 */
-  margin: 0 5px; /* 两张卡牌之间的间隔 */
+  width: 80px;
+  height: 100px;
+  margin: 0 5px;
 }
 
 button {
@@ -203,4 +208,12 @@ button {
 .hand-of-cards-container {
   max-height: 150px;
   align-items: center;
+  display: flex;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
 }

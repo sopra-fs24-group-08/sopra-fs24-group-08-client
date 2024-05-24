@@ -9,7 +9,7 @@ import { User } from "types";
 import { useCurrUser } from "../context/UserContext";
 import "styles/views/UserProfile.scss";
 import { fetchCatAvatar } from "../../helpers/avatarAPI";
-import defaultAvatar from "../../images/OGIcon.jpg";
+import defaultAvatar from "../../images/DefaultAvatar.png";
 
 
 const UserProfile = () => {

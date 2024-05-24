@@ -12,7 +12,7 @@ import { api } from "helpers/api";
 import PropTypes from "prop-types";
 import translateIcon from "../../images/Translate_Icon.png";
 import Modal from "helpers/Modal";
-
+import defaultAvatar from "../../images/DefaultAvatar.png";
 
 const languageOptions = {
   en: "English",
@@ -223,17 +223,27 @@ const KittyCards = () => {
         display: "block",
         width: "80%",
         height: "auto",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
       }}>
+      <div className="player-name" style={{
+        fontSize: "24px",
+        fontWeight: "bold",
+        marginBottom: "10px",
+        fontFamily: "'Arial', sans-serif"
+      }}>{playerName}</div>
       <img
-        src={"iconTEMPLATE"}
+        src={defaultAvatar}
         style={{
-          display: "block",
+          display: "central",
           width: "40%",
           height: "auto",
+          borderRadius: "50%",
         }}
         alt=""
       />
-      <div className="player-name">{playerName}</div>
+
       <div className="player-score">score: {score}</div>
     </div>
   );
