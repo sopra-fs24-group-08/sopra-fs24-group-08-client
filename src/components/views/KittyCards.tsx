@@ -260,7 +260,9 @@ const KittyCards = () => {
         </div>
         <div className="center-column">
           <RenderBoard grid={grid} onCardDrop={handleCardDrop} />
-          <RenderHand hand={hand} />
+          <div className="hand-of-cards-container">
+            <RenderHand hand={hand} />
+          </div>
         </div>
         <div className="right-column">
           {renderPlayerProfile(opponentName, opponentScore)}

@@ -13,9 +13,17 @@ html, body, #root, .game-layout {
   padding-top: 2rem;
 }
 .right-column {
-  grid-column: 3; 
+  grid-column: 3;
   grid-row: 1 / span 2;
   margin-top: 20px;
+}
+.center-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  overflow: hidden;
+  width: auto;
 }
 
 
@@ -173,7 +181,7 @@ html, body, #root, .game-layout {
   border: 1px solid blue;
   padding: 15px;
   cursor: pointer;
-  width: 75px; /* 卡牌宽度 */
+  width: 80px; /* 卡牌宽度 */
   height: 100px; /* 卡牌高度 */
   margin: 0 5px; /* 两张卡牌之间的间隔 */
 }
@@ -191,4 +199,8 @@ button {
   &:hover {
     background-color: #5d5c5c;
   }
+}
+.hand-of-cards-container {
+  max-height: 150px;
+  align-items: center;
 }
