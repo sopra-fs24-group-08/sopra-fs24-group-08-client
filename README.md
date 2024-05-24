@@ -1,4 +1,4 @@
-# project title
+# Project title
 Kitty Cards
 
 ## Technologies
@@ -75,8 +75,12 @@ Edit-profile Flow: >Main -> My Profile -> Edit(Name/Password/Birthday) or (chang
 
 ## Authors and acknowledgement
 
-SoPra Group 08 2024 members: David Tanner, Jingxuan Tian, Yiyang Chen, Zixian Pang, Luis Schmid.
-
+SoPra Group 08 2024 members: David Tanner, Jingxuan Tian, Yiyang Chen, Zixian Pang,Luis Schmid
+- **David Tanner** - [Github](https://github.com/Davtan00)
+- **Jingxuan Tian** - [Github](https://github.com/xuanjt)
+- **Yiyang Chen** - [Github](https://github.com/CindyChen-1999)
+- **Zixian Pang** - [Github](https://github.com/Dennis-Pang)
+- **Luis Schmid** - [Github](https://github.com/LooPyt)
 
 >Firstly, we want to thank our TA Sven Fabian Ringger for the help throughout the whole project. Secondly, we want to thank any official documents/online tutorials that provide us with help at any part of the project. During this semester, we encountered so many challenges, which also offered us chances to grow and gain knowledge and experience in the software field. Furthermore, we also realized that not only coding skills but also communication matters, as we fell short in this part but eventually overcame it. 
 In a nutshell, we appreciate this journey at Sopra and thank for anyone who helps us directly or indirectly.
