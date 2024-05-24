@@ -49,14 +49,12 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
 ## Launch & Deployment
  - npm run dev
 
-  >This command runs the app in the development mode.
-  >Open (http://localhost:3000) to view it in the browser.
-
-  >The page will reload if you make edits and save them.
+>This command runs the app in the development mode.
+>Open (http://localhost:3000) to view it in the browser.
 
 - npm run build
 
-  >This command builds the app for production to the build folder.
+>This command builds the app for production to the build folder.
 
 
  
@@ -69,13 +67,13 @@ Add-friend Flow: >Main -> UserList -> send friend request -> (back to) Main -> F
 Edit-profile Flow: >Main -> My Profile -> Edit(Name/Password/Birthday) or (change and save avatar)
 
 ## Roadmap
-1. Improved game feature: add random events to the game for more fun
-2. Improved Friend system; adding a chat functions outside the game and store the history
-3. Improved UI; structuring the CSS files better, replacing the static images with better custom ones
+1. Improve game feature: add random events to the game for more fun
+2. Improve Friend system; add chat function outside the game and store the history
+3. Improve UI; structure the CSS files better, replace the static images with better resource
 
 ## Authors and acknowledgement
 
-SoPra Group 08 2024 members: David Tanner, Jingxuan Tian, Yiyang Chen, Zixian Pang,Luis Schmid
+SoPra Group 08 2024 members:
 - **David Tanner** - [Github](https://github.com/Davtan00)
 - **Jingxuan Tian** - [Github](https://github.com/xuanjt)
 - **Yiyang Chen** - [Github](https://github.com/CindyChen-1999)
