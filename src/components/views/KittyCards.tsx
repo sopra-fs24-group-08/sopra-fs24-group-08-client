@@ -57,7 +57,8 @@ const KittyCards = () => {
     opponentScore,
     handleCardDrop,
     updateGameState,
-    resetGame
+    resetGame,
+    currentTurnPlayerId
   } = useContext(GameContext);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -261,6 +262,22 @@ const KittyCards = () => {
     </div>
   );
 
+  const renderTurnPrompt = () => {
+    const style = {
+      color: "#ff69b4",
+      fontSize: "36px",
+      textAlign: "center",
+      fontFamily: "'Comic Sans MS', 'Comic Sans', cursive"
+    };
+
+    if (currentTurnPlayerId === currUser.id){
+      return (<div style = {style}>Now it is your turn.</div>);
+    }
+    else{
+      return (<div style = {style}>It is not your turn, please wait.</div>);
+    }
+  }
+
   return (
     <BaseContainer>
       <div className="game-layout">
@@ -273,6 +290,7 @@ const KittyCards = () => {
           <div className="hand-of-cards-container">
             <RenderHand hand={hand} />
           </div>
+          {renderTurnPrompt()}
         </div>
         <div className="right-column">
           {renderPlayerProfile(opponentName, opponentScore)}
