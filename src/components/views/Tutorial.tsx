@@ -31,11 +31,11 @@ const Tutorial = () => {
     <div>  
       <BaseContainer>
         <Header height="100" />
-        <div className="navigation container">
+        <div className="login container">
           <YouTube videoId={tutorialId}/>
-          <div className="navigation button-container"> 
+          <div className="userprofile button-container"> 
             <Button
-              style={{ width: "100%", marginBottom: "10px" }}
+              style={{ width: "55%", marginBottom: "10px" }}
               onClick={() => navigate("/main")}
             >
               Back

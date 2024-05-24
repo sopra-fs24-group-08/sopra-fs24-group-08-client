@@ -1,22 +1,22 @@
-import {api, handleError} from "helpers/api";
-import {useNavigate, useParams } from "react-router-dom";
-import {Button} from "components/ui/Button";
+import { api, handleError } from "helpers/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/UserProfileEdit.scss";
 import { React, useEffect, useState } from "react";
-import { fetchRandomAvatar } from '../../helpers/avatarAPI';
+//import { fetchRandomAvatar } from "../../helpers/avatarAPI";
 import Refresh from "../ui/Refresh";
-import { useCurrUser} from "../context/UserContext";
+import { useCurrUser } from "../context/UserContext";
 
 const UserProfileEdit = () => {
   const navigate = useNavigate();
-  const {id} = useParams();
-  const currUserString = sessionStorage.getItem("currUser")
+  const { id } = useParams();
+  const currUserString = sessionStorage.getItem("currUser");
   const [username, setUsername] = useState<string>("");
   const [birthday, setBirthday] = useState<string>(null);
   const [password, setPassword] = useState<string>("");
 
-  const {currUser,logout} = useCurrUser();
+  const { currUser, logout } = useCurrUser();
 
 
   useEffect(() => {
@@ -42,22 +42,22 @@ const UserProfileEdit = () => {
       const requestBody = JSON.stringify({
         username,
         birthday,
-        password
+        password,
       });
-      await api.put(`/users/${id}`,requestBody,{
-        headers: { Authorization: `Bearer ${currUser.token}` }});
+      await api.put(`/users/${id}`, requestBody, {
+        headers: { Authorization: `Bearer ${currUser.token}` },
+      });
 
       await Refresh();
       navigate(`/profiles/${id}`);
 
-    }
-    catch (error) {
+    } catch (error) {
       alert(
-        `Something went wrong during the login: \n${handleError(error)}`
+        `Something went wrong during the login: \n${handleError(error)}`,
       );
 
     }
-  }
+  };
 
   return (
     <BaseContainer className="edit container">
@@ -81,7 +81,7 @@ const UserProfileEdit = () => {
 
     </BaseContainer>
   );
-  };
+};
 
 
-  export default UserProfileEdit;
+export default UserProfileEdit;

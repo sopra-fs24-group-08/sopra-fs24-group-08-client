@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import Player from "../ui/Player";
@@ -8,24 +8,17 @@ import { Button } from "components/ui/Button";
 import "styles/views/FriendList.scss";
 import { api, handleError } from "helpers/api";
 import Mailbox from "components/ui/Mailbox";
+import {useFriend} from "../context/FriendContext";
 
 const FriendList = () => {
   const navigate = useNavigate();
   const { data, refreshData } = useData();
-  const { friends } = data;
+  const { friends, friendRequests } = data;
   const { currUser } = useCurrUser();
+  const {sendGameInvitation} = useFriend();
 
   const doInvite = async (friendId) => {
-    const requestType = "GAMEINVITATION";
-    try {
-      const requestBody = JSON.stringify({ receiverId: friendId, requestType });
-      await api.post(`/game/invite/${currUser.id}`, requestBody, {
-        headers: { Authorization: `Bearer ${currUser.token}` }
-      });
-      alert("Invitation sent!");
-    } catch (error) {
-      handleError(error);
-    }
+    sendGameInvitation(friendId, currUser);
   };
 
   const doDelete = async (friendId) => {
@@ -34,7 +27,7 @@ const FriendList = () => {
         headers: { Authorization: `Bearer ${currUser.token}` },
         params: { FriendId: friendId }
       });
-      refreshData();
+      refreshData("friends");
     } catch (error) {
       handleError(error);
     }
@@ -60,7 +53,7 @@ const FriendList = () => {
       <p className="friendlist paragraph">List of your current friends.</p>
       {content}
       <div className="actions">
-        <Button className="refresh-btn" onClick={refreshData}></Button>
+        <Button className="refresh-btn" onClick={() => refreshData()}></Button>
         <Button className="back-btn" onClick={() => navigate(-1)}>Back</Button>
         <Mailbox />
       </div>

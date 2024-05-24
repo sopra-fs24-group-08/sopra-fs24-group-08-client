@@ -13,17 +13,19 @@ interface CardProps {
   draggable: boolean;
 }
 
-const Card: React.FC<CardProps> = ({
-                                     id,
-                                     name,
-                                     points,
-                                     color,
-                                     src,
-                                     onClick,
-                                     draggable,
-                                     onDragStart,
-                                     onDragEnd,
-                                   }) => {
+const Card: React.FC<CardProps> = (
+  {
+    id,
+    name,
+    points,
+    color,
+    src,
+    onClick,
+    draggable,
+    onDragStart,
+    onDragEnd,
+  }) => {
+
   return (
     <div
       key={id}

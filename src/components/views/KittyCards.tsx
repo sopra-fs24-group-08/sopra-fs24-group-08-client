@@ -12,7 +12,7 @@ import { api } from "helpers/api";
 import PropTypes from "prop-types";
 import translateIcon from "../../images/Translate_Icon.png";
 import Modal from "helpers/Modal";
-
+import defaultAvatar from "../../images/DefaultAvatar.png";
 
 const languageOptions = {
   en: "English",
@@ -57,7 +57,8 @@ const KittyCards = () => {
     opponentScore,
     handleCardDrop,
     updateGameState,
-    resetGame
+    resetGame,
+    currentTurnPlayerId
   } = useContext(GameContext);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -70,7 +71,7 @@ const KittyCards = () => {
     }
 
     try {
-      const response = await api.get(`/api/translate`, {
+      const response = await api.get("/api/translate", {
         params: {
           text: chatMessages[messageIndex].text,
           targetLang: targetLang,
@@ -113,7 +114,8 @@ const KittyCards = () => {
           unsubscribeUser(chatTopic);
           resetGame();
           navigate(`/kittycards/${gameId}/result`);
-        }, 100); // Delay to ensure all final messages are processed
+        }, 200);
+        // Delay to ensure all final messages are processed
       }
       updateGameState(update);
       setIsLoading(false);
@@ -167,9 +169,9 @@ const KittyCards = () => {
   function sendSurrenderConfirmation(gameId) {
     console.log("Sending Surrender confirmation:", gameId, currUser.id);
     send(`/app/game/${gameId}/surrender`,   JSON.stringify({
-        playerId:currUser.id,
-        surrender:true,
-      }) );
+      playerId:currUser.id,
+      surrender:true,
+    }) );
   }
 
   const handleSurrenderClick = () => {
@@ -189,7 +191,7 @@ const KittyCards = () => {
   const renderChatBox = () => (
     <div className="chat-container">
       <div className="message-container" style={{ maxHeight: "500px", overflowY: "auto" }}>
-        {chatMessages.map((msg, index) => (
+        {chatMessages.map((msg) => (
           <div key={msg.id} className={`message ${msg.senderId === currUser.id ? "self" : ""}`}>
             {msg.senderId === currUser.id ? "You" : msg.senderUsername}: {msg.text}
             {!msg.isTranslated && msg.senderId !== currUser.id && (
@@ -216,30 +218,40 @@ const KittyCards = () => {
   );
 
   const renderPlayerProfile = (playerName, score) => (
-    <div className="player-profile"
-         style={{
-           display: "block",
-           width: "80%",
-           height: "auto",
-         }}>
+    <div
+      className="player-profile"
+      style={{
+        display: "block",
+        width: "80%",
+        height: "auto",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+      }}>
+      <div className="player-name" style={{
+        fontSize: "24px",
+        fontWeight: "bold",
+        marginBottom: "10px",
+        fontFamily: "'Arial', sans-serif"
+      }}>{playerName}</div>
       <img
-        src={"iconTEMPLATE"}
+        src={defaultAvatar}
         style={{
-          display: "block",
+          display: "central",
           width: "40%",
           height: "auto",
+          borderRadius: "50%",
         }}
         alt=""
       />
-      <div className="player-name">{playerName}</div>
+
       <div className="player-score">score: {score}</div>
     </div>
   );
 
   const renderControls = () => (
     <div className="controls">
-      <Button className="hint-btn">Hint</Button>
-      <Button className="surrender-btn" onClick={handleSurrenderClick}>Surrender</Button>
+      <Button className="full-width" onClick={handleSurrenderClick}>Surrender</Button>
       {showConfirmModal && (
         <Modal isOpen={showConfirmModal} onClose={handleCloseModal}>
           <p>Are you sure you want to surrender?</p>
@@ -250,6 +262,22 @@ const KittyCards = () => {
     </div>
   );
 
+  const renderTurnPrompt = () => {
+    const style = {
+      color: "#ff69b4",
+      fontSize: "36px",
+      textAlign: "center",
+      fontFamily: "'Comic Sans MS', 'Comic Sans', cursive"
+    };
+
+    if (currentTurnPlayerId === currUser.id){
+      return (<div style = {style}>Now it is your turn.</div>);
+    }
+    else{
+      return (<div style = {style}>It is not your turn, please wait.</div>);
+    }
+  }
+
   return (
     <BaseContainer>
       <div className="game-layout">
@@ -259,7 +287,10 @@ const KittyCards = () => {
         </div>
         <div className="center-column">
           <RenderBoard grid={grid} onCardDrop={handleCardDrop} />
-          <RenderHand hand={hand} />
+          <div className="hand-of-cards-container">
+            <RenderHand hand={hand} />
+          </div>
+          {renderTurnPrompt()}
         </div>
         <div className="right-column">
           {renderPlayerProfile(opponentName, opponentScore)}

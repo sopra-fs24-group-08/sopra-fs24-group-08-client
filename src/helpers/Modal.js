@@ -9,8 +9,9 @@ const Modal = ({ children, isOpen, onClose }) => {
   return ReactDOM.createPortal(
     <div style={styles.overlayStyles}>
       <div style={styles.modalStyles}>
+        <div style={{height: "20px"}}></div>
         {children}
-        <button onClick={onClose} style={styles.buttonStyles}>Close</button>
+        <button onClick={onClose} style={styles.buttonStyles}>x</button>
       </div>
     </div>,
     document.getElementById("modal-root")
@@ -31,7 +32,7 @@ const styles = {
   },
   modalStyles: {
     padding: 20,
-    background: "#fff",
+    background: "#e6e6fa",
     borderRadius: 5,
     maxWidth: "500px",
     minHeight: "200px",
@@ -42,6 +43,8 @@ const styles = {
     position: "absolute",
     top: 20,
     right: 20,
+    padding: "2px 8px",
+    fontSize: "14px",
   }
 };
 
