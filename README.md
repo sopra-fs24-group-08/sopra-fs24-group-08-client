@@ -62,7 +62,12 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
  
 ## Illustrations
 
- 
+Game Flow: Login/registeration -> Main(Navigation Page) -> Start(successful matching then) -> KittyCards -> Main
+
+Add-friend Flow: Main -> UserList -> send friend request -> (back to) Main -> Friends(new friend appears if accepted)
+
+Edit-profile Flow: Main -> My Profile -> Edit(Name/Password/Birthday) or (change and save avatar)
+
 ## Roadmap
 1. Improved game feature: add random events to the game for more fun
 2. Improved Friend system; adding a chat functions outside the game and store the history
