@@ -29,8 +29,12 @@ function Main() {
 
     if (currUser?.token) {
       fetchDataIfNeeded();
+
     }
-  }, [refreshData, currUser?.token]);
+
+
+  }, [navigate, currUser?.id, refreshData, usersLastFetched, friendsLastFetched, friendRequestsLastFetched]);
+
 
   const doLogout = () => {
     logout();

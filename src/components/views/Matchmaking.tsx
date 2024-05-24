@@ -21,14 +21,17 @@ const Matchmaking = () => {
       if (data.matchFound) {
         setLoading(true);
         matchedRef.current = true;
+        const sessionData = {
+          gameId: data.gameId,
+          isFirst: data.isFirst,
+          opponentId: data.opponentId,
+          opponentName: data.opponentName,
+          initialStatus: "STARTING"
+        };
+
+        // Navigate to the KittyCards page with the game session data
         navigate(`/kittycards/${data.gameId}`, {
-          state: {
-            gameId: data.gameId,
-            isFirst: data.isFirst,
-            opponentId: data.opponentId,
-            opponentName: data.opponentName,
-          },
-        });
+          state: sessionData})
       } else {
         toast.info("Waiting for an opponent...");
       }
