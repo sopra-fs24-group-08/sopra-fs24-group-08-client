@@ -123,11 +123,12 @@ const KittyCards = () => {
       if (update.gameStatus === "FINISHED") {
         // Enforce properly cleanup and navigation
         setTimeout(() => {
+          sessionStorage.removeItem("gameState")
           unsubscribeUser(gameTopic);
           unsubscribeUser(chatTopic);
-          resetGame();
-          navigate(`/kittycards/${gameId}/result`);
-        }, 200);
+
+          navigate(`/kittycards/${update.gameId}/result`);
+        }, 300);
         // Delay to ensure all final messages are processed
       }
       updateGameState(update);

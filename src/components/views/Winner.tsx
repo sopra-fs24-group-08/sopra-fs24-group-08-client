@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
-import {Button} from "components/ui/Button";
+import { Button } from "components/ui/Button";
 import "styles/views/Winner.scss";
-import { api, handleError } from "helpers/api";
+import { api} from "helpers/api";
 import { useCurrUser } from "../context/UserContext";
 import { toast } from "react-toastify";
 
@@ -13,31 +13,37 @@ const Winner = () => {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
   const { currUser } = useCurrUser();
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
-    // Ensure the loading state is true when starting the fetch operation
-    setLoading(true);
-
-
     const fetchResult = async () => {
-      console.log("Fetching result for game ID:", gameId);
       try {
+        console.log("Fetching result for game ID:", gameId);
         const response = await api.get(`/game/${gameId}/result`, {
           headers: { Authorization: `Bearer ${currUser.token}` }
         });
         if (response.data) {
           setResult(response.data);
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error fetching result:", error);
-        toast.error("Failed retrieving game result");
-      } finally {
-        setLoading(false);
+        toast.error("Failed retrieving game result. Retrying...");
+        if (retryCount < 3) { // Try up to 3 times
+          setTimeout(() => {
+            setRetryCount(retryCount + 1);
+          }, 1000); // Retry after 1 second
+        } else {
+          setLoading(false); // Stop loading after 3 retries
+          toast.error("Failed to load data after several attempts.");
+        }
       }
     };
 
-    fetchResult();
-  }, [gameId, currUser.id, navigate]);
+    if (loading) {
+      fetchResult();
+    }
+  }, [gameId, currUser.token, loading, retryCount]);
 
   const quitNow = () => {
     navigate("/main");
@@ -46,16 +52,18 @@ const Winner = () => {
   if (loading) {
     return (
       <BaseContainer className="winner container">
-        <p>Loading...</p>
+        <div className="spinner"></div>
+        <p>Loading game results...</p>
       </BaseContainer>
     );
   }
-  if(!loading&&!result){
+
+  if (!result) {
     return (
       <BaseContainer className="winner container">
-        <p>Failed retrieving game result.</p>
+        <p>Failed retrieving game result after multiple attempts.</p>
         <div className="login button-container">
-          <Button onClick={()=>{window.location.reload();}}>Refresh</Button>
+          <Button onClick={() => setRetryCount(0)}>Try Again</Button>
           <Button onClick={quitNow}>Return to Home</Button>
         </div>
       </BaseContainer>
