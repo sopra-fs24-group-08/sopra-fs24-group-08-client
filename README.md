@@ -14,6 +14,7 @@ Kitty Cards
 ## High-level components
 ### 
 - Main
+  
 This is the navigation page after logging in, connected to game-matching, friend-system, user profile, etc..
 https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/Main.tsx
 ![1716563888140](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/dd156e63-32da-4580-bd76-318d3ff3126a)
@@ -21,6 +22,7 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
 
 ### 
 - KittyCards
+  
 This is the game page, once upon a successful matching or an accepted invitation the user will jump to here.
 https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/KittyCards.tsx
 ![1716563826134](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/62a4b54d-26a5-4dbd-9635-cdccef3ab24c)
@@ -28,12 +30,15 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
 
 ### 
 - UserList
+  
 In this page all registered users can be seen and one can send friend request to another.
 https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/UserList.tsx
 ![1716563914140](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/9d33716c-6d91-44e2-b605-5fa6462e50d0)
 
 ### 
 - FriendList
+
+https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/FriendList.tsx
 Once the friend request is accepted, new friend will be shown in this page. User can invite his/her friend to a game or delete this friend.
 ![1716563949639](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/873a81cf-73c7-4e94-b492-ef980f564a3b)
 
