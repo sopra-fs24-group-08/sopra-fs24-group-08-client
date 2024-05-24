@@ -24,7 +24,7 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
 ### 
 - KittyCards
   
-This is the game page, once upon a successful matching or an accepted invitation the user will jump to here.
+>This is the game page, once upon a successful matching or an accepted invitation the user will jump to here.
 
 https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/KittyCards.tsx
 ![1716563826134](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/62a4b54d-26a5-4dbd-9635-cdccef3ab24c)
@@ -33,7 +33,7 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
 ### 
 - UserList
   
-In this page all registered users can be seen and one can send friend request to another.
+>In this page all registered users can be seen and one can send friend request to another.
 
 https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/UserList.tsx
 ![1716563914140](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/9d33716c-6d91-44e2-b605-5fa6462e50d0)
@@ -41,7 +41,7 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
 ### 
 - FriendList
 
-Once the friend request is accepted, new friend will be shown in this page. User can invite his/her friend to a game or delete this friend.
+>Once the friend request is accepted, new friend will be shown in this page. User can invite his/her friend to a game or delete this friend.
 
 https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/components/views/FriendList.tsx
 ![1716563949639](https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/assets/161195267/873a81cf-73c7-4e94-b492-ef980f564a3b)
@@ -62,16 +62,16 @@ https://github.com/sopra-fs24-group-08/sopra-fs24-group-08-client/blob/main/src/
  
 ## Illustrations
 
-Game Flow: Login/registeration -> Main(Navigation Page) -> Start(successful matching then) -> KittyCards -> Main
+>Game Flow: Login/registeration -> Main(Navigation Page) -> Start(successful matching then) -> KittyCards -> Main
 
-Add-friend Flow: Main -> UserList -> send friend request -> (back to) Main -> Friends(new friend appears if accepted)
+>Add-friend Flow: Main -> UserList -> send friend request -> (back to) Main -> Friends(new friend appears if accepted)
 
-Edit-profile Flow: Main -> My Profile -> Edit(Name/Password/Birthday) or (change and save avatar)
+>Edit-profile Flow: Main -> My Profile -> Edit(Name/Password/Birthday) or (change and save avatar)
 
 ## Roadmap
-1. Improved game feature: add random events to the game for more fun
-2. Improved Friend system; adding a chat functions outside the game and store the history
-3. Improved UI; structuring the CSS files better, replacing the static images with better custom ones
+>Improved game feature: add random events to the game for more fun
+>Improved Friend system; adding a chat functions outside the game and store the history
+>Improved UI; structuring the CSS files better, replacing the static images with better custom ones
 
 ## Authors and acknowledgement
 SoPra Group 08 2024 members: David Tanner, Jingxuan Tian, Yiyang Chen, Zixian Pang, Luis Schmid.
